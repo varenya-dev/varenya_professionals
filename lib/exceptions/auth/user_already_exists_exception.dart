@@ -1,5 +1,5 @@
-class NotLoggedInException implements Exception {
+class UserAlreadyExistsException implements Exception {
   String message;
 
-  NotLoggedInException({required this.message});
+  UserAlreadyExistsException({required this.message});
 }

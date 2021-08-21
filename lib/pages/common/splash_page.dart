@@ -1,10 +1,12 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:varenya_professionals/pages/auth/login_page.dart';
 import 'package:varenya_professionals/pages/common/loading_page.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:varenya_professionals/pages/home_page.dart';
+import 'package:varenya_professionals/providers/user_provider.dart';
 
 class SplashPage extends StatefulWidget {
   const SplashPage({Key? key}) : super(key: key);
@@ -32,6 +34,7 @@ class _SplashPageState extends State<SplashPage> {
       this._streamSubscription =
           FirebaseAuth.instance.authStateChanges().listen((User? user) {
         if (user != null) {
+          Provider.of<UserProvider>(context, listen: false).user = user;
           Navigator.of(context).pushReplacementNamed(HomePage.routeName);
         } else {
           Navigator.of(context).pushReplacementNamed(LoginPage.routeName);

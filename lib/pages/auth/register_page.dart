@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:form_field_validator/form_field_validator.dart';
+import 'package:provider/provider.dart';
 import 'package:varenya_professionals/dtos/auth/register_account_dto/register_account_dto.dart';
 import 'package:varenya_professionals/exceptions/auth/user_already_exists_exception.dart';
 import 'package:varenya_professionals/pages/auth/login_page.dart';
@@ -20,7 +21,7 @@ class RegisterPage extends StatefulWidget {
 
 class _RegisterPageState extends State<RegisterPage> {
   final GlobalKey<FormState> _formKey = new GlobalKey<FormState>();
-  final AuthService _authService = new AuthService();
+  late AuthService _authService;
 
   final TextEditingController _emailFieldController =
       new TextEditingController();
@@ -28,6 +29,12 @@ class _RegisterPageState extends State<RegisterPage> {
       new TextEditingController();
   final TextEditingController _passwordAgainFieldController =
       new TextEditingController();
+
+  @override
+  void initState() {
+    super.initState();
+    this._authService = Provider.of<AuthService>(context, listen: false);
+  }
 
   Future<void> _onFormSubmit() async {
     if (!this._formKey.currentState!.validate()) {

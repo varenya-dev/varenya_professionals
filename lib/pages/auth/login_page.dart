@@ -1,11 +1,14 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:form_field_validator/form_field_validator.dart';
+import 'package:provider/provider.dart';
 import 'package:varenya_professionals/dtos/auth/login_account_dto/login_account_dto.dart';
 import 'package:varenya_professionals/exceptions/auth/user_not_found_exception.dart';
 import 'package:varenya_professionals/exceptions/auth/wrong_password_exception.dart';
 import 'package:varenya_professionals/pages/auth/register_page.dart';
 import 'package:varenya_professionals/pages/home_page.dart';
+import 'package:varenya_professionals/providers/user_provider.dart';
 import 'package:varenya_professionals/services/auth_service.dart';
 import 'package:varenya_professionals/utils/snackbar.dart';
 import 'package:varenya_professionals/widgets/common/custom_field_widget.dart';
@@ -21,12 +24,18 @@ class LoginPage extends StatefulWidget {
 
 class _LoginPageState extends State<LoginPage> {
   final GlobalKey<FormState> _formKey = new GlobalKey<FormState>();
-  final AuthService _authService = new AuthService();
+  late AuthService _authService;
 
   final TextEditingController _emailFieldController =
       new TextEditingController();
   final TextEditingController _passwordFieldController =
       new TextEditingController();
+
+  @override
+  void initState() {
+    super.initState();
+    this._authService = Provider.of<AuthService>(context, listen: false);
+  }
 
   Future<void> _onFormSubmit() async {
     if (!this._formKey.currentState!.validate()) {
@@ -39,7 +48,10 @@ class _LoginPageState extends State<LoginPage> {
     );
 
     try {
-      await this._authService.loginWithEmailAndPassword(loginAccountDto);
+      User user =
+          await this._authService.loginWithEmailAndPassword(loginAccountDto);
+
+      Provider.of<UserProvider>(context, listen: false).user = user;
 
       Navigator.of(context).pushReplacementNamed(HomePage.routeName);
     } on UserNotFoundException catch (error) {

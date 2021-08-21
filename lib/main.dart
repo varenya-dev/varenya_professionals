@@ -4,6 +4,8 @@ import 'package:provider/provider.dart';
 import 'package:varenya_professionals/app.dart';
 import 'package:varenya_professionals/pages/common/loading_page.dart';
 import 'package:varenya_professionals/providers/user_provider.dart';
+import 'package:varenya_professionals/services/auth_service.dart';
+import 'package:varenya_professionals/services/user_service.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
@@ -25,9 +27,15 @@ class Root extends StatelessWidget {
         if (snapshot.connectionState == ConnectionState.done) {
           return MultiProvider(
             providers: [
-              ChangeNotifierProvider(
+              ChangeNotifierProvider<UserProvider>(
                 create: (context) => UserProvider(),
-              )
+              ),
+              Provider<AuthService>(
+                create: (context) => AuthService(),
+              ),
+              Provider<UserService>(
+                create: (context) => UserService(),
+              ),
             ],
             child: App(),
           );

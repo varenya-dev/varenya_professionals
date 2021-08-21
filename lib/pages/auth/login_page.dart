@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:form_field_validator/form_field_validator.dart';
+import 'package:provider/provider.dart';
 import 'package:varenya_professionals/dtos/auth/login_account_dto/login_account_dto.dart';
 import 'package:varenya_professionals/exceptions/auth/user_not_found_exception.dart';
 import 'package:varenya_professionals/exceptions/auth/wrong_password_exception.dart';
@@ -21,12 +22,18 @@ class LoginPage extends StatefulWidget {
 
 class _LoginPageState extends State<LoginPage> {
   final GlobalKey<FormState> _formKey = new GlobalKey<FormState>();
-  final AuthService _authService = new AuthService();
+  late AuthService _authService;
 
   final TextEditingController _emailFieldController =
       new TextEditingController();
   final TextEditingController _passwordFieldController =
       new TextEditingController();
+
+  @override
+  void initState() {
+    super.initState();
+    this._authService = Provider.of<AuthService>(context, listen: false);
+  }
 
   Future<void> _onFormSubmit() async {
     if (!this._formKey.currentState!.validate()) {

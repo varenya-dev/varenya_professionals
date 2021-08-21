@@ -44,7 +44,7 @@ class AuthService {
    * Method to log the user in the application.
    * @param loginAccountDto DTO for user login
    */
-  Future<void> loginWithEmailAndPassword(
+  Future<User> loginWithEmailAndPassword(
       LoginAccountDto loginAccountDto) async {
     try {
       // Log the user in with firebase using their credentials.
@@ -52,6 +52,8 @@ class AuthService {
         email: loginAccountDto.emailAddress,
         password: loginAccountDto.password,
       );
+
+      return this.firebaseAuth.currentUser!;
     } on FirebaseAuthException catch (error) {
       // Firebase Error: If the user does not exist.
       if (error.code == 'user-not-found') {
@@ -65,6 +67,14 @@ class AuthService {
           message: 'Wrong password provided for the specified user account.',
         );
       }
+      // Handle other unknown errors
+      else {
+        print(error);
+        throw Exception("Something went wrong, please try again later");
+      }
+    } catch (error) {
+      print(error);
+      throw Exception("Something went wrong, please try again later");
     }
   }
 

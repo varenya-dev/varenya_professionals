@@ -21,7 +21,7 @@ class AuthService {
    * Method to register the user with Firebase.
    * @param registerAccountDto DTO for user registration.
    */
-  Future<void> registerWithEmailAndPassword(
+  Future<User> registerWithEmailAndPassword(
     RegisterAccountDto registerAccountDto,
   ) async {
     try {
@@ -30,6 +30,23 @@ class AuthService {
             email: registerAccountDto.emailAddress,
             password: registerAccountDto.password,
           );
+
+      // Fetching the currently logged in user.
+      User? firebaseUser = firebaseAuth.currentUser;
+
+      // Check if user is not null
+      if (firebaseUser != null) {
+        // Update the name for the user.
+        await firebaseUser.updateDisplayName(registerAccountDto.fullName);
+
+        // If an image link has been given as well,
+        // update the user's profile picture.
+        if (registerAccountDto.imageUrl.length > 0) {
+          await firebaseUser.updatePhotoURL(registerAccountDto.imageUrl);
+        }
+      }
+
+      return this.firebaseAuth.currentUser!;
     } on FirebaseException catch (error) {
       // If email is already in use, throw an error.
       if (error.code == 'email-already-in-use') {
@@ -37,6 +54,15 @@ class AuthService {
           message: 'The account already exists for that email.',
         );
       }
+
+      // Handle other unknown errors
+      else {
+        print(error);
+        throw Exception("Something went wrong, please try again later");
+      }
+    } catch (error) {
+      print(error);
+      throw Exception("Something went wrong, please try again later");
     }
   }
 

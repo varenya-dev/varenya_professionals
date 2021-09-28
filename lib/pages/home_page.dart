@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:varenya_professionals/pages/threads_page.dart';
+import 'package:varenya_professionals/pages/chat/threads_page.dart';
 import 'package:varenya_professionals/pages/user/user_update_page.dart';
 import 'package:varenya_professionals/providers/user_provider.dart';
 import 'package:varenya_professionals/services/auth_service.dart';

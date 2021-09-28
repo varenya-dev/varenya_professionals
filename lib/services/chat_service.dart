@@ -20,9 +20,16 @@ class ChatService {
       .where("participants", arrayContains: this._auth.currentUser!.uid)
       .snapshots();
 
+  /*
+   * Method to fetch all chats in a given thread.
+   * @param id Thread ID to be fetched.
+   */
+  Stream<DocumentSnapshot<Map<String, dynamic>>> listenToThread(String id) =>
+      this._firestore.collection('threads').doc(id).snapshots();
+
   Future<void> openDummyThread() async {
     DocumentReference threadDocumentReference =
-    this._firestore.collection('threads').doc();
+        this._firestore.collection('threads').doc();
 
     List<String> participants = [
       "2Mp0U8gyHISRWJlPklzcxnoTKCV2",

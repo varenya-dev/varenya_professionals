@@ -4,6 +4,8 @@ import 'package:provider/provider.dart';
 import 'package:varenya_professionals/models/chat/chat_thread/chat_thread_model.dart';
 import 'package:varenya_professionals/services/chat_service.dart';
 
+import 'chat_page.dart';
+
 class ThreadsPage extends StatefulWidget {
   const ThreadsPage({Key? key}) : super(key: key);
 
@@ -58,7 +60,12 @@ class _ThreadsPageState extends State<ThreadsPage> {
                 leading: Icon(Icons.person),
                 title: Text(thread.id),
                 subtitle: Text(thread.participants.join(", ")),
-                onTap: () {},
+                onTap: () {
+                  Navigator.of(context).pushNamed(
+                    ChatPage.routeName,
+                    arguments: thread.id,
+                  );
+                },
               );
             },
           );

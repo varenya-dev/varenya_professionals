@@ -52,6 +52,14 @@ class _ChatPageState extends State<ChatPage> {
         .sendMessage(this._chatController.text, this._chatThread);
   }
 
+  /*
+   * Method to handle deleting chat message.
+   */
+  Future<void> onMessageDelete(String id) async {
+    // Delete the message from the thread.
+    await this._chatService.deleteMessage(id, this._chatThread);
+  }
+
   @override
   Widget build(BuildContext context) {
     String id = ModalRoute.of(context)!.settings.arguments as String;

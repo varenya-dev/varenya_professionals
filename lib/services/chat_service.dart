@@ -52,6 +52,22 @@ class ChatService {
     await this._firestore.collection("threads").doc(thread.id).set(jsonData);
   }
 
+  /*
+   * Method to delete a chat message in a given thread.
+   * @param id ID for the message to be deleted.
+   * @param thread Thread from which the message is needed to be deleted.
+   */
+  Future<void> deleteMessage(String id, ChatThread thread) async {
+    // Filter out the message list using the message ID.
+    thread.messages = thread.messages.where((chat) => chat.id != id).toList();
+
+    // Convert all to JSON and update the same in firestore.
+    Map<String, dynamic> jsonData = thread.toJson();
+    jsonData['messages'] =
+        jsonData['messages'].map((Chat message) => message.toJson()).toList();
+    await this._firestore.collection("threads").doc(thread.id).set(jsonData);
+  }
+
   Future<void> openDummyThread() async {
     DocumentReference threadDocumentReference =
         this._firestore.collection('threads').doc();

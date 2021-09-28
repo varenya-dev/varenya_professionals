@@ -1,11 +1,15 @@
 /*
  * Service implementation for chat module.
  */
+import 'dart:convert';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:uuid/uuid.dart';
+import 'package:varenya_professionals/constants/endpoint_constant.dart';
 import 'package:varenya_professionals/models/chat/chat/chat_model.dart';
 import 'package:varenya_professionals/models/chat/chat_thread/chat_thread_model.dart';
+import 'package:http/http.dart' as http;
 
 class ChatService {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
@@ -66,6 +70,8 @@ class ChatService {
     jsonData['messages'] =
         jsonData['messages'].map((Chat message) => message.toJson()).toList();
     await this._firestore.collection("threads").doc(thread.id).set(jsonData);
+
+    await this._sendChatNotification(thread.id);
   }
 
   /*
@@ -94,5 +100,40 @@ class ChatService {
         .collection('threads')
         .doc(chatThread.id)
         .set(chatThread.toJson());
+  }
+
+  Future<void> _sendChatNotification(String threadId) async {
+    try {
+      // Fetch the ID token for the user.
+      String firebaseAuthToken = await this._auth.currentUser!.getIdToken();
+
+      // Prepare URI for the request.
+      Uri uri = Uri.parse("$endpoint/chat/notification");
+
+      // Prepare authorization headers.
+      Map<String, String> headers = {
+        "Authorization": "Bearer $firebaseAuthToken",
+      };
+
+      // Preparing body for the request.
+      Map<String, String> body = {
+        "threadId": threadId,
+      };
+
+      // Send the post request to the server.
+      http.Response response = await http.post(
+        uri,
+        headers: headers,
+        body: body,
+      );
+
+      // Check for any errors.
+      if (response.statusCode >= 400) {
+        Map<String, dynamic> body = json.decode(response.body);
+        throw Exception(body);
+      }
+    } catch (error) {
+      print(error);
+    }
   }
 }

@@ -4,7 +4,7 @@ import 'package:provider/provider.dart';
 import 'package:varenya_professionals/exceptions/auth/not_logged_in_exception.dart';
 import 'package:varenya_professionals/exceptions/auth/weak_password_exception.dart';
 import 'package:varenya_professionals/exceptions/auth/wrong_password_exception.dart';
-import 'package:varenya_professionals/pages/auth/login_page.dart';
+import 'package:varenya_professionals/pages/auth/auth_page.dart';
 import 'package:varenya_professionals/providers/user_provider.dart';
 import 'package:varenya_professionals/services/user_service.dart';
 import 'package:varenya_professionals/utils/snackbar.dart';
@@ -61,7 +61,7 @@ class _UserDeleteTabState extends State<UserDeleteTab> {
         this._userProvider.removeUser();
 
         // Log out to the authentication page.
-        Navigator.of(context).pushReplacementNamed(LoginPage.routeName);
+        Navigator.of(context).pushReplacementNamed(AuthPage.routeName);
       }
     }
     // Handle errors gracefully.

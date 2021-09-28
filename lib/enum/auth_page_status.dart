@@ -1,0 +1,4 @@
+enum AuthPageStatus {
+  REGISTER,
+  LOGIN,
+}

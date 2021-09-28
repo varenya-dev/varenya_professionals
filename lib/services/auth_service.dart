@@ -18,6 +18,29 @@ class AuthService {
   final Uuid uuid = Uuid();
 
   /*
+   * Method to check account availability.
+   * @param registerAccountDto DTO for user registration.
+   */
+  Future<bool> checkAccountAvailability(
+    String emailAddress,
+  ) async {
+    try {
+      // Check for account existence.
+      UserCredential userCredential =
+          await this.firebaseAuth.createUserWithEmailAndPassword(
+                email: emailAddress,
+                password: 'check123',
+              );
+
+      // Delete the account and return false.
+      await userCredential.user!.delete();
+      return true;
+    } on FirebaseException {
+      return false;
+    }
+  }
+
+  /*
    * Method to register the user with Firebase.
    * @param registerAccountDto DTO for user registration.
    */

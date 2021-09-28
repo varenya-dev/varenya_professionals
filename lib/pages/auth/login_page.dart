@@ -1,5 +1,4 @@
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:form_field_validator/form_field_validator.dart';
 import 'package:provider/provider.dart';
@@ -34,27 +33,40 @@ class _LoginPageState extends State<LoginPage> {
   @override
   void initState() {
     super.initState();
+
+    // Injecting the required services.
     this._authService = Provider.of<AuthService>(context, listen: false);
   }
 
+  /*
+   * Handle form submission for logging the user in.
+   */
   Future<void> _onFormSubmit() async {
+    // Check the validity of the form.
     if (!this._formKey.currentState!.validate()) {
       return;
     }
 
+    // Create a DTO object for logging in the user.
     LoginAccountDto loginAccountDto = new LoginAccountDto(
       emailAddress: this._emailFieldController.text,
       password: this._passwordFieldController.text,
     );
 
     try {
+      // Try logging the user in with given credentials.
       User user =
           await this._authService.loginWithEmailAndPassword(loginAccountDto);
 
+      // Save the user details in memory.
       Provider.of<UserProvider>(context, listen: false).user = user;
 
+      // Push them to the home page.
       Navigator.of(context).pushReplacementNamed(HomePage.routeName);
-    } on UserNotFoundException catch (error) {
+    }
+
+    // Handle errors gracefully.
+    on UserNotFoundException catch (error) {
       displaySnackbar(error.message, context);
     } on WrongPasswordException catch (error) {
       displaySnackbar(error.message, context);
@@ -65,19 +77,29 @@ class _LoginPageState extends State<LoginPage> {
   void dispose() {
     super.dispose();
 
+    // Disposing off the text controllers.
     this._emailFieldController.dispose();
     this._passwordFieldController.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
+    // Get the email address from the previous screen.
+    this._emailFieldController.text =
+        ModalRoute.of(context)!.settings.arguments as String;
+
     return Scaffold(
       body: Center(
         child: SingleChildScrollView(
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Text('Login'),
+              Container(
+                child: Image.asset(
+                  'assets/logo/app_logo.png',
+                  scale: 0.5,
+                ),
+              ),
               Form(
                 key: _formKey,
                 child: Column(

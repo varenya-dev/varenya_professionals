@@ -1,7 +1,9 @@
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:varenya_professionals/constants/endpoint_constant.dart';
 import 'package:varenya_professionals/dtos/auth/login_account_dto/login_account_dto.dart';
 import 'package:varenya_professionals/dtos/auth/register_account_dto/register_account_dto.dart';
 import 'package:varenya_professionals/dtos/auth/user_details_dto/user_details_dto.dart';
@@ -10,6 +12,7 @@ import 'package:varenya_professionals/exceptions/auth/user_not_found_exception.d
 import 'package:varenya_professionals/exceptions/auth/wrong_password_exception.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:uuid/uuid.dart';
+import 'package:http/http.dart' as http;
 
 class AuthService {
   final FirebaseAuth firebaseAuth = FirebaseAuth.instance;
@@ -67,6 +70,9 @@ class AuthService {
         if (registerAccountDto.imageUrl.length > 0) {
           await firebaseUser.updatePhotoURL(registerAccountDto.imageUrl);
         }
+
+        await this._setupFirebaseRoles();
+        await this.firebaseAuth.currentUser!.getIdToken(true);
       }
 
       return this.firebaseAuth.currentUser!;
@@ -178,5 +184,38 @@ class AuthService {
         .firebaseStorage
         .ref("profilePictures/$uid.png")
         .getDownloadURL();
+  }
+
+  /*
+   * Send a server request for setting roles for the user.
+   */
+  Future<void> _setupFirebaseRoles() async {
+    try {
+      // Fetch the ID token for the user.
+      String firebaseAuthToken =
+          await this.firebaseAuth.currentUser!.getIdToken();
+
+      // Prepare URI for the request.
+      Uri uri = Uri.parse("$endpoint/auth/roles/professional");
+
+      // Prepare authorization headers.
+      Map<String, String> headers = {
+        "Authorization": "Bearer $firebaseAuthToken",
+      };
+
+      // Send the post request to the server.
+      http.Response response = await http.post(
+        uri,
+        headers: headers,
+      );
+
+      // Check for any errors.
+      if (response.statusCode >= 400) {
+        Map<String, dynamic> body = json.decode(response.body);
+        throw Exception(body);
+      }
+    } catch (error) {
+      print(error);
+    }
   }
 }

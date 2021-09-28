@@ -1,9 +1,13 @@
+import 'dart:convert';
+
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:varenya_professionals/constants/endpoint_constant.dart';
 import 'package:varenya_professionals/dtos/user/update_email_dto/update_email_dto.dart';
 import 'package:varenya_professionals/dtos/user/update_password_dto/update_password_dto.dart';
 import 'package:varenya_professionals/exceptions/auth/user_already_exists_exception.dart';
 import 'package:varenya_professionals/exceptions/auth/weak_password_exception.dart';
 import 'package:varenya_professionals/exceptions/auth/wrong_password_exception.dart';
+import 'package:http/http.dart' as http;
 
 /*
  * Service implementation for User module.
@@ -167,6 +171,7 @@ class UserService {
       await loggedInUser.reauthenticateWithCredential(authCredential);
 
       // Deleting user account.
+      await this._deleteUserFromServer();
       await loggedInUser.delete();
     } on FirebaseAuthException catch (error) {
       // Firebase Error: If the user has typed the wrong password.
@@ -184,6 +189,39 @@ class UserService {
     } catch (error) {
       print(error);
       throw Exception("Something went wrong, please try again later");
+    }
+  }
+
+  /*
+   * Send a server request for setting roles for the user.
+   */
+  Future<void> _deleteUserFromServer() async {
+    try {
+      // Fetch the ID token for the user.
+      String firebaseAuthToken =
+          await this._firebaseAuth.currentUser!.getIdToken();
+
+      // Prepare URI for the request.
+      Uri uri = Uri.parse("$endpoint/user");
+
+      // Prepare authorization headers.
+      Map<String, String> headers = {
+        "Authorization": "Bearer $firebaseAuthToken",
+      };
+
+      // Send the post request to the server.
+      http.Response response = await http.delete(
+        uri,
+        headers: headers,
+      );
+
+      // Check for any errors.
+      if (response.statusCode >= 400) {
+        Map<String, dynamic> body = json.decode(response.body);
+        throw Exception(body);
+      }
+    } catch (error) {
+      print(error);
     }
   }
 }

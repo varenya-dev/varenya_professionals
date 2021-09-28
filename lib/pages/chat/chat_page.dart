@@ -40,6 +40,18 @@ class _ChatPageState extends State<ChatPage> {
     this._chatController.dispose();
   }
 
+  Future<void> onMessageSubmit() async {
+    // Check the validity of the form.
+    if (!this._formKey.currentState!.validate()) {
+      return;
+    }
+
+    // Save the message in database in the given thread.
+    await this
+        ._chatService
+        .sendMessage(this._chatController.text, this._chatThread);
+  }
+
   @override
   Widget build(BuildContext context) {
     String id = ModalRoute.of(context)!.settings.arguments as String;
@@ -96,7 +108,7 @@ class _ChatPageState extends State<ChatPage> {
               textInputType: TextInputType.text,
               suffixIcon: IconButton(
                 icon: Icon(Icons.send),
-                onPressed: () {},
+                onPressed: this.onMessageSubmit,
               ),
             ),
           ),

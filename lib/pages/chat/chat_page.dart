@@ -60,6 +60,15 @@ class _ChatPageState extends State<ChatPage> {
     await this._chatService.deleteMessage(id, this._chatThread);
   }
 
+  /*
+   * Method to handle closing a thread.
+   */
+  Future<void> onThreadClose() async {
+    // Close the thread and pop off from the chat screen.
+    await this._chatService.closeThread(this._chatThread);
+    Navigator.of(context).pop();
+  }
+
   @override
   Widget build(BuildContext context) {
     String id = ModalRoute.of(context)!.settings.arguments as String;
@@ -67,6 +76,12 @@ class _ChatPageState extends State<ChatPage> {
     return Scaffold(
       appBar: AppBar(
         title: Text('Chat'),
+        actions: [
+          TextButton(
+            onPressed: this.onThreadClose,
+            child: Text('Close Chat'),
+          ),
+        ],
       ),
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.center,

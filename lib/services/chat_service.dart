@@ -68,6 +68,12 @@ class ChatService {
     await this._firestore.collection("threads").doc(thread.id).set(jsonData);
   }
 
+  /*
+   * Close chat thread in firestore.
+   */
+  Future<void> closeThread(ChatThread thread) async =>
+      await this._firestore.collection("threads").doc(thread.id).delete();
+
   Future<void> openDummyThread() async {
     DocumentReference threadDocumentReference =
         this._firestore.collection('threads').doc();

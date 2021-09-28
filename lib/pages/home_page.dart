@@ -1,3 +1,4 @@
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:varenya_professionals/pages/chat/threads_page.dart';
@@ -31,6 +32,11 @@ class _HomePageState extends State<HomePage> {
     this._authService = Provider.of<AuthService>(context, listen: false);
     this._userService = Provider.of<UserService>(context, listen: false);
     this._chatService = Provider.of<ChatService>(context, listen: false);
+
+    this._userService.generateAndSaveTokenToDatabase();
+
+    FirebaseMessaging.instance.onTokenRefresh
+        .listen(this._userService.saveTokenToDatabase);
   }
 
   @override

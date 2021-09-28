@@ -1,6 +1,8 @@
 import 'dart:convert';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:varenya_professionals/constants/endpoint_constant.dart';
 import 'package:varenya_professionals/dtos/user/update_email_dto/update_email_dto.dart';
 import 'package:varenya_professionals/dtos/user/update_password_dto/update_password_dto.dart';
@@ -14,6 +16,8 @@ import 'package:http/http.dart' as http;
  */
 class UserService {
   final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
+  final FirebaseMessaging _firebaseMessaging = FirebaseMessaging.instance;
+  final FirebaseFirestore _firebaseFirestore = FirebaseFirestore.instance;
 
   /*
    * Update profile picture for the given user.
@@ -223,5 +227,29 @@ class UserService {
     } catch (error) {
       print(error);
     }
+  }
+
+  /*
+   * Save FCM token to database on each update.
+   * @param token FCM Token to be saved.
+   */
+  Future<void> saveTokenToDatabase(String token) async {
+    // Save token to the respective document collection.
+    String userId = this._firebaseAuth.currentUser!.uid;
+    await this._firebaseFirestore.collection('users').doc(userId).set({
+      'id': userId,
+      'token': token,
+    });
+  }
+
+  /*
+   * Save token to the database on first run.
+   */
+  Future<void> generateAndSaveTokenToDatabase() async {
+    //  Generate an FCM token and save it to firestore.
+    String? token = await this._firebaseMessaging.getToken();
+    this.saveTokenToDatabase(token!);
+
+    print('TOKEN GENERATED AND SAVED.');
   }
 }

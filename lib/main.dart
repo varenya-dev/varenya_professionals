@@ -5,6 +5,7 @@ import 'package:varenya_professionals/app.dart';
 import 'package:varenya_professionals/pages/common/loading_page.dart';
 import 'package:varenya_professionals/providers/user_provider.dart';
 import 'package:varenya_professionals/services/auth_service.dart';
+import 'package:varenya_professionals/services/chat_service.dart';
 import 'package:varenya_professionals/services/user_service.dart';
 
 Future<void> main() async {
@@ -38,6 +39,9 @@ class Root extends StatelessWidget {
               ),
               Provider<UserService>(
                 create: (context) => UserService(),
+              ),
+              Provider<ChatService>(
+                create: (context) => ChatService(),
               ),
             ],
             child: App(),

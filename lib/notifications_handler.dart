@@ -41,6 +41,18 @@ class _NotificationsHandlerState extends State<NotificationsHandler> {
         arguments: message.data['thread'],
       );
     }
+
+    if (message.data['type'] == 'sos') {
+      String userId = message.data['userId'];
+      String threadId = await this._chatService.createNewThread(userId);
+      await this._alertsService.sendSOSResponseNotification(threadId);
+
+      Navigator.pushNamed(
+        context,
+        ChatPage.routeName,
+        arguments: threadId,
+      );
+    }
   }
 
   @override

@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:varenya_professionals/app.dart';
 import 'package:varenya_professionals/providers/user_provider.dart';
+import 'package:varenya_professionals/services/alerts_service.dart';
 import 'package:varenya_professionals/services/auth_service.dart';
 import 'package:varenya_professionals/services/chat_service.dart';
 import 'package:varenya_professionals/services/user_service.dart';
@@ -45,6 +46,9 @@ class Root extends StatelessWidget {
         ),
         Provider<ChatService>(
           create: (context) => ChatService(),
+        ),
+        Provider<AlertsService>(
+          create: (context) => AlertsService(),
         ),
       ],
       child: App(),

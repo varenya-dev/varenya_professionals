@@ -54,6 +54,8 @@ class ChatService {
     jsonData['messages'] =
         jsonData['messages'].map((Chat message) => message.toJson()).toList();
     await this._firestore.collection("threads").doc(thread.id).set(jsonData);
+
+    await this._sendChatNotification(thread.id, message);
   }
 
   /*
@@ -70,8 +72,6 @@ class ChatService {
     jsonData['messages'] =
         jsonData['messages'].map((Chat message) => message.toJson()).toList();
     await this._firestore.collection("threads").doc(thread.id).set(jsonData);
-
-    await this._sendChatNotification(thread.id);
   }
 
   /*
@@ -102,13 +102,13 @@ class ChatService {
         .set(chatThread.toJson());
   }
 
-  Future<void> _sendChatNotification(String threadId) async {
+  Future<void> _sendChatNotification(String threadId, String message) async {
     try {
       // Fetch the ID token for the user.
       String firebaseAuthToken = await this._auth.currentUser!.getIdToken();
 
       // Prepare URI for the request.
-      Uri uri = Uri.parse("$endpoint/chat/notification");
+      Uri uri = Uri.parse("$endpoint/notification/chat");
 
       // Prepare authorization headers.
       Map<String, String> headers = {
@@ -118,6 +118,7 @@ class ChatService {
       // Preparing body for the request.
       Map<String, String> body = {
         "threadId": threadId,
+        "message": message,
       };
 
       // Send the post request to the server.

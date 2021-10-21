@@ -41,7 +41,6 @@ class _NotificationsHandlerState extends State<NotificationsHandler> {
         arguments: message.data['thread'],
       );
     }
-
     if (message.data['type'] == 'sos') {
       String userId = message.data['userId'];
       String threadId = await this._chatService.createNewThread(userId);

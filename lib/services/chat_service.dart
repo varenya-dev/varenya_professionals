@@ -16,6 +16,32 @@ class ChatService {
   final FirebaseAuth _auth = FirebaseAuth.instance;
   final Uuid uuid = new Uuid();
 
+  Future<String> createNewThread(String userId) async {
+    DocumentReference threadDocumentReference =
+        this._firestore.collection('threads').doc();
+
+    String loggedInUserId = this._auth.currentUser!.uid;
+
+    List<String> participants = [
+      userId,
+      loggedInUserId,
+    ];
+
+    ChatThread chatThread = new ChatThread(
+      id: threadDocumentReference.id,
+      participants: participants,
+      messages: [],
+    );
+
+    await this
+        ._firestore
+        .collection('threads')
+        .doc(chatThread.id)
+        .set(chatThread.toJson());
+
+    return threadDocumentReference.id;
+  }
+
   /*
    * Method to fetch all threads the user is part of.
    */

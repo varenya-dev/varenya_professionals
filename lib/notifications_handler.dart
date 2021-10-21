@@ -2,6 +2,7 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:varenya_professionals/pages/chat/chat_page.dart';
+import 'package:varenya_professionals/services/alerts_service.dart';
 import 'package:varenya_professionals/services/chat_service.dart';
 
 class NotificationsHandler extends StatefulWidget {
@@ -19,6 +20,7 @@ class NotificationsHandler extends StatefulWidget {
 class _NotificationsHandlerState extends State<NotificationsHandler> {
   late final FirebaseMessaging _firebaseMessaging;
   late final ChatService _chatService;
+  late final AlertsService _alertsService;
 
   Future<void> setupInteractedMessage() async {
     RemoteMessage? initialMessage =
@@ -47,6 +49,7 @@ class _NotificationsHandlerState extends State<NotificationsHandler> {
 
     this._firebaseMessaging = FirebaseMessaging.instance;
     this._chatService = Provider.of<ChatService>(context, listen: false);
+    this._alertsService = Provider.of<AlertsService>(context, listen: false);
 
     setupInteractedMessage()
         .then((_) => print('FIREBASE MESSAGING HAS BEEN SETUP'))

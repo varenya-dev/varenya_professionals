@@ -2,7 +2,7 @@
     package="com.varenya.varenya_professionals">
 
     <application
-        android:icon="@mipmap/ic_launcher"
+        android:icon="@mipmap/launcher_icon"
         android:label="Varenya For Professionals">
         <activity
             android:name=".MainActivity"

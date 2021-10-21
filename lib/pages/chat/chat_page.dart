@@ -1,10 +1,15 @@
+import 'dart:async';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:form_field_validator/form_field_validator.dart';
 import 'package:provider/provider.dart';
 import 'package:varenya_professionals/models/chat/chat/chat_model.dart';
 import 'package:varenya_professionals/models/chat/chat_thread/chat_thread_model.dart';
 import 'package:varenya_professionals/services/chat_service.dart';
+import 'package:varenya_professionals/widgets/chat/chat_bubble_widget.dart';
 import 'package:varenya_professionals/widgets/common/custom_field_widget.dart';
 
 class ChatPage extends StatefulWidget {
@@ -40,6 +45,9 @@ class _ChatPageState extends State<ChatPage> {
     this._chatController.dispose();
   }
 
+  /*
+   * Method to handle chat message submission.
+   */
   Future<void> onMessageSubmit() async {
     // Check the validity of the form.
     if (!this._formKey.currentState!.validate()) {
@@ -73,19 +81,21 @@ class _ChatPageState extends State<ChatPage> {
   Widget build(BuildContext context) {
     String id = ModalRoute.of(context)!.settings.arguments as String;
 
+    AppBar appBar = AppBar(
+      title: Text('Chat'),
+      actions: [
+        TextButton(
+          onPressed: this.onThreadClose,
+          child: Text('Close Chat'),
+        ),
+      ],
+    );
+
     return Scaffold(
-      appBar: AppBar(
-        title: Text('Chat'),
-        actions: [
-          TextButton(
-            onPressed: this.onThreadClose,
-            child: Text('Close Chat'),
-          ),
-        ],
-      ),
+      appBar: appBar,
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.center,
-        mainAxisSize: MainAxisSize.max,
+        mainAxisSize: MainAxisSize.min,
         mainAxisAlignment: MainAxisAlignment.end,
         children: [
           StreamBuilder<DocumentSnapshot<Map<String, dynamic>>>(
@@ -109,29 +119,42 @@ class _ChatPageState extends State<ChatPage> {
                     (Chat a, Chat b) => a.timestamp.compareTo(b.timestamp));
               }
 
-              return ListView.builder(
-                shrinkWrap: true,
-                physics: NeverScrollableScrollPhysics(),
-                itemCount: this._chatThread.messages.length,
-                itemBuilder: (context, index) {
-                  Chat chat = this._chatThread.messages[index];
-                  return Text(chat.message);
-                },
+              ScrollController controller = ScrollController();
+
+              SchedulerBinding.instance!.addPostFrameCallback((_) {
+                controller.jumpTo(controller.position.maxScrollExtent);
+              });
+
+              return Expanded(
+                child: ListView.builder(
+                  controller: controller,
+                  shrinkWrap: true,
+                  itemCount: this._chatThread.messages.length,
+                  itemBuilder: (context, index) {
+                    Chat chat = this._chatThread.messages[index];
+                    return ChatBubbleWidget(
+                      chat: chat,
+                      onDelete: this.onMessageDelete,
+                    );
+                  },
+                ),
               );
             },
           ),
-          Form(
-            key: this._formKey,
-            child: CustomFieldWidget(
-              textFieldController: this._chatController,
-              label: "Your Message",
-              validators: [
-                RequiredValidator(errorText: "Please type in your message")
-              ],
-              textInputType: TextInputType.text,
-              suffixIcon: IconButton(
-                icon: Icon(Icons.send),
-                onPressed: this.onMessageSubmit,
+          Container(
+            child: Form(
+              key: this._formKey,
+              child: CustomFieldWidget(
+                textFieldController: this._chatController,
+                label: "Your Message",
+                validators: [
+                  RequiredValidator(errorText: "Please type in your message")
+                ],
+                textInputType: TextInputType.text,
+                suffixIcon: IconButton(
+                  icon: Icon(Icons.send),
+                  onPressed: this.onMessageSubmit,
+                ),
               ),
             ),
           ),

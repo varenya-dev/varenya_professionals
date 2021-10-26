@@ -29,7 +29,7 @@ class CreateOrUpdateDoctorDto {
     this.clinicAddress = '',
     this.cost = 0.0,
     this.jobTitle = Job.THERAPIST,
-    this.specializations = [],
+    this.specializations = const [],
   });
 
   factory CreateOrUpdateDoctorDto.fromJson(Map<String, dynamic> json) =>

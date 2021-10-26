@@ -3,10 +3,12 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:varenya_professionals/app.dart';
+import 'package:varenya_professionals/providers/doctor.provider.dart';
 import 'package:varenya_professionals/providers/user_provider.dart';
 import 'package:varenya_professionals/services/alerts_service.dart';
 import 'package:varenya_professionals/services/auth_service.dart';
 import 'package:varenya_professionals/services/chat_service.dart';
+import 'package:varenya_professionals/services/doctor.service.dart';
 import 'package:varenya_professionals/services/user_service.dart';
 
 Future<void> main() async {
@@ -38,6 +40,9 @@ class Root extends StatelessWidget {
         ChangeNotifierProvider<UserProvider>(
           create: (context) => UserProvider(),
         ),
+        ChangeNotifierProvider<DoctorProvider>(
+          create: (context) => DoctorProvider(),
+        ),
         Provider<AuthService>(
           create: (context) => AuthService(),
         ),
@@ -49,6 +54,9 @@ class Root extends StatelessWidget {
         ),
         Provider<AlertsService>(
           create: (context) => AlertsService(),
+        ),
+        Provider<DoctorService>(
+          create: (context) => DoctorService(),
         ),
       ],
       child: App(),

@@ -163,7 +163,6 @@ class AuthService {
    */
   Future<void> logOut() async {
     await this.firebaseAuth.signOut();
-    await this.googleSignIn.signOut();
   }
 
   /*

@@ -1,14 +1,14 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'doctor.model.dart';
+part of 'create_update_doctor.dto.dart';
 
 // **************************************************************************
 // JsonSerializableGenerator
 // **************************************************************************
 
-Doctor _$DoctorFromJson(Map<String, dynamic> json) {
-  return Doctor(
-    id: json['id'] as String,
+CreateOrUpdateDoctorDto _$CreateOrUpdateDoctorDtoFromJson(
+    Map<String, dynamic> json) {
+  return CreateOrUpdateDoctorDto(
     fullName: json['fullName'] as String? ?? '',
     clinicAddress: json['clinicAddress'] as String? ?? '',
     cost: (json['cost'] as num?)?.toDouble() ?? 0.0,
@@ -21,8 +21,9 @@ Doctor _$DoctorFromJson(Map<String, dynamic> json) {
   );
 }
 
-Map<String, dynamic> _$DoctorToJson(Doctor instance) => <String, dynamic>{
-      'id': instance.id,
+Map<String, dynamic> _$CreateOrUpdateDoctorDtoToJson(
+        CreateOrUpdateDoctorDto instance) =>
+    <String, dynamic>{
       'fullName': instance.fullName,
       'clinicAddress': instance.clinicAddress,
       'cost': instance.cost,

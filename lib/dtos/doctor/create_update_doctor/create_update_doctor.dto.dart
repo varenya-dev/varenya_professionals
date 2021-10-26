@@ -2,12 +2,10 @@ import 'package:json_annotation/json_annotation.dart';
 import 'package:varenya_professionals/enum/job.enum.dart';
 import 'package:varenya_professionals/enum/specialization.enum.dart';
 
-part 'doctor.model.g.dart';
+part 'create_update_doctor.dto.g.dart';
 
 @JsonSerializable()
-class Doctor {
-  String id;
-
+class CreateOrUpdateDoctorDto {
   @JsonKey(defaultValue: '')
   String fullName;
 
@@ -23,8 +21,7 @@ class Doctor {
   @JsonKey(defaultValue: [])
   List<Specialization> specializations;
 
-  Doctor({
-    required this.id,
+  CreateOrUpdateDoctorDto({
     required this.fullName,
     required this.clinicAddress,
     required this.cost,
@@ -32,7 +29,8 @@ class Doctor {
     required this.specializations,
   });
 
-  factory Doctor.fromJson(Map<String, dynamic> json) => _$DoctorFromJson(json);
+  factory CreateOrUpdateDoctorDto.fromJson(Map<String, dynamic> json) =>
+      _$CreateOrUpdateDoctorDtoFromJson(json);
 
-  Map<String, dynamic> toJson() => _$DoctorToJson(this);
+  Map<String, dynamic> toJson() => _$CreateOrUpdateDoctorDtoToJson(this);
 }

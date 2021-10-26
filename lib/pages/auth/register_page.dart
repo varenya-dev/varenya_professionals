@@ -11,6 +11,7 @@ import 'package:varenya_professionals/pages/auth/login_page.dart';
 import 'package:varenya_professionals/pages/home_page.dart';
 import 'package:varenya_professionals/providers/user_provider.dart';
 import 'package:varenya_professionals/services/auth_service.dart';
+import 'package:varenya_professionals/services/doctor.service.dart';
 import 'package:varenya_professionals/utils/display_bottom_sheet.dart';
 import 'package:varenya_professionals/utils/image_picker.dart';
 import 'package:varenya_professionals/utils/snackbar.dart';
@@ -32,8 +33,9 @@ class _RegisterPageState extends State<RegisterPage> {
   String _imageUrl = '';
 
   final GlobalKey<FormState> _formKey = new GlobalKey<FormState>();
-  late AuthService _authService;
-  late UserProvider _userProvider;
+  late final AuthService _authService;
+  late final UserProvider _userProvider;
+  late final DoctorService _doctorService;
 
   late String _emailAddress;
 
@@ -50,6 +52,7 @@ class _RegisterPageState extends State<RegisterPage> {
 
     this._authService = Provider.of<AuthService>(context, listen: false);
     this._userProvider = Provider.of<UserProvider>(context, listen: false);
+    this._doctorService = Provider.of<DoctorService>(context, listen: false);
   }
 
   /*
@@ -77,6 +80,8 @@ class _RegisterPageState extends State<RegisterPage> {
 
       // Save the user details in memory.
       this._userProvider.user = user;
+
+      await this._doctorService.createPlaceholderData();
 
       // Push them to the home page.
       Navigator.of(context).pushReplacementNamed(HomePage.routeName);
@@ -208,7 +213,7 @@ class _RegisterPageState extends State<RegisterPage> {
                           MinLengthValidator(
                             5,
                             errorText:
-                            'Your name should be at least 5 characters long.',
+                                'Your name should be at least 5 characters long.',
                           )
                         ],
                         textInputType: TextInputType.name,
@@ -223,7 +228,7 @@ class _RegisterPageState extends State<RegisterPage> {
                           MinLengthValidator(
                             5,
                             errorText:
-                            'Your password should be at least 5 characters long.',
+                                'Your password should be at least 5 characters long.',
                           )
                         ],
                         textInputType: TextInputType.text,
@@ -239,11 +244,11 @@ class _RegisterPageState extends State<RegisterPage> {
                           MinLengthValidator(
                             5,
                             errorText:
-                            'Your password should be at least 5 characters long.',
+                                'Your password should be at least 5 characters long.',
                           ),
                           ValueValidator(
                             checkAgainstTextController:
-                            this._passwordFieldController,
+                                this._passwordFieldController,
                             errorText: 'Passwords don\'t match.',
                           ),
                         ],

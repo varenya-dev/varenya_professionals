@@ -34,7 +34,7 @@ class DoctorService {
       }
     } else {
       throw new NotLoggedInException(
-        message: 'Please log in to acess this feature.',
+        message: 'Please log in to access this feature.',
       );
     }
   }
@@ -59,7 +59,7 @@ class DoctorService {
       }
     } else {
       throw new NotLoggedInException(
-        message: 'Please log in to acess this feature.',
+        message: 'Please log in to access this feature.',
       );
     }
   }
@@ -81,7 +81,7 @@ class DoctorService {
       }
     } else {
       throw new NotLoggedInException(
-        message: 'Please log in to acess this feature.',
+        message: 'Please log in to access this feature.',
       );
     }
   }

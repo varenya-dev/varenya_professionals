@@ -25,11 +25,11 @@ class CreateOrUpdateDoctorDto {
 
   CreateOrUpdateDoctorDto({
     required this.id,
-    required this.fullName,
-    required this.clinicAddress,
-    required this.cost,
-    required this.jobTitle,
-    required this.specializations,
+    this.fullName = '',
+    this.clinicAddress = '',
+    this.cost = 0.0,
+    this.jobTitle = Job.THERAPIST,
+    this.specializations = [],
   });
 
   factory CreateOrUpdateDoctorDto.fromJson(Map<String, dynamic> json) =>

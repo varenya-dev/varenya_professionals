@@ -7,6 +7,32 @@ class DoctorService {
   final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
   final FirebaseFirestore _firebaseFirestore = FirebaseFirestore.instance;
 
+  Future<void> createPlaceholderData() async {
+    User? firebaseUser = this._firebaseAuth.currentUser;
+
+    if (firebaseUser != null) {
+      try {
+        String userId = firebaseUser.uid;
+        CreateOrUpdateDoctorDto createOrUpdateDoctorDto =
+            new CreateOrUpdateDoctorDto(
+          id: userId,
+        );
+
+        await this
+            ._firebaseFirestore
+            .collection('doctors')
+            .doc(userId)
+            .set(createOrUpdateDoctorDto.toJson());
+      } catch (error) {
+        print(error);
+      }
+    } else {
+      throw new NotLoggedInException(
+        message: 'Please log in to acess this feature.',
+      );
+    }
+  }
+
   Future<void> createOrUpdateDoctor(
     CreateOrUpdateDoctorDto createOrUpdateDoctorDto,
   ) async {

@@ -7,6 +7,12 @@ class DoctorService {
   final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
   final FirebaseFirestore _firebaseFirestore = FirebaseFirestore.instance;
 
+  Stream<DocumentSnapshot<Map<String, dynamic>>> fetchDoctorDetails() => this
+      ._firebaseFirestore
+      .collection('doctors')
+      .doc(this._firebaseAuth.currentUser!.uid)
+      .snapshots();
+
   Future<void> createPlaceholderData() async {
     User? firebaseUser = this._firebaseAuth.currentUser;
 

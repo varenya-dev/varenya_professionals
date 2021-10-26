@@ -9,6 +9,7 @@ part of 'create_update_doctor.dto.dart';
 CreateOrUpdateDoctorDto _$CreateOrUpdateDoctorDtoFromJson(
     Map<String, dynamic> json) {
   return CreateOrUpdateDoctorDto(
+    id: json['id'] as String,
     fullName: json['fullName'] as String? ?? '',
     clinicAddress: json['clinicAddress'] as String? ?? '',
     cost: (json['cost'] as num?)?.toDouble() ?? 0.0,
@@ -24,6 +25,7 @@ CreateOrUpdateDoctorDto _$CreateOrUpdateDoctorDtoFromJson(
 Map<String, dynamic> _$CreateOrUpdateDoctorDtoToJson(
         CreateOrUpdateDoctorDto instance) =>
     <String, dynamic>{
+      'id': instance.id,
       'fullName': instance.fullName,
       'clinicAddress': instance.clinicAddress,
       'cost': instance.cost,

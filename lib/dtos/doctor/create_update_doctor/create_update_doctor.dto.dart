@@ -6,6 +6,8 @@ part 'create_update_doctor.dto.g.dart';
 
 @JsonSerializable()
 class CreateOrUpdateDoctorDto {
+  String id;
+
   @JsonKey(defaultValue: '')
   String fullName;
 
@@ -22,6 +24,7 @@ class CreateOrUpdateDoctorDto {
   List<Specialization> specializations;
 
   CreateOrUpdateDoctorDto({
+    required this.id,
     required this.fullName,
     required this.clinicAddress,
     required this.cost,

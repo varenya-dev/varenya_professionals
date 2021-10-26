@@ -1,7 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:varenya_professionals/dtos/doctor/create_update_doctor/create_update_doctor.dto.dart';
 import 'package:varenya_professionals/exceptions/auth/not_logged_in_exception.dart';
+import 'package:varenya_professionals/models/doctor/doctor.model.dart';
 
 class DoctorService {
   final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
@@ -19,16 +19,18 @@ class DoctorService {
     if (firebaseUser != null) {
       try {
         String userId = firebaseUser.uid;
-        CreateOrUpdateDoctorDto createOrUpdateDoctorDto =
-            new CreateOrUpdateDoctorDto(
+        Doctor doctor = new Doctor(
           id: userId,
         );
+
+        doctor.fullName = firebaseUser.displayName ?? '';
+        doctor.imageUrl = firebaseUser.photoURL ?? '';
 
         await this
             ._firebaseFirestore
             .collection('doctors')
             .doc(userId)
-            .set(createOrUpdateDoctorDto.toJson());
+            .set(doctor.toJson());
       } catch (error) {
         print(error);
       }
@@ -40,20 +42,19 @@ class DoctorService {
   }
 
   Future<void> createOrUpdateDoctor(
-    CreateOrUpdateDoctorDto createOrUpdateDoctorDto,
+    Doctor doctor,
   ) async {
     User? firebaseUser = this._firebaseAuth.currentUser;
 
     if (firebaseUser != null) {
       try {
         String userId = firebaseUser.uid;
-        createOrUpdateDoctorDto.id = userId;
 
         await this
             ._firebaseFirestore
             .collection('doctors')
             .doc(userId)
-            .set(createOrUpdateDoctorDto.toJson());
+            .set(doctor.toJson());
       } catch (error) {
         print(error);
       }

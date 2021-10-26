@@ -9,6 +9,9 @@ class Doctor {
   String id;
 
   @JsonKey(defaultValue: '')
+  String imageUrl;
+
+  @JsonKey(defaultValue: '')
   String fullName;
 
   @JsonKey(defaultValue: '')
@@ -25,11 +28,12 @@ class Doctor {
 
   Doctor({
     required this.id,
-    required this.fullName,
-    required this.clinicAddress,
-    required this.cost,
-    required this.jobTitle,
-    required this.specializations,
+    this.imageUrl = '',
+    this.fullName = '',
+    this.clinicAddress = '',
+    this.cost = 0.0,
+    this.jobTitle = Job.THERAPIST,
+    this.specializations = const [],
   });
 
   factory Doctor.fromJson(Map<String, dynamic> json) => _$DoctorFromJson(json);

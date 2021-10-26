@@ -1,11 +1,14 @@
 import 'dart:io';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:form_field_validator/form_field_validator.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
+import 'package:varenya_professionals/models/doctor/doctor.model.dart';
 import 'package:varenya_professionals/providers/user_provider.dart';
+import 'package:varenya_professionals/services/doctor.service.dart';
 import 'package:varenya_professionals/services/user_service.dart';
 import 'package:varenya_professionals/utils/display_bottom_sheet.dart';
 import 'package:varenya_professionals/utils/image_picker.dart';
@@ -23,12 +26,17 @@ class UserProfileUpdateTab extends StatefulWidget {
 
 class _UserProfileUpdateTabState extends State<UserProfileUpdateTab> {
   TextEditingController _fullNameController = new TextEditingController();
+  TextEditingController _costController = new TextEditingController();
+  TextEditingController _addressController = new TextEditingController();
 
-  late UserProvider _userProvider;
+  late final UserProvider _userProvider;
 
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
-  late UserService _userService;
+  late final UserService _userService;
+  late final DoctorService _doctorService;
+
+  late Doctor _doctor;
 
   @override
   void initState() {
@@ -40,6 +48,8 @@ class _UserProfileUpdateTabState extends State<UserProfileUpdateTab> {
 
     // Initializing the user service
     this._userService = Provider.of<UserService>(context, listen: false);
+
+    this._doctorService = Provider.of<DoctorService>(context, listen: false);
   }
 
   @override
@@ -49,6 +59,8 @@ class _UserProfileUpdateTabState extends State<UserProfileUpdateTab> {
 
     // Disposing off the controllers
     this._fullNameController.dispose();
+    this._costController.dispose();
+    this._addressController.dispose();
   }
 
   /*
@@ -162,56 +174,91 @@ class _UserProfileUpdateTabState extends State<UserProfileUpdateTab> {
   @override
   Widget build(BuildContext context) {
     return SingleChildScrollView(
-      child: Consumer<UserProvider>(builder: (context, state, child) {
-        User user = state.user;
-        String imageUrl = user.photoURL == null ? '' : user.photoURL!;
+      child: StreamBuilder<DocumentSnapshot<Map<String, dynamic>>>(
+        stream: this._doctorService.fetchDoctorDetails(),
+        builder: (
+          BuildContext context,
+          AsyncSnapshot<DocumentSnapshot<Map<String, dynamic>>> snapshot,
+        ) {
+          if (snapshot.hasError) {
+            print(snapshot.error);
+            return Text('Error');
+          }
 
-        this._fullNameController.text =
-            user.displayName != null ? user.displayName! : '';
-
-        return Padding(
-          padding: const EdgeInsets.symmetric(
-            vertical: 20.0,
-            horizontal: 10.0,
-          ),
-          child: Form(
-            key: this._formKey,
-            child: Column(
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return Column(
               children: [
-                Column(
-                  children: [
-                    ProfilePictureWidget(
-                      imageUrl: imageUrl,
-                      size: 200,
-                    ),
-                    TextButton(
-                      onPressed: this._onUploadImage,
-                      child: Text(
-                        'Upload New Image',
-                        style: TextStyle(
-                          fontSize: 15.0,
-                        ),
-                      ),
-                    )
-                  ],
-                ),
-                CustomFieldWidget(
-                  textFieldController: this._fullNameController,
-                  label: "First Name",
-                  validators: [
-                    RequiredValidator(errorText: "Full name is required"),
-                  ],
-                  textInputType: TextInputType.text,
-                ),
-                ElevatedButton(
-                  onPressed: this._onFormSubmit,
-                  child: Text('Update Profile'),
-                )
+                CircularProgressIndicator(),
               ],
+            );
+          }
+          DocumentSnapshot<Map<String, dynamic>> data = snapshot.data!;
+          this._doctor = Doctor.fromJson(data.data()!);
+
+          this._fullNameController.text = this._doctor.fullName;
+          this._costController.text = this._doctor.cost.toString();
+          this._addressController.text = this._doctor.clinicAddress;
+
+          return Padding(
+            padding: const EdgeInsets.symmetric(
+              vertical: 20.0,
+              horizontal: 10.0,
             ),
-          ),
-        );
-      }),
+            child: Form(
+              key: this._formKey,
+              child: Column(
+                children: [
+                  Column(
+                    children: [
+                      // ProfilePictureWidget(
+                      //   imageUrl: imageUrl,
+                      //   size: 200,
+                      // ),
+                      TextButton(
+                        onPressed: this._onUploadImage,
+                        child: Text(
+                          'Upload New Image',
+                          style: TextStyle(
+                            fontSize: 15.0,
+                          ),
+                        ),
+                      )
+                    ],
+                  ),
+                  CustomFieldWidget(
+                    textFieldController: this._fullNameController,
+                    label: "First Name",
+                    validators: [
+                      RequiredValidator(errorText: "Full name is required"),
+                    ],
+                    textInputType: TextInputType.text,
+                  ),
+                  CustomFieldWidget(
+                    textFieldController: this._costController,
+                    label: "Cost",
+                    validators: [
+                      RequiredValidator(errorText: "Cost is required"),
+                    ],
+                    textInputType: TextInputType.number,
+                  ),
+                  CustomFieldWidget(
+                    textFieldController: this._addressController,
+                    label: "Clinic Address",
+                    validators: [
+                      RequiredValidator(errorText: "Address is required"),
+                    ],
+                    textInputType: TextInputType.streetAddress,
+                  ),
+                  ElevatedButton(
+                    onPressed: this._onFormSubmit,
+                    child: Text('Update Profile'),
+                  )
+                ],
+              ),
+            ),
+          );
+        },
+      ),
     );
   }
 }

@@ -41,7 +41,7 @@ class DoctorService {
     }
   }
 
-  Future<void> createOrUpdateDoctor(
+  Future<void> updateDoctor(
     Doctor doctor,
   ) async {
     User? firebaseUser = this._firebaseAuth.currentUser;

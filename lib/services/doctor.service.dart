@@ -31,4 +31,26 @@ class DoctorService {
       );
     }
   }
+
+  Future<void> deleteDoctor() async {
+    User? firebaseUser = this._firebaseAuth.currentUser;
+
+    if (firebaseUser != null) {
+      try {
+        String userId = firebaseUser.uid;
+
+        await this
+            ._firebaseFirestore
+            .collection('doctors')
+            .doc(userId)
+            .delete();
+      } catch (error) {
+        print(error);
+      }
+    } else {
+      throw new NotLoggedInException(
+        message: 'Please log in to acess this feature.',
+      );
+    }
+  }
 }

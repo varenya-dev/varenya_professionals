@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 import 'package:varenya_professionals/notifications_handler.dart';
 import 'package:varenya_professionals/pages/chat/threads_page.dart';
 import 'package:varenya_professionals/pages/user/user_update_page.dart';
+import 'package:varenya_professionals/providers/doctor.provider.dart';
 import 'package:varenya_professionals/providers/user_provider.dart';
 import 'package:varenya_professionals/services/alerts_service.dart';
 import 'package:varenya_professionals/services/auth_service.dart';
@@ -59,10 +60,10 @@ class _HomePageState extends State<HomePage> {
         child: Center(
           child: Column(
             children: [
-              Consumer<UserProvider>(
+              Consumer<DoctorProvider>(
                 builder: (context, state, child) {
-                  var user = state.user;
-                  return Text(user.email!);
+                  var user = state.doctor;
+                  return Text(user.fullName);
                 },
               ),
               ElevatedButton(

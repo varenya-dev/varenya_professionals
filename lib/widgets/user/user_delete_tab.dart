@@ -5,7 +5,9 @@ import 'package:varenya_professionals/exceptions/auth/not_logged_in_exception.da
 import 'package:varenya_professionals/exceptions/auth/weak_password_exception.dart';
 import 'package:varenya_professionals/exceptions/auth/wrong_password_exception.dart';
 import 'package:varenya_professionals/pages/auth/auth_page.dart';
+import 'package:varenya_professionals/providers/doctor.provider.dart';
 import 'package:varenya_professionals/providers/user_provider.dart';
+import 'package:varenya_professionals/services/doctor.service.dart';
 import 'package:varenya_professionals/services/user_service.dart';
 import 'package:varenya_professionals/utils/snackbar.dart';
 import 'package:varenya_professionals/widgets/common/custom_field_widget.dart';
@@ -23,8 +25,10 @@ class _UserDeleteTabState extends State<UserDeleteTab> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
   late UserService _userService;
+  late final DoctorService _doctorService;
 
   late UserProvider _userProvider;
+  late final DoctorProvider _doctorProvider;
 
   @override
   void initState() {
@@ -33,9 +37,11 @@ class _UserDeleteTabState extends State<UserDeleteTab> {
 
     // Initializing the user provider.
     this._userProvider = Provider.of<UserProvider>(context, listen: false);
+    this._doctorProvider = Provider.of<DoctorProvider>(context, listen: false);
 
     // Initializing the user service.
     this._userService = Provider.of<UserService>(context, listen: false);
+    this._doctorService = Provider.of<DoctorService>(context, listen: false);
   }
 
   @override
@@ -55,10 +61,12 @@ class _UserDeleteTabState extends State<UserDeleteTab> {
       // Validate the form.
       if (this._formKey.currentState!.validate()) {
         // Delete the account from the server.
+        await this._doctorService.deleteDoctor();
         await this._userService.deleteAccount(this._passwordController.text);
 
         // Clear off the provider state.
         this._userProvider.removeUser();
+        this._doctorProvider.removeDoctor();
 
         // Log out to the authentication page.
         Navigator.of(context).pushReplacementNamed(AuthPage.routeName);
@@ -93,21 +101,16 @@ class _UserDeleteTabState extends State<UserDeleteTab> {
                     children: [
                       TextSpan(
                         text: 'Please note that deleting your account ',
-                        style: TextStyle(
-                          color: Colors.black,
-                        ),
                       ),
                       TextSpan(
-                        text: 'deletes all of your data from YASM. ',
+                        text: 'deletes all of your data from Varenya. ',
                         style: TextStyle(
-                            fontWeight: FontWeight.bold, color: Colors.black),
+                          fontWeight: FontWeight.bold,
+                        ),
                       ),
                       TextSpan(
                         text:
                             'This action is irreversible and no data is recoverable after deleting your account.',
-                        style: TextStyle(
-                          color: Colors.black,
-                        ),
                       ),
                     ],
                   ),

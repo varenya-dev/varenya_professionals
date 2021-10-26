@@ -3,6 +3,7 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:varenya_professionals/app.dart';
+import 'package:varenya_professionals/providers/doctor.provider.dart';
 import 'package:varenya_professionals/providers/user_provider.dart';
 import 'package:varenya_professionals/services/alerts_service.dart';
 import 'package:varenya_professionals/services/auth_service.dart';
@@ -38,6 +39,9 @@ class Root extends StatelessWidget {
       providers: [
         ChangeNotifierProvider<UserProvider>(
           create: (context) => UserProvider(),
+        ),
+        ChangeNotifierProvider<DoctorProvider>(
+          create: (context) => DoctorProvider(),
         ),
         Provider<AuthService>(
           create: (context) => AuthService(),

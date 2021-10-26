@@ -75,7 +75,7 @@ const _$JobEnumMap = {
   Job.THERAPIST: 'THERAPIST',
   Job.PSYCHOLOGIST: 'PSYCHOLOGIST',
   Job.COUNSELOR: 'COUNSELOR',
-  Job.PSYCHIATRISTS: 'PSYCHIATRISTS',
+  Job.PSYCHIATRIST: 'PSYCHIATRIST',
 };
 
 const _$SpecializationEnumMap = {

@@ -4,7 +4,9 @@ import 'package:provider/provider.dart';
 import 'package:varenya_professionals/enum/confirmation_status.enum.dart';
 import 'package:varenya_professionals/models/appointment/doctor_appointment_response/doctor_appointment_response.model.dart';
 import 'package:varenya_professionals/services/appointment.service.dart';
+import 'package:varenya_professionals/utils/display_bottom_sheet.dart';
 import 'package:varenya_professionals/utils/snackbar.dart';
+import 'package:intl/date_symbol_data_local.dart';
 
 class AppointmentCard extends StatefulWidget {
   final DoctorAppointmentResponse appointment;
@@ -23,12 +25,16 @@ class AppointmentCard extends StatefulWidget {
 class _AppointmentCardState extends State<AppointmentCard> {
   late final AppointmentService _appointmentService;
 
+  DateTime _dateTime = DateTime.now();
+
   @override
   void initState() {
     super.initState();
 
     this._appointmentService =
         Provider.of<AppointmentService>(context, listen: false);
+
+    initializeDateFormatting();
   }
 
   @override
@@ -60,8 +66,7 @@ class _AppointmentCardState extends State<AppointmentCard> {
                         ConfirmationStatus.CONFIRMED)
                       Text(
                         'Confirmed for: ${DateFormat.yMd().add_jm().format(
-                              widget.appointment.appointment.scheduledFor
-                                  .toLocal(),
+                              widget.appointment.appointment.scheduledFor,
                             ).toString()}',
                         textAlign: TextAlign.left,
                       ),
@@ -71,7 +76,12 @@ class _AppointmentCardState extends State<AppointmentCard> {
                   elevation: 40,
                   itemBuilder: (context) => [
                     PopupMenuItem(
-                      child: Text("Confirm Appointment"),
+                      child: Text(
+                        widget.appointment.appointment.status ==
+                                ConfirmationStatus.PENDING
+                            ? "Confirm Appointment"
+                            : "Update Appointment",
+                      ),
                       value: 1,
                     ),
                     PopupMenuItem(
@@ -82,6 +92,7 @@ class _AppointmentCardState extends State<AppointmentCard> {
                   onSelected: (int? value) async {
                     if (value != null) {
                       if (value == 1) {
+                        this._onConfirmAppointment();
                       } else {
                         await this._onDeleteAppointment();
                       }
@@ -94,6 +105,110 @@ class _AppointmentCardState extends State<AppointmentCard> {
         ),
       ),
     );
+  }
+
+  void _onConfirmAppointment() {
+    displayBottomSheet(
+      context,
+      StatefulBuilder(
+        builder: (context, setStateInner) => Wrap(
+          children: [
+            ListTile(
+              title: Text('Set Date'),
+              trailing: Text(
+                DateFormat.yMMMd('en_UK')
+                    .format(
+                      this._dateTime.toLocal(),
+                    )
+                    .toString(),
+              ),
+              onTap: () async {
+                DateTime? dateTime = await showDatePicker(
+                  context: context,
+                  initialDate: DateTime.now(),
+                  firstDate: DateTime.now(),
+                  lastDate: DateTime(
+                    DateTime.now().year + 2,
+                  ),
+                );
+
+                if (dateTime != null) {
+                  setState(
+                    () {
+                      this._dateTime = DateTime.parse(dateTime.toString());
+                    },
+                  );
+
+                  setStateInner(() {});
+                }
+              },
+            ),
+            ListTile(
+              title: Text('Set Time'),
+              trailing: Text(
+                DateFormat.jm()
+                    .format(
+                      this._dateTime.toLocal(),
+                    )
+                    .toString(),
+              ),
+              onTap: () async {
+                TimeOfDay? timeOfDay = await showTimePicker(
+                  context: context,
+                  initialTime: TimeOfDay.now(),
+                );
+
+                if (timeOfDay != null) {
+                  setState(
+                    () {
+                      this._dateTime = this._dateTime.add(
+                            new Duration(
+                              hours: timeOfDay.hour,
+                              minutes: timeOfDay.minute,
+                            ),
+                          );
+                    },
+                  );
+
+                  setStateInner(() {});
+                }
+              },
+            ),
+            Center(
+              child: TextButton(
+                onPressed: _onUpdateConfirmation,
+                child: Text('Confirm Appointment'),
+              ),
+            )
+          ],
+        ),
+      ),
+    );
+  }
+
+  Future<void> _onUpdateConfirmation() async {
+    try {
+      widget.appointment.appointment.status = ConfirmationStatus.CONFIRMED;
+      widget.appointment.appointment.scheduledFor = this._dateTime;
+
+      await this
+          ._appointmentService
+          .updateAppointment(widget.appointment.appointment);
+
+      widget.refreshAppointments();
+
+      Navigator.of(context).pop();
+
+      displaySnackbar(
+        'Appointment Confirmed!',
+        context,
+      );
+    } catch (error) {
+      displaySnackbar(
+        'Something went wrong, please try again later.',
+        context,
+      );
+    }
   }
 
   Future<void> _onDeleteAppointment() async {

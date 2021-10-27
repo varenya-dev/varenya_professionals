@@ -10,7 +10,7 @@ Patient _$PatientFromJson(Map<String, dynamic> json) {
   return Patient(
     id: json['id'] as String,
     fullName: json['fullName'] as String,
-    imageUrl: json['imageUrl'] as String,
+    imageUrl: json['imageUrl'] as String? ?? '',
   );
 }
 

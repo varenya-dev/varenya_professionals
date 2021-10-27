@@ -6,6 +6,8 @@ part 'patient.model.g.dart';
 class Patient {
   String id;
   String fullName;
+
+  @JsonKey(defaultValue: '')
   String imageUrl;
 
   Patient({

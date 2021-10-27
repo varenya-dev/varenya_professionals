@@ -2,6 +2,7 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:varenya_professionals/notifications_handler.dart';
+import 'package:varenya_professionals/pages/appointment/appointment_list.page.dart';
 import 'package:varenya_professionals/pages/chat/threads_page.dart';
 import 'package:varenya_professionals/pages/user/user_update_page.dart';
 import 'package:varenya_professionals/providers/doctor.provider.dart';
@@ -88,6 +89,12 @@ class _HomePageState extends State<HomePage> {
               ElevatedButton(
                 onPressed: this._chatService.openDummyThread,
                 child: Text('Dummy Thread'),
+              ),
+              ElevatedButton(
+                onPressed: () {
+                  Navigator.of(context).pushNamed(AppointmentList.routeName);
+                },
+                child: Text('Appointments'),
               ),
             ],
           ),

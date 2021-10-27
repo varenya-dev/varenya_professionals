@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:varenya_professionals/pages/appointment/appointment_list.page.dart';
 import 'package:varenya_professionals/pages/auth/auth_page.dart';
 import 'package:varenya_professionals/pages/auth/login_page.dart';
 import 'package:varenya_professionals/pages/auth/register_page.dart';
@@ -29,6 +30,7 @@ class App extends StatelessWidget {
         UserUpdatePage.routeName: (context) => UserUpdatePage(),
         ThreadsPage.routeName: (context) => ThreadsPage(),
         ChatPage.routeName: (context) => ChatPage(),
+        AppointmentList.routeName: (context) => AppointmentList(),
       },
     );
   }

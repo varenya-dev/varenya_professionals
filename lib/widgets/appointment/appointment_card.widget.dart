@@ -76,10 +76,17 @@ class _AppointmentCardState extends State<AppointmentCard> {
                     ),
                     PopupMenuItem(
                       child: Text("Cancel Appointment"),
-                      value: 1,
+                      value: 2,
                     ),
                   ],
-                  onSelected: (int? value) {},
+                  onSelected: (int? value) async {
+                    if (value != null) {
+                      if (value == 1) {
+                      } else {
+                        await this._onDeleteAppointment();
+                      }
+                    }
+                  },
                 ),
               ],
             ),
@@ -87,5 +94,25 @@ class _AppointmentCardState extends State<AppointmentCard> {
         ),
       ),
     );
+  }
+
+  Future<void> _onDeleteAppointment() async {
+    try {
+      await this
+          ._appointmentService
+          .deleteAppointment(widget.appointment.appointment);
+
+      widget.refreshAppointments();
+
+      displaySnackbar(
+        'Appointment Cancelled!',
+        context,
+      );
+    } catch (error) {
+      displaySnackbar(
+        'Something went wrong, please try again later.',
+        context,
+      );
+    }
   }
 }

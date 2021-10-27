@@ -46,6 +46,41 @@ class AppointmentService {
     }
   }
 
+  Future<void> updateAppointment(Appointment appointment) async {
+    try {
+      // Fetch the ID token for the user.
+      String firebaseAuthToken =
+          await this._firebaseAuth.currentUser!.getIdToken();
+
+      // Prepare URI for the request.
+      Uri uri = Uri.parse("$endpoint/appointment");
+
+      // Prepare authorization headers.
+      Map<String, String> headers = {
+        "Authorization": "Bearer $firebaseAuthToken",
+      };
+
+      Map<String, dynamic> appointmentJson = appointment.toJson();
+      appointmentJson.remove('patientUser');
+      appointmentJson.remove('doctorUser');
+
+      // Send the post request to the server.
+      http.Response response = await http.put(
+        uri,
+        body: appointmentJson,
+        headers: headers,
+      );
+
+      // Check for any errors.
+      if (response.statusCode >= 400) {
+        Map<String, dynamic> body = json.decode(response.body);
+        throw Exception(body);
+      }
+    } catch (error) {
+      throw Exception('Try again later');
+    }
+  }
+
   Future<void> deleteAppointment(Appointment appointment) async {
     try {
       // Fetch the ID token for the user.

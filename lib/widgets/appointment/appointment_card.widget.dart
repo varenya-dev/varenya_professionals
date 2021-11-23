@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:varenya_professionals/enum/confirmation_status.enum.dart';
+import 'package:varenya_professionals/exceptions/server.exception.dart';
 import 'package:varenya_professionals/models/appointment/doctor_appointment_response/doctor_appointment_response.model.dart';
 import 'package:varenya_professionals/services/appointment.service.dart';
 import 'package:varenya_professionals/utils/display_bottom_sheet.dart';
@@ -203,7 +204,10 @@ class _AppointmentCardState extends State<AppointmentCard> {
         'Appointment Confirmed!',
         context,
       );
+    } on ServerException catch (error) {
+      displaySnackbar(error.message, context);
     } catch (error) {
+      print(error);
       displaySnackbar(
         'Something went wrong, please try again later.',
         context,
@@ -223,7 +227,10 @@ class _AppointmentCardState extends State<AppointmentCard> {
         'Appointment Cancelled!',
         context,
       );
+    } on ServerException catch (error) {
+      displaySnackbar(error.message, context);
     } catch (error) {
+      print(error);
       displaySnackbar(
         'Something went wrong, please try again later.',
         context,

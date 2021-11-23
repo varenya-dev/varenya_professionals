@@ -5,6 +5,8 @@ import 'package:provider/provider.dart';
 import 'package:varenya_professionals/dtos/auth/login_account_dto/login_account_dto.dart';
 import 'package:varenya_professionals/exceptions/auth/user_not_found_exception.dart';
 import 'package:varenya_professionals/exceptions/auth/wrong_password_exception.dart';
+import 'package:varenya_professionals/exceptions/general.exception.dart';
+import 'package:varenya_professionals/exceptions/server.exception.dart';
 import 'package:varenya_professionals/pages/auth/register_page.dart';
 import 'package:varenya_professionals/pages/home_page.dart';
 import 'package:varenya_professionals/providers/user_provider.dart';
@@ -70,6 +72,13 @@ class _LoginPageState extends State<LoginPage> {
       displaySnackbar(error.message, context);
     } on WrongPasswordException catch (error) {
       displaySnackbar(error.message, context);
+    } on ServerException catch (error) {
+      displaySnackbar(error.message, context);
+    } on GeneralException catch (error) {
+      displaySnackbar(error.message, context);
+    } catch (error) {
+      print(error);
+      displaySnackbar("Something went wrong, please try again later.", context);
     }
   }
 

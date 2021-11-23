@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:varenya_professionals/exceptions/auth/not_logged_in_exception.dart';
+import 'package:varenya_professionals/exceptions/general.exception.dart';
 import 'package:varenya_professionals/models/doctor/doctor.model.dart';
 
 class DoctorService {
@@ -45,6 +46,8 @@ class DoctorService {
         return newDoctor;
       } catch (error) {
         print(error);
+        throw GeneralException(
+            message: "Something went wrong, please try again later");
       }
     }
     throw new NotLoggedInException(
@@ -75,6 +78,8 @@ class DoctorService {
         return newDoctor;
       } catch (error) {
         print(error);
+        throw GeneralException(
+            message: "Something went wrong, please try again later");
       }
     }
     throw new NotLoggedInException(
@@ -96,6 +101,8 @@ class DoctorService {
             .delete();
       } catch (error) {
         print(error);
+        throw GeneralException(
+            message: "Something went wrong, please try again later");
       }
     } else {
       throw new NotLoggedInException(

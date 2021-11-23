@@ -7,6 +7,8 @@ import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 import 'package:varenya_professionals/enum/job.enum.dart';
 import 'package:varenya_professionals/enum/specialization.enum.dart';
+import 'package:varenya_professionals/exceptions/auth/not_logged_in_exception.dart';
+import 'package:varenya_professionals/exceptions/general.exception.dart';
 import 'package:varenya_professionals/models/doctor/doctor.model.dart';
 import 'package:varenya_professionals/providers/doctor.provider.dart';
 import 'package:varenya_professionals/providers/user_provider.dart';
@@ -66,35 +68,47 @@ class _UserProfileUpdateTabState extends State<UserProfileUpdateTab> {
    * Method for uploading images from gallery.
    */
   Future<void> _uploadFromGallery() async {
-    // Open the gallery and get the selected image.
-    XFile? imageXFile = await openGallery();
+    try {
+      // Open the gallery and get the selected image.
+      XFile? imageXFile = await openGallery();
 
-    // Run if there is an image selected.
-    if (imageXFile != null) {
-      // Prepare the file from the selected image.
-      File imageFile = new File(imageXFile.path);
+      // Run if there is an image selected.
+      if (imageXFile != null) {
+        // Prepare the file from the selected image.
+        File imageFile = new File(imageXFile.path);
 
-      // Upload the image to firebase and generate a URL.
-      String uploadedUrl =
-          await uploadImageAndGenerateUrl(imageFile, "profile-pictures");
+        // Upload the image to firebase and generate a URL.
+        String uploadedUrl =
+            await uploadImageAndGenerateUrl(imageFile, "profile-pictures");
 
-      Doctor newDoctor = this._doctor;
-      newDoctor.imageUrl = uploadedUrl;
+        Doctor newDoctor = this._doctor;
+        newDoctor.imageUrl = uploadedUrl;
 
-      Doctor updatedDoctor = await this._doctorService.updateDoctor(newDoctor);
-      this._doctorProvider.doctor = updatedDoctor;
+        Doctor updatedDoctor =
+            await this._doctorService.updateDoctor(newDoctor);
+        this._doctorProvider.doctor = updatedDoctor;
 
-      // Update the user details
-      User user = await this._userService.updateProfilePicture(uploadedUrl);
+        // Update the user details
+        User user = await this._userService.updateProfilePicture(uploadedUrl);
 
-      // Save the updated state.
-      this._userProvider.user = user;
+        // Save the updated state.
+        this._userProvider.user = user;
 
-      // Display a success snackbar.
-      displaySnackbar(
-        "Profile picture updated!",
-        context,
-      );
+        // Display a success snackbar.
+        displaySnackbar(
+          "Profile picture updated!",
+          context,
+        );
+      }
+    }
+    // Handle errors gracefully.
+    on NotLoggedInException catch (error) {
+      displaySnackbar(error.message, context);
+    } on GeneralException catch (error) {
+      displaySnackbar(error.message, context);
+    } catch (error) {
+      print(error);
+      displaySnackbar("Something went wrong, please try again later", context);
     }
   }
 
@@ -102,35 +116,47 @@ class _UserProfileUpdateTabState extends State<UserProfileUpdateTab> {
    * Method for uploading images from camera.
    */
   Future<void> _uploadFromCamera() async {
-    // Open the gallery and get the selected image.
-    XFile? imageXFile = await openCamera();
+    try {
+      // Open the gallery and get the selected image.
+      XFile? imageXFile = await openCamera();
 
-    // Run if there is an image selected.
-    if (imageXFile != null) {
-      // Prepare the file from the selected image.
-      File imageFile = new File(imageXFile.path);
+      // Run if there is an image selected.
+      if (imageXFile != null) {
+        // Prepare the file from the selected image.
+        File imageFile = new File(imageXFile.path);
 
-      // Upload the image to firebase and generate a URL.
-      String uploadedUrl =
-          await uploadImageAndGenerateUrl(imageFile, "profile-pictures");
+        // Upload the image to firebase and generate a URL.
+        String uploadedUrl =
+            await uploadImageAndGenerateUrl(imageFile, "profile-pictures");
 
-      Doctor newDoctor = this._doctor;
-      newDoctor.imageUrl = uploadedUrl;
+        Doctor newDoctor = this._doctor;
+        newDoctor.imageUrl = uploadedUrl;
 
-      Doctor updatedDoctor = await this._doctorService.updateDoctor(newDoctor);
-      this._doctorProvider.doctor = updatedDoctor;
+        Doctor updatedDoctor =
+            await this._doctorService.updateDoctor(newDoctor);
+        this._doctorProvider.doctor = updatedDoctor;
 
-      // Update the user details
-      User user = await this._userService.updateProfilePicture(uploadedUrl);
+        // Update the user details
+        User user = await this._userService.updateProfilePicture(uploadedUrl);
 
-      // Save the updated state.
-      this._userProvider.user = user;
+        // Save the updated state.
+        this._userProvider.user = user;
 
-      // Display a success snackbar.
-      displaySnackbar(
-        "Profile picture updated!",
-        context,
-      );
+        // Display a success snackbar.
+        displaySnackbar(
+          "Profile picture updated!",
+          context,
+        );
+      }
+    }
+    // Handle errors gracefully.
+    on NotLoggedInException catch (error) {
+      displaySnackbar(error.message, context);
+    } on GeneralException catch (error) {
+      displaySnackbar(error.message, context);
+    } catch (error) {
+      print(error);
+      displaySnackbar("Something went wrong, please try again later", context);
     }
   }
 
@@ -185,7 +211,11 @@ class _UserProfileUpdateTabState extends State<UserProfileUpdateTab> {
       }
     }
     // Handle errors gracefully.
-    catch (error) {
+    on NotLoggedInException catch (error) {
+      displaySnackbar(error.message, context);
+    } on GeneralException catch (error) {
+      displaySnackbar(error.message, context);
+    } catch (error) {
       print(error);
       displaySnackbar("Something went wrong, please try again later", context);
     }

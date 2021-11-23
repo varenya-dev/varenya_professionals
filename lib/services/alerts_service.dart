@@ -4,6 +4,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:varenya_professionals/constants/endpoint_constant.dart';
 import 'package:http/http.dart' as http;
+import 'package:varenya_professionals/exceptions/server.exception.dart';
 
 class AlertsService {
   final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
@@ -17,7 +18,6 @@ class AlertsService {
   }
 
   Future<void> sendSOSResponseNotification(String threadId) async {
-    try {
       // Fetch the ID token for the user.
       String firebaseAuthToken =
           await this._firebaseAuth.currentUser!.getIdToken();
@@ -42,12 +42,12 @@ class AlertsService {
       );
 
       // Check for any errors.
-      if (response.statusCode >= 400) {
+      if (response.statusCode >= 400 && response.statusCode < 500) {
         Map<String, dynamic> body = json.decode(response.body);
-        throw Exception(body);
+        throw ServerException(message: body['message']);
+      } else if (response.statusCode >= 500) {
+        throw ServerException(
+            message: 'Something went wrong, please try again later.');
       }
-    } catch (error) {
-      print(error);
-    }
   }
 }

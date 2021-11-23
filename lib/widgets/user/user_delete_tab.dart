@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 import 'package:varenya_professionals/exceptions/auth/not_logged_in_exception.dart';
 import 'package:varenya_professionals/exceptions/auth/weak_password_exception.dart';
 import 'package:varenya_professionals/exceptions/auth/wrong_password_exception.dart';
+import 'package:varenya_professionals/exceptions/general.exception.dart';
 import 'package:varenya_professionals/pages/auth/auth_page.dart';
 import 'package:varenya_professionals/providers/doctor.provider.dart';
 import 'package:varenya_professionals/providers/user_provider.dart';
@@ -77,8 +78,13 @@ class _UserDeleteTabState extends State<UserDeleteTab> {
       displaySnackbar(error.message, context);
     } on WeakPasswordException catch (error) {
       displaySnackbar(error.message, context);
-    } on NotLoggedInException {
-      print("NOT LOGGED IN");
+    } on NotLoggedInException catch (error) {
+      displaySnackbar(error.message, context);
+    } on GeneralException catch (error) {
+      displaySnackbar(error.message, context);
+    } catch (error) {
+      print(error);
+      displaySnackbar("Something went wrong, please try again later", context);
     }
   }
 

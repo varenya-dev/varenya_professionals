@@ -7,7 +7,6 @@ import 'package:varenya_professionals/constants/endpoint_constant.dart';
 import 'package:varenya_professionals/dtos/auth/login_account_dto/login_account_dto.dart';
 import 'package:varenya_professionals/dtos/auth/register_account_dto/register_account_dto.dart';
 import 'package:varenya_professionals/dtos/auth/server_register_dto/server_register.dto.dart';
-import 'package:varenya_professionals/dtos/auth/user_details_dto/user_details_dto.dart';
 import 'package:varenya_professionals/enum/roles.enum.dart';
 import 'package:varenya_professionals/exceptions/auth/user_already_exists_exception.dart';
 import 'package:varenya_professionals/exceptions/auth/user_not_found_exception.dart';
@@ -15,6 +14,8 @@ import 'package:varenya_professionals/exceptions/auth/wrong_password_exception.d
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:uuid/uuid.dart';
 import 'package:http/http.dart' as http;
+import 'package:varenya_professionals/exceptions/general.exception.dart';
+import 'package:varenya_professionals/exceptions/server.exception.dart';
 
 class AuthService {
   final FirebaseAuth firebaseAuth = FirebaseAuth.instance;
@@ -89,11 +90,15 @@ class AuthService {
       // Handle other unknown errors
       else {
         print(error);
-        throw Exception("Something went wrong, please try again later");
+        throw GeneralException(
+            message: "Something went wrong, please try again later");
       }
+    } on ServerException catch (error) {
+      throw ServerException(message: error.message);
     } catch (error) {
       print(error);
-      throw Exception("Something went wrong, please try again later");
+      throw GeneralException(
+          message: "Something went wrong, please try again later");
     }
   }
 
@@ -127,36 +132,13 @@ class AuthService {
       // Handle other unknown errors
       else {
         print(error);
-        throw Exception("Something went wrong, please try again later");
+        throw GeneralException(
+            message: "Something went wrong, please try again later");
       }
     } catch (error) {
       print(error);
-      throw Exception("Something went wrong, please try again later");
-    }
-  }
-
-  /*
-   * Method to update the existing user with a name and profile picture.
-   * @param userDetailsDto DTO for user details
-   */
-  Future<void> saveUserDetails(UserDetailsDto userDetailsDto) async {
-    try {
-      // Fetching the currently logged in user.
-      User? firebaseUser = firebaseAuth.currentUser;
-
-      // Check if user is not null
-      if (firebaseUser != null) {
-        // Update the name for the user.
-        await firebaseUser.updateDisplayName(userDetailsDto.fullName);
-
-        // If an image link has been given as well,
-        // update the user's profile picture.
-        if (userDetailsDto.image != null) {
-          await firebaseUser.updatePhotoURL(userDetailsDto.image);
-        }
-      }
-    } catch (error) {
-      print(error);
+      throw GeneralException(
+          message: "Something went wrong, please try again later");
     }
   }
 
@@ -168,61 +150,40 @@ class AuthService {
   }
 
   /*
-   * Method to upload image to firebase.
-   * @param imageFile File object for the image itself.
-   */
-  Future<String> uploadImageToFirebase(File imageFile) async {
-    String uid = uuid.v4();
-
-    // Upload image to firebase.
-    await this
-        .firebaseStorage
-        .ref("profilePictures/$uid.png")
-        .putFile(imageFile);
-
-    // Generate a URL for the uploaded image.
-    return await this
-        .firebaseStorage
-        .ref("profilePictures/$uid.png")
-        .getDownloadURL();
-  }
-
-  /*
    * Send a server request for setting roles for the user.
    */
   Future<void> _setupFirebaseRoles() async {
-    try {
-      // Fetch the ID token for the user.
-      String firebaseAuthToken =
-      await this.firebaseAuth.currentUser!.getIdToken();
+    // Fetch the ID token for the user.
+    String firebaseAuthToken =
+        await this.firebaseAuth.currentUser!.getIdToken();
 
-      // Prepare URI for the request.
-      Uri uri = Uri.parse("$endpoint/auth/register");
+    // Prepare URI for the request.
+    Uri uri = Uri.parse("$endpoint/auth/register");
 
-      // Prepare authorization headers.
-      Map<String, String> headers = {
-        "Authorization": "Bearer $firebaseAuthToken",
-      };
+    // Prepare authorization headers.
+    Map<String, String> headers = {
+      "Authorization": "Bearer $firebaseAuthToken",
+    };
 
-      ServerRegisterDto serverRegisterDto = new ServerRegisterDto(
-        uid: this.firebaseAuth.currentUser!.uid,
-        role: Roles.PROFESSIONAL,
-      );
+    ServerRegisterDto serverRegisterDto = new ServerRegisterDto(
+      uid: this.firebaseAuth.currentUser!.uid,
+      role: Roles.PROFESSIONAL,
+    );
 
-      // Send the post request to the server.
-      http.Response response = await http.post(
-        uri,
-        body: serverRegisterDto.toJson(),
-        headers: headers,
-      );
+    // Send the post request to the server.
+    http.Response response = await http.post(
+      uri,
+      body: serverRegisterDto.toJson(),
+      headers: headers,
+    );
 
-      // Check for any errors.
-      if (response.statusCode >= 400) {
-        Map<String, dynamic> body = json.decode(response.body);
-        throw Exception(body);
-      }
-    } catch (error) {
-      print(error);
+    // Check for any errors.
+    if (response.statusCode >= 400 && response.statusCode < 500) {
+      Map<String, dynamic> body = json.decode(response.body);
+      throw ServerException(message: body['message']);
+    } else if (response.statusCode >= 500) {
+      throw ServerException(
+          message: 'Something went wrong, please try again later.');
     }
   }
 }

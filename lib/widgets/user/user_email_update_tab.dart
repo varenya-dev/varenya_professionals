@@ -6,6 +6,7 @@ import 'package:varenya_professionals/dtos/user/update_email_dto/update_email_dt
 import 'package:varenya_professionals/exceptions/auth/not_logged_in_exception.dart';
 import 'package:varenya_professionals/exceptions/auth/user_already_exists_exception.dart';
 import 'package:varenya_professionals/exceptions/auth/wrong_password_exception.dart';
+import 'package:varenya_professionals/exceptions/general.exception.dart';
 import 'package:varenya_professionals/providers/user_provider.dart';
 import 'package:varenya_professionals/services/user_service.dart';
 import 'package:varenya_professionals/utils/snackbar.dart';
@@ -79,8 +80,13 @@ class _UserEmailUpdateTabState extends State<UserEmailUpdateTab> {
       displaySnackbar(error.message, context);
     } on WrongPasswordException catch (error) {
       displaySnackbar(error.message, context);
-    } on NotLoggedInException {
-      print("NOT LOGGED IN");
+    } on NotLoggedInException catch (error) {
+      displaySnackbar(error.message, context);
+    } on GeneralException catch (error) {
+      displaySnackbar(error.message, context);
+    } catch (error) {
+      print(error);
+      displaySnackbar("Something went wrong, please try again later", context);
     }
   }
 

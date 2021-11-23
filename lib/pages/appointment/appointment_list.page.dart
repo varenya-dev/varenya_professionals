@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:varenya_professionals/exceptions/server.exception.dart';
 import 'package:varenya_professionals/models/appointment/doctor_appointment_response/doctor_appointment_response.model.dart';
 import 'package:varenya_professionals/services/appointment.service.dart';
 import 'package:varenya_professionals/widgets/appointment/appointment_card.widget.dart';
@@ -43,8 +44,17 @@ class _AppointmentListState extends State<AppointmentList> {
             AsyncSnapshot<List<DoctorAppointmentResponse>> snapshot,
             ) {
           if (snapshot.hasError) {
-            print(snapshot.error);
-            return Text('Error');
+            switch (snapshot.error.runtimeType) {
+              case ServerException:
+                {
+                  ServerException exception = snapshot.error as ServerException;
+                  return Text(exception.message);
+                }
+              default:
+                {
+                  return Text("Something went wrong, please try again later");
+                }
+            }
           }
 
           if (snapshot.connectionState == ConnectionState.done) {

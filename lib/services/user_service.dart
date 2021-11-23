@@ -10,6 +10,8 @@ import 'package:varenya_professionals/exceptions/auth/user_already_exists_except
 import 'package:varenya_professionals/exceptions/auth/weak_password_exception.dart';
 import 'package:varenya_professionals/exceptions/auth/wrong_password_exception.dart';
 import 'package:http/http.dart' as http;
+import 'package:varenya_professionals/exceptions/general.exception.dart';
+import 'package:varenya_professionals/exceptions/server.exception.dart';
 
 /*
  * Service implementation for User module.
@@ -24,14 +26,20 @@ class UserService {
    * @param imageUrl updated URL of the new profile picture.
    */
   Future<User> updateProfilePicture(String imageUrl) async {
-    // Fetch the currently logged in user.
-    User firebaseUser = this._firebaseAuth.currentUser!;
+    try {
+      // Fetch the currently logged in user.
+      User firebaseUser = this._firebaseAuth.currentUser!;
 
-    // Update profile picture URL for the user.
-    await firebaseUser.updatePhotoURL(imageUrl);
+      // Update profile picture URL for the user.
+      await firebaseUser.updatePhotoURL(imageUrl);
 
-    // Return updated user.
-    return this._firebaseAuth.currentUser!;
+      // Return updated user.
+      return this._firebaseAuth.currentUser!;
+    } catch (error) {
+      print(error);
+      throw GeneralException(
+          message: "Something went wrong, please try again later");
+    }
   }
 
   /*
@@ -50,7 +58,8 @@ class UserService {
       return this._firebaseAuth.currentUser!;
     } catch (error) {
       print(error);
-      throw Exception("Something went wrong, please try again later");
+      throw GeneralException(
+          message: "Something went wrong, please try again later");
     }
   }
 
@@ -98,11 +107,13 @@ class UserService {
       // Handle other unknown errors
       else {
         print(error);
-        throw Exception("Something went wrong, please try again later");
+        throw GeneralException(
+            message: "Something went wrong, please try again later");
       }
     } catch (error) {
       print(error);
-      throw Exception("Something went wrong, please try again later");
+      throw GeneralException(
+          message: "Something went wrong, please try again later");
     }
   }
 
@@ -145,11 +156,13 @@ class UserService {
       // Handle other unknown errors
       else {
         print(error);
-        throw Exception("Something went wrong, please try again later");
+        throw GeneralException(
+            message: "Something went wrong, please try again later");
       }
     } catch (error) {
       print(error);
-      throw Exception("Something went wrong, please try again later");
+      throw GeneralException(
+          message: "Something went wrong, please try again later");
     }
   }
 
@@ -188,11 +201,15 @@ class UserService {
       // Handle other unknown errors
       else {
         print(error);
-        throw Exception("Something went wrong, please try again later");
+        throw GeneralException(
+            message: "Something went wrong, please try again later");
       }
+    } on ServerException catch (error) {
+      throw ServerException(message: error.message);
     } catch (error) {
       print(error);
-      throw Exception("Something went wrong, please try again later");
+      throw GeneralException(
+          message: "Something went wrong, please try again later");
     }
   }
 
@@ -200,32 +217,31 @@ class UserService {
    * Send a server request for setting roles for the user.
    */
   Future<void> _deleteUserFromServer() async {
-    try {
-      // Fetch the ID token for the user.
-      String firebaseAuthToken =
-          await this._firebaseAuth.currentUser!.getIdToken();
+    // Fetch the ID token for the user.
+    String firebaseAuthToken =
+        await this._firebaseAuth.currentUser!.getIdToken();
 
-      // Prepare URI for the request.
-      Uri uri = Uri.parse("$endpoint/user");
+    // Prepare URI for the request.
+    Uri uri = Uri.parse("$endpoint/user");
 
-      // Prepare authorization headers.
-      Map<String, String> headers = {
-        "Authorization": "Bearer $firebaseAuthToken",
-      };
+    // Prepare authorization headers.
+    Map<String, String> headers = {
+      "Authorization": "Bearer $firebaseAuthToken",
+    };
 
-      // Send the post request to the server.
-      http.Response response = await http.delete(
-        uri,
-        headers: headers,
-      );
+    // Send the post request to the server.
+    http.Response response = await http.delete(
+      uri,
+      headers: headers,
+    );
 
-      // Check for any errors.
-      if (response.statusCode >= 400) {
-        Map<String, dynamic> body = json.decode(response.body);
-        throw Exception(body);
-      }
-    } catch (error) {
-      print(error);
+    // Check for any errors.
+    if (response.statusCode >= 400 && response.statusCode < 500) {
+      Map<String, dynamic> body = json.decode(response.body);
+      throw ServerException(message: body['message']);
+    } else if (response.statusCode >= 500) {
+      throw ServerException(
+          message: 'Something went wrong, please try again later.');
     }
   }
 
@@ -234,22 +250,34 @@ class UserService {
    * @param token FCM Token to be saved.
    */
   Future<void> saveTokenToDatabase(String token) async {
-    // Save token to the respective document collection.
-    String userId = this._firebaseAuth.currentUser!.uid;
-    await this._firebaseFirestore.collection('users').doc(userId).set({
-      'id': userId,
-      'token': token,
-    });
+    try {
+      // Save token to the respective document collection.
+      String userId = this._firebaseAuth.currentUser!.uid;
+      await this._firebaseFirestore.collection('users').doc(userId).set({
+        'id': userId,
+        'token': token,
+      });
+    } catch (error) {
+      print(error);
+      throw GeneralException(
+          message: "Something went wrong with notifications.");
+    }
   }
 
   /*
    * Save token to the database on first run.
    */
   Future<void> generateAndSaveTokenToDatabase() async {
-    //  Generate an FCM token and save it to firestore.
-    String? token = await this._firebaseMessaging.getToken();
-    this.saveTokenToDatabase(token!);
+    try {
+      //  Generate an FCM token and save it to firestore.
+      String? token = await this._firebaseMessaging.getToken();
+      this.saveTokenToDatabase(token!);
 
-    print('TOKEN GENERATED AND SAVED.');
+      print('TOKEN GENERATED AND SAVED.');
+    } catch (error) {
+      print(error);
+      throw GeneralException(
+          message: "Something went wrong with notifications.");
+    }
   }
 }

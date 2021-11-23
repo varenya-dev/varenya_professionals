@@ -1,6 +1,7 @@
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:varenya_professionals/exceptions/general.exception.dart';
 import 'package:varenya_professionals/notifications_handler.dart';
 import 'package:varenya_professionals/pages/appointment/appointment_list.page.dart';
 import 'package:varenya_professionals/pages/chat/threads_page.dart';
@@ -11,6 +12,7 @@ import 'package:varenya_professionals/services/alerts_service.dart';
 import 'package:varenya_professionals/services/auth_service.dart';
 import 'package:varenya_professionals/services/chat_service.dart';
 import 'package:varenya_professionals/services/user_service.dart';
+import 'package:varenya_professionals/utils/snackbar.dart';
 
 import 'auth/auth_page.dart';
 
@@ -31,7 +33,6 @@ class _HomePageState extends State<HomePage> {
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
 
     this._authService = Provider.of<AuthService>(context, listen: false);
@@ -39,10 +40,19 @@ class _HomePageState extends State<HomePage> {
     this._chatService = Provider.of<ChatService>(context, listen: false);
     this._alertsService = Provider.of<AlertsService>(context, listen: false);
 
-    this._userService.generateAndSaveTokenToDatabase();
+    try {
+      this._userService.generateAndSaveTokenToDatabase();
 
-    FirebaseMessaging.instance.onTokenRefresh
-        .listen(this._userService.saveTokenToDatabase);
+      FirebaseMessaging.instance.onTokenRefresh
+          .listen(this._userService.saveTokenToDatabase);
+    } on GeneralException catch (error) {
+      displaySnackbar(error.message, context);
+    } catch (error) {
+      print(error);
+      displaySnackbar(
+          "Something went wrong with notifications, error has been informed.",
+          context);
+    }
 
     this
         ._alertsService

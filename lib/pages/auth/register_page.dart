@@ -7,6 +7,8 @@ import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 import 'package:varenya_professionals/dtos/auth/register_account_dto/register_account_dto.dart';
 import 'package:varenya_professionals/exceptions/auth/user_already_exists_exception.dart';
+import 'package:varenya_professionals/exceptions/general.exception.dart';
+import 'package:varenya_professionals/exceptions/server.exception.dart';
 import 'package:varenya_professionals/models/doctor/doctor.model.dart';
 import 'package:varenya_professionals/pages/auth/login_page.dart';
 import 'package:varenya_professionals/pages/home_page.dart';
@@ -96,6 +98,13 @@ class _RegisterPageState extends State<RegisterPage> {
     // Handle errors gracefully.
     on UserAlreadyExistsException catch (error) {
       displaySnackbar(error.message, context);
+    } on ServerException catch (error) {
+      displaySnackbar(error.message, context);
+    } on GeneralException catch (error) {
+      displaySnackbar(error.message, context);
+    } catch (error) {
+      print(error);
+      displaySnackbar("Something went wrong, please try again later.", context);
     }
   }
 

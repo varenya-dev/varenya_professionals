@@ -44,42 +44,43 @@ class DoctorService {
     Map<String, dynamic> doctorData = json.decode(response.body);
     Doctor doctor = Doctor.fromJson(doctorData);
 
-    print(doctor);
-
     return doctor;
   }
 
   Future<Doctor> createPlaceholderData() async {
-    User? firebaseUser = this._firebaseAuth.currentUser;
+    // Fetch the ID token for the user.
+    String firebaseAuthToken =
+        await this._firebaseAuth.currentUser!.getIdToken();
 
-    if (firebaseUser != null) {
-      try {
-        String userId = firebaseUser.uid;
-        Doctor doctor = new Doctor(
-          id: userId,
-        );
+    // Prepare URI for the request.
+    Uri uri = Uri.parse("$ENDPOINT/doctor/placeholder");
 
-        doctor.fullName = firebaseUser.displayName ?? '';
-        doctor.imageUrl = firebaseUser.photoURL ?? '';
+    // Prepare authorization headers.
+    Map<String, String> headers = {
+      "Authorization": "Bearer $firebaseAuthToken",
+    };
 
-        await this
-            ._firebaseFirestore
-            .collection('doctors')
-            .doc(userId)
-            .set(doctor.toJson());
-
-        Doctor newDoctor = await this.fetchDoctorDetails();
-
-        return newDoctor;
-      } catch (error) {
-        print(error);
-        throw GeneralException(
-            message: "Something went wrong, please try again later");
-      }
-    }
-    throw new NotLoggedInException(
-      message: 'Please log in to access this feature.',
+    // Send the post request to the server.
+    http.Response response = await http.post(
+      uri,
+      headers: headers,
     );
+
+    // Check for any errors.
+    if (response.statusCode >= 400 && response.statusCode < 500) {
+      Map<String, dynamic> body = json.decode(response.body);
+      throw ServerException(message: body['message']);
+    } else if (response.statusCode >= 500) {
+      Map<String, dynamic> body = json.decode(response.body);
+      print(body['message']);
+      throw ServerException(
+          message: 'Something went wrong, please try again later.');
+    }
+
+    Map<String, dynamic> doctorData = json.decode(response.body);
+    Doctor doctor = Doctor.fromJson(doctorData);
+
+    return doctor;
   }
 
   Future<Doctor> updateDoctor(

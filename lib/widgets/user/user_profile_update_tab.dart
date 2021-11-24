@@ -78,21 +78,21 @@ class _UserProfileUpdateTabState extends State<UserProfileUpdateTab> {
         File imageFile = new File(imageXFile.path);
 
         // Upload the image to firebase and generate a URL.
-        String uploadedUrl =
-            await uploadImageAndGenerateUrl(imageFile, "profile-pictures");
-
-        Doctor newDoctor = this._doctor;
-        newDoctor.imageUrl = uploadedUrl;
-
-        Doctor updatedDoctor =
-            await this._doctorService.updateDoctor(newDoctor);
-        this._doctorProvider.doctor = updatedDoctor;
-
-        // Update the user details
-        User user = await this._userService.updateProfilePicture(uploadedUrl);
-
-        // Save the updated state.
-        this._userProvider.user = user;
+        // String uploadedUrl =
+        //     await uploadImageAndGenerateUrl(imageFile, "profile-pictures");
+        //
+        // Doctor newDoctor = this._doctor;
+        // newDoctor.imageUrl = uploadedUrl;
+        //
+        // Doctor updatedDoctor =
+        //     await this._doctorService.updateDoctor(newDoctor);
+        // this._doctorProvider.doctor = updatedDoctor;
+        //
+        // // Update the user details
+        // User user = await this._userService.updateProfilePicture(uploadedUrl);
+        //
+        // // Save the updated state.
+        // this._userProvider.user = user;
 
         // Display a success snackbar.
         displaySnackbar(
@@ -125,22 +125,22 @@ class _UserProfileUpdateTabState extends State<UserProfileUpdateTab> {
         // Prepare the file from the selected image.
         File imageFile = new File(imageXFile.path);
 
-        // Upload the image to firebase and generate a URL.
-        String uploadedUrl =
-            await uploadImageAndGenerateUrl(imageFile, "profile-pictures");
-
-        Doctor newDoctor = this._doctor;
-        newDoctor.imageUrl = uploadedUrl;
-
-        Doctor updatedDoctor =
-            await this._doctorService.updateDoctor(newDoctor);
-        this._doctorProvider.doctor = updatedDoctor;
-
-        // Update the user details
-        User user = await this._userService.updateProfilePicture(uploadedUrl);
-
-        // Save the updated state.
-        this._userProvider.user = user;
+        // // Upload the image to firebase and generate a URL.
+        // String uploadedUrl =
+        //     await uploadImageAndGenerateUrl(imageFile, "profile-pictures");
+        //
+        // Doctor newDoctor = this._doctor;
+        // newDoctor.imageUrl = uploadedUrl;
+        //
+        // Doctor updatedDoctor =
+        //     await this._doctorService.updateDoctor(newDoctor);
+        // this._doctorProvider.doctor = updatedDoctor;
+        //
+        // // Update the user details
+        // User user = await this._userService.updateProfilePicture(uploadedUrl);
+        //
+        // // Save the updated state.
+        // this._userProvider.user = user;
 
         // Display a success snackbar.
         displaySnackbar(
@@ -191,20 +191,20 @@ class _UserProfileUpdateTabState extends State<UserProfileUpdateTab> {
       // Validate the form.
       if (this._formKey.currentState!.validate()) {
         // Update it on server and also update the state as well.
-        User user = await this
-            ._userService
-            .updateFullName(this._fullNameController.text);
-
-        this._userProvider.user = user;
-
-        Doctor newDoctor = this._doctor;
-        newDoctor.cost = double.parse(this._costController.text);
-        newDoctor.fullName = this._fullNameController.text;
-        newDoctor.clinicAddress = this._addressController.text;
-
-        Doctor updatedDoctor =
-            await this._doctorService.updateDoctor(newDoctor);
-        this._doctorProvider.doctor = updatedDoctor;
+        // User user = await this
+        //     ._userService
+        //     .updateFullName(this._fullNameController.text);
+        //
+        // this._userProvider.user = user;
+        //
+        // Doctor newDoctor = this._doctor;
+        // newDoctor.cost = double.parse(this._costController.text);
+        // newDoctor.fullName = this._fullNameController.text;
+        // newDoctor.clinicAddress = this._addressController.text;
+        //
+        // Doctor updatedDoctor =
+        //     await this._doctorService.updateDoctor(newDoctor);
+        // this._doctorProvider.doctor = updatedDoctor;
 
         // Display success snackbar.
         displaySnackbar("Your profile name has been updated!", context);

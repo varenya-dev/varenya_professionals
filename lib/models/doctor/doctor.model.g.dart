@@ -16,7 +16,7 @@ Doctor _$DoctorFromJson(Map<String, dynamic> json) {
     jobTitle:
         _$enumDecodeNullable(_$JobEnumMap, json['jobTitle']) ?? Job.THERAPIST,
     specializations: (json['specializations'] as List<dynamic>?)
-            ?.map((e) => _$enumDecode(_$SpecializationEnumMap, e))
+            ?.map((e) => Specialization.fromJson(e as Map<String, dynamic>))
             .toList() ??
         [],
   );
@@ -29,9 +29,7 @@ Map<String, dynamic> _$DoctorToJson(Doctor instance) => <String, dynamic>{
       'clinicAddress': instance.clinicAddress,
       'cost': instance.cost,
       'jobTitle': _$JobEnumMap[instance.jobTitle],
-      'specializations': instance.specializations
-          .map((e) => _$SpecializationEnumMap[e])
-          .toList(),
+      'specializations': instance.specializations,
     };
 
 K _$enumDecode<K, V>(
@@ -76,13 +74,4 @@ const _$JobEnumMap = {
   Job.PSYCHOLOGIST: 'PSYCHOLOGIST',
   Job.COUNSELOR: 'COUNSELOR',
   Job.PSYCHIATRIST: 'PSYCHIATRIST',
-};
-
-const _$SpecializationEnumMap = {
-  Specialization.DEPRESSION: 'DEPRESSION',
-  Specialization.ANXIETY: 'ANXIETY',
-  Specialization.BIPOLAR: 'BIPOLAR',
-  Specialization.AUTISM: 'AUTISM',
-  Specialization.PSYCHOSIS: 'PSYCHOSIS',
-  Specialization.PTSD: 'PTSD',
 };

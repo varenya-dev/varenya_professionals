@@ -356,9 +356,9 @@ class _UserProfileUpdateTabState extends State<UserProfileUpdateTab> {
                   value: this._doctor.specializations.contains(s),
                   onChanged: (bool? value) {
                     if (value! == true) {
-                      this._doctor.specializations.add(s);
+                      // this._doctor.specializations.add(s);
                     } else {
-                      this._doctor.specializations.remove(s);
+                      // this._doctor.specializations.remove(s);
                     }
                     state.doctor = this._doctor;
                   },

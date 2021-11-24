@@ -1,6 +1,6 @@
 import 'package:json_annotation/json_annotation.dart';
 import 'package:varenya_professionals/enum/job.enum.dart';
-import 'package:varenya_professionals/enum/specialization.enum.dart';
+import 'package:varenya_professionals/models/specialization/specialization.model.dart';
 
 part 'doctor.model.g.dart';
 

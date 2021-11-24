@@ -6,8 +6,6 @@ import 'package:form_field_validator/form_field_validator.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 import 'package:varenya_professionals/dtos/doctor/create_update_doctor.dto.dart';
-import 'package:varenya_professionals/enum/job.enum.dart';
-import 'package:varenya_professionals/enum/specialization.enum.dart';
 import 'package:varenya_professionals/exceptions/auth/not_logged_in_exception.dart';
 import 'package:varenya_professionals/exceptions/general.exception.dart';
 import 'package:varenya_professionals/exceptions/server.exception.dart';

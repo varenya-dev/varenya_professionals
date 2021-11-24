@@ -1,6 +1,5 @@
 import 'package:json_annotation/json_annotation.dart';
-import 'package:varenya_professionals/enum/job.enum.dart';
-import 'package:varenya_professionals/enum/specialization.enum.dart';
+import 'package:varenya_professionals/models/specialization/specialization.model.dart';
 
 part 'doctor.model.g.dart';
 
@@ -20,8 +19,8 @@ class Doctor {
   @JsonKey(defaultValue: 0.0)
   double cost;
 
-  @JsonKey(defaultValue: Job.THERAPIST)
-  Job jobTitle;
+  @JsonKey(defaultValue: '')
+  String jobTitle;
 
   @JsonKey(defaultValue: [])
   List<Specialization> specializations;
@@ -32,11 +31,16 @@ class Doctor {
     this.fullName = '',
     this.clinicAddress = '',
     this.cost = 0.0,
-    this.jobTitle = Job.THERAPIST,
+    this.jobTitle = '',
     this.specializations = const [],
   });
 
   factory Doctor.fromJson(Map<String, dynamic> json) => _$DoctorFromJson(json);
 
   Map<String, dynamic> toJson() => _$DoctorToJson(this);
+
+  @override
+  String toString() {
+    return 'Doctor{id: $id, imageUrl: $imageUrl, fullName: $fullName, clinicAddress: $clinicAddress, cost: $cost, jobTitle: $jobTitle, specializations: $specializations}';
+  }
 }

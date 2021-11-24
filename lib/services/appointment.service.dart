@@ -16,7 +16,7 @@ class AppointmentService {
         await this._firebaseAuth.currentUser!.getIdToken();
 
     // Prepare URI for the request.
-    Uri uri = Uri.parse("$endpoint/appointment/doctor");
+    Uri uri = Uri.parse("$ENDPOINT/appointment/doctor");
 
     // Prepare authorization headers.
     Map<String, String> headers = {
@@ -52,7 +52,7 @@ class AppointmentService {
         await this._firebaseAuth.currentUser!.getIdToken();
 
     // Prepare URI for the request.
-    Uri uri = Uri.parse("$endpoint/appointment");
+    Uri uri = Uri.parse("$ENDPOINT/appointment");
 
     // Prepare authorization headers.
     Map<String, String> headers = {
@@ -86,7 +86,7 @@ class AppointmentService {
         await this._firebaseAuth.currentUser!.getIdToken();
 
     // Prepare URI for the request.
-    Uri uri = Uri.parse("$endpoint/appointment");
+    Uri uri = Uri.parse("$ENDPOINT/appointment");
 
     // Prepare authorization headers.
     Map<String, String> headers = {

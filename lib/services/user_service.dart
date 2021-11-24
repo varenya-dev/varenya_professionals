@@ -222,7 +222,7 @@ class UserService {
         await this._firebaseAuth.currentUser!.getIdToken();
 
     // Prepare URI for the request.
-    Uri uri = Uri.parse("$endpoint/user");
+    Uri uri = Uri.parse("$ENDPOINT/user");
 
     // Prepare authorization headers.
     Map<String, String> headers = {

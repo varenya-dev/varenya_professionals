@@ -62,7 +62,6 @@ class _UserDeleteTabState extends State<UserDeleteTab> {
       // Validate the form.
       if (this._formKey.currentState!.validate()) {
         // Delete the account from the server.
-        await this._doctorService.deleteDoctor();
         await this._userService.deleteAccount(this._passwordController.text);
 
         // Clear off the provider state.

@@ -158,7 +158,7 @@ class AuthService {
         await this.firebaseAuth.currentUser!.getIdToken();
 
     // Prepare URI for the request.
-    Uri uri = Uri.parse("$endpoint/auth/register");
+    Uri uri = Uri.parse("$ENDPOINT/auth/register");
 
     // Prepare authorization headers.
     Map<String, String> headers = {

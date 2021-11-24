@@ -1,113 +1,122 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
+import 'dart:convert';
+
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:varenya_professionals/exceptions/auth/not_logged_in_exception.dart';
-import 'package:varenya_professionals/exceptions/general.exception.dart';
+import 'package:varenya_professionals/constants/endpoint_constant.dart';
+import 'package:varenya_professionals/dtos/doctor/create_update_doctor.dto.dart';
+import 'package:varenya_professionals/exceptions/server.exception.dart';
 import 'package:varenya_professionals/models/doctor/doctor.model.dart';
+import 'package:http/http.dart' as http;
 
 class DoctorService {
   final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
-  final FirebaseFirestore _firebaseFirestore = FirebaseFirestore.instance;
 
-  Future<DocumentSnapshot<Map<String, dynamic>>> fetchDoctorDetails() => this
-      ._firebaseFirestore
-      .collection('doctors')
-      .doc(this._firebaseAuth.currentUser!.uid)
-      .get();
+  Future<Doctor> fetchDoctorDetails() async {
+    // Fetch the ID token for the user.
+    String firebaseAuthToken =
+        await this._firebaseAuth.currentUser!.getIdToken();
 
-  Stream<DocumentSnapshot<Map<String, dynamic>>> streamDoctorDetails() => this
-      ._firebaseFirestore
-      .collection('doctors')
-      .doc(this._firebaseAuth.currentUser!.uid)
-      .snapshots();
+    // Prepare URI for the request.
+    Uri uri = Uri.parse("$ENDPOINT/doctor/identity");
+
+    // Prepare authorization headers.
+    Map<String, String> headers = {
+      "Authorization": "Bearer $firebaseAuthToken",
+    };
+
+    // Send the post request to the server.
+    http.Response response = await http.get(
+      uri,
+      headers: headers,
+    );
+
+    // Check for any errors.
+    if (response.statusCode >= 400 && response.statusCode < 500) {
+      Map<String, dynamic> body = json.decode(response.body);
+      throw ServerException(message: body['message']);
+    } else if (response.statusCode >= 500) {
+      throw ServerException(
+          message: 'Something went wrong, please try again later.');
+    }
+
+    Map<String, dynamic> doctorData = json.decode(response.body);
+    Doctor doctor = Doctor.fromJson(doctorData);
+
+    return doctor;
+  }
 
   Future<Doctor> createPlaceholderData() async {
-    User? firebaseUser = this._firebaseAuth.currentUser;
+    // Fetch the ID token for the user.
+    String firebaseAuthToken =
+        await this._firebaseAuth.currentUser!.getIdToken();
 
-    if (firebaseUser != null) {
-      try {
-        String userId = firebaseUser.uid;
-        Doctor doctor = new Doctor(
-          id: userId,
-        );
+    // Prepare URI for the request.
+    Uri uri = Uri.parse("$ENDPOINT/doctor/placeholder");
 
-        doctor.fullName = firebaseUser.displayName ?? '';
-        doctor.imageUrl = firebaseUser.photoURL ?? '';
+    // Prepare authorization headers.
+    Map<String, String> headers = {
+      "Authorization": "Bearer $firebaseAuthToken",
+    };
 
-        await this
-            ._firebaseFirestore
-            .collection('doctors')
-            .doc(userId)
-            .set(doctor.toJson());
-
-        Map<String, dynamic> doctorData =
-            (await this.fetchDoctorDetails()).data()!;
-        Doctor newDoctor = Doctor.fromJson(doctorData);
-
-        return newDoctor;
-      } catch (error) {
-        print(error);
-        throw GeneralException(
-            message: "Something went wrong, please try again later");
-      }
-    }
-    throw new NotLoggedInException(
-      message: 'Please log in to access this feature.',
+    // Send the post request to the server.
+    http.Response response = await http.post(
+      uri,
+      headers: headers,
     );
+
+    // Check for any errors.
+    if (response.statusCode >= 400 && response.statusCode < 500) {
+      Map<String, dynamic> body = json.decode(response.body);
+      throw ServerException(message: body['message']);
+    } else if (response.statusCode >= 500) {
+      Map<String, dynamic> body = json.decode(response.body);
+      print(body['message']);
+      throw ServerException(
+          message: 'Something went wrong, please try again later.');
+    }
+
+    Map<String, dynamic> doctorData = json.decode(response.body);
+    Doctor doctor = Doctor.fromJson(doctorData);
+
+    return doctor;
   }
 
   Future<Doctor> updateDoctor(
-    Doctor doctor,
+    CreateOrUpdateDoctorDto createOrUpdateDoctorDto,
   ) async {
-    User? firebaseUser = this._firebaseAuth.currentUser;
+    // Fetch the ID token for the user.
+    String firebaseAuthToken =
+        await this._firebaseAuth.currentUser!.getIdToken();
 
-    if (firebaseUser != null) {
-      try {
-        String userId = firebaseUser.uid;
-        doctor.imageUrl = firebaseUser.photoURL ?? '';
+    // Prepare URI for the request.
+    Uri uri = Uri.parse("$ENDPOINT/doctor");
 
-        await this
-            ._firebaseFirestore
-            .collection('doctors')
-            .doc(userId)
-            .set(doctor.toJson());
+    // Prepare authorization headers.
+    Map<String, String> headers = {
+      "Authorization": "Bearer $firebaseAuthToken",
+      'Content-type': 'application/json',
+    };
 
-        Map<String, dynamic> doctorData =
-            (await this.fetchDoctorDetails()).data()!;
-        Doctor newDoctor = Doctor.fromJson(doctorData);
-
-        return newDoctor;
-      } catch (error) {
-        print(error);
-        throw GeneralException(
-            message: "Something went wrong, please try again later");
-      }
-    }
-    throw new NotLoggedInException(
-      message: 'Please log in to access this feature.',
+    // Send the post request to the server.
+    http.Response response = await http.put(
+      uri,
+      body: json.encode(createOrUpdateDoctorDto.toJson()),
+      headers: headers,
     );
-  }
 
-  Future<void> deleteDoctor() async {
-    User? firebaseUser = this._firebaseAuth.currentUser;
-
-    if (firebaseUser != null) {
-      try {
-        String userId = firebaseUser.uid;
-
-        await this
-            ._firebaseFirestore
-            .collection('doctors')
-            .doc(userId)
-            .delete();
-      } catch (error) {
-        print(error);
-        throw GeneralException(
-            message: "Something went wrong, please try again later");
-      }
-    } else {
-      throw new NotLoggedInException(
-        message: 'Please log in to access this feature.',
-      );
+    // Check for any errors.
+    if (response.statusCode >= 400 && response.statusCode < 500) {
+      Map<String, dynamic> body = json.decode(response.body);
+      throw ServerException(message: body['message']);
+    } else if (response.statusCode >= 500) {
+      Map<String, dynamic> body = json.decode(response.body);
+      print(body['message']);
+      throw ServerException(
+          message: 'Something went wrong, please try again later.');
     }
+
+    Map<String, dynamic> doctorData = json.decode(response.body);
+    Doctor doctor = Doctor.fromJson(doctorData);
+
+    return doctor;
   }
 }

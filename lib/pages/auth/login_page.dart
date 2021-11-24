@@ -7,10 +7,13 @@ import 'package:varenya_professionals/exceptions/auth/user_not_found_exception.d
 import 'package:varenya_professionals/exceptions/auth/wrong_password_exception.dart';
 import 'package:varenya_professionals/exceptions/general.exception.dart';
 import 'package:varenya_professionals/exceptions/server.exception.dart';
+import 'package:varenya_professionals/models/doctor/doctor.model.dart';
 import 'package:varenya_professionals/pages/auth/register_page.dart';
 import 'package:varenya_professionals/pages/home_page.dart';
+import 'package:varenya_professionals/providers/doctor.provider.dart';
 import 'package:varenya_professionals/providers/user_provider.dart';
 import 'package:varenya_professionals/services/auth_service.dart';
+import 'package:varenya_professionals/services/doctor.service.dart';
 import 'package:varenya_professionals/utils/snackbar.dart';
 import 'package:varenya_professionals/widgets/common/custom_field_widget.dart';
 
@@ -25,7 +28,8 @@ class LoginPage extends StatefulWidget {
 
 class _LoginPageState extends State<LoginPage> {
   final GlobalKey<FormState> _formKey = new GlobalKey<FormState>();
-  late AuthService _authService;
+  late final AuthService _authService;
+  late final DoctorService _doctorService;
 
   final TextEditingController _emailFieldController =
       new TextEditingController();
@@ -38,6 +42,7 @@ class _LoginPageState extends State<LoginPage> {
 
     // Injecting the required services.
     this._authService = Provider.of<AuthService>(context, listen: false);
+    this._doctorService = Provider.of<DoctorService>(context, listen: false);
   }
 
   /*
@@ -60,8 +65,14 @@ class _LoginPageState extends State<LoginPage> {
       User user =
           await this._authService.loginWithEmailAndPassword(loginAccountDto);
 
+      // Fetching doctor details on successful login.
+      Doctor doctor = await this._doctorService.fetchDoctorDetails();
+
       // Save the user details in memory.
       Provider.of<UserProvider>(context, listen: false).user = user;
+
+      // Save the doctor details in memory.
+      Provider.of<DoctorProvider>(context, listen: false).doctor = doctor;
 
       // Push them to the home page.
       Navigator.of(context).pushReplacementNamed(HomePage.routeName);

@@ -8,17 +8,9 @@ class DoctorService {
   final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
   final FirebaseFirestore _firebaseFirestore = FirebaseFirestore.instance;
 
-  Future<DocumentSnapshot<Map<String, dynamic>>> fetchDoctorDetails() => this
-      ._firebaseFirestore
-      .collection('doctors')
-      .doc(this._firebaseAuth.currentUser!.uid)
-      .get();
-
-  Stream<DocumentSnapshot<Map<String, dynamic>>> streamDoctorDetails() => this
-      ._firebaseFirestore
-      .collection('doctors')
-      .doc(this._firebaseAuth.currentUser!.uid)
-      .snapshots();
+  Future<Doctor> fetchDoctorDetails() {
+    
+  };
 
   Future<Doctor> createPlaceholderData() async {
     User? firebaseUser = this._firebaseAuth.currentUser;
@@ -85,29 +77,5 @@ class DoctorService {
     throw new NotLoggedInException(
       message: 'Please log in to access this feature.',
     );
-  }
-
-  Future<void> deleteDoctor() async {
-    User? firebaseUser = this._firebaseAuth.currentUser;
-
-    if (firebaseUser != null) {
-      try {
-        String userId = firebaseUser.uid;
-
-        await this
-            ._firebaseFirestore
-            .collection('doctors')
-            .doc(userId)
-            .delete();
-      } catch (error) {
-        print(error);
-        throw GeneralException(
-            message: "Something went wrong, please try again later");
-      }
-    } else {
-      throw new NotLoggedInException(
-        message: 'Please log in to access this feature.',
-      );
-    }
   }
 }

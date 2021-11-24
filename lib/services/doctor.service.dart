@@ -1,18 +1,14 @@
 import 'dart:convert';
 
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:varenya_professionals/constants/endpoint_constant.dart';
 import 'package:varenya_professionals/dtos/doctor/create_update_doctor.dto.dart';
-import 'package:varenya_professionals/exceptions/auth/not_logged_in_exception.dart';
-import 'package:varenya_professionals/exceptions/general.exception.dart';
 import 'package:varenya_professionals/exceptions/server.exception.dart';
 import 'package:varenya_professionals/models/doctor/doctor.model.dart';
 import 'package:http/http.dart' as http;
 
 class DoctorService {
   final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
-  final FirebaseFirestore _firebaseFirestore = FirebaseFirestore.instance;
 
   Future<Doctor> fetchDoctorDetails() async {
     // Fetch the ID token for the user.
@@ -97,12 +93,13 @@ class DoctorService {
     // Prepare authorization headers.
     Map<String, String> headers = {
       "Authorization": "Bearer $firebaseAuthToken",
+      'Content-type': 'application/json',
     };
 
     // Send the post request to the server.
     http.Response response = await http.put(
       uri,
-      body: createOrUpdateDoctorDto.toJson(),
+      body: json.encode(createOrUpdateDoctorDto.toJson()),
       headers: headers,
     );
 

@@ -5,10 +5,12 @@ import 'package:flutter/material.dart';
 import 'package:form_field_validator/form_field_validator.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
+import 'package:varenya_professionals/dtos/doctor/create_update_doctor.dto.dart';
 import 'package:varenya_professionals/enum/job.enum.dart';
 import 'package:varenya_professionals/enum/specialization.enum.dart';
 import 'package:varenya_professionals/exceptions/auth/not_logged_in_exception.dart';
 import 'package:varenya_professionals/exceptions/general.exception.dart';
+import 'package:varenya_professionals/exceptions/server.exception.dart';
 import 'package:varenya_professionals/models/doctor/doctor.model.dart';
 import 'package:varenya_professionals/providers/doctor.provider.dart';
 import 'package:varenya_professionals/providers/user_provider.dart';
@@ -18,6 +20,7 @@ import 'package:varenya_professionals/utils/display_bottom_sheet.dart';
 import 'package:varenya_professionals/utils/image_picker.dart';
 import 'package:varenya_professionals/utils/snackbar.dart';
 import 'package:varenya_professionals/utils/upload_image_generate_url.dart';
+import 'package:varenya_professionals/validators/csv_validator.dart';
 import 'package:varenya_professionals/widgets/common/custom_field_widget.dart';
 import 'package:varenya_professionals/widgets/common/profile_picture_widget.dart';
 
@@ -32,6 +35,9 @@ class _UserProfileUpdateTabState extends State<UserProfileUpdateTab> {
   final TextEditingController _fullNameController = new TextEditingController();
   final TextEditingController _costController = new TextEditingController();
   final TextEditingController _addressController = new TextEditingController();
+  final TextEditingController _jobTitleController = new TextEditingController();
+  final TextEditingController _specializationController =
+      new TextEditingController();
 
   late final UserProvider _userProvider;
   late final DoctorProvider _doctorProvider;
@@ -52,6 +58,8 @@ class _UserProfileUpdateTabState extends State<UserProfileUpdateTab> {
     this._doctorProvider = Provider.of<DoctorProvider>(context, listen: false);
     this._userService = Provider.of<UserService>(context, listen: false);
     this._doctorService = Provider.of<DoctorService>(context, listen: false);
+
+    this._doctor = this._doctorProvider.doctor;
   }
 
   @override
@@ -62,6 +70,8 @@ class _UserProfileUpdateTabState extends State<UserProfileUpdateTab> {
     this._fullNameController.dispose();
     this._costController.dispose();
     this._addressController.dispose();
+    this._jobTitleController.dispose();
+    this._specializationController.dispose();
   }
 
   /*
@@ -78,21 +88,37 @@ class _UserProfileUpdateTabState extends State<UserProfileUpdateTab> {
         File imageFile = new File(imageXFile.path);
 
         // Upload the image to firebase and generate a URL.
-        // String uploadedUrl =
-        //     await uploadImageAndGenerateUrl(imageFile, "profile-pictures");
+        String uploadedUrl =
+            await uploadImageAndGenerateUrl(imageFile, "profile-pictures");
+
+        CreateOrUpdateDoctorDto createOrUpdateDoctorDto =
+            new CreateOrUpdateDoctorDto(
+          fullName: this._doctor.fullName,
+          imageUrl: uploadedUrl,
+          jobTitle: this._doctor.jobTitle,
+          clinicAddress: this._doctor.clinicAddress,
+          cost: this._doctor.cost,
+          specializations: this
+              ._doctor
+              .specializations
+              .map((s) => s.specialization)
+              .toList(),
+        );
+
+        Doctor updatedDoctor =
+            await this._doctorService.updateDoctor(createOrUpdateDoctorDto);
+
+        this._doctorProvider.doctor = updatedDoctor;
+
+        setState(() {
+          this._doctor = updatedDoctor;
+        });
+
+        // Update the user details
+        User user = await this._userService.updateProfilePicture(uploadedUrl);
         //
-        // Doctor newDoctor = this._doctor;
-        // newDoctor.imageUrl = uploadedUrl;
-        //
-        // Doctor updatedDoctor =
-        //     await this._doctorService.updateDoctor(newDoctor);
-        // this._doctorProvider.doctor = updatedDoctor;
-        //
-        // // Update the user details
-        // User user = await this._userService.updateProfilePicture(uploadedUrl);
-        //
-        // // Save the updated state.
-        // this._userProvider.user = user;
+        // Save the updated state.
+        this._userProvider.user = user;
 
         // Display a success snackbar.
         displaySnackbar(
@@ -105,6 +131,8 @@ class _UserProfileUpdateTabState extends State<UserProfileUpdateTab> {
     on NotLoggedInException catch (error) {
       displaySnackbar(error.message, context);
     } on GeneralException catch (error) {
+      displaySnackbar(error.message, context);
+    } on ServerException catch (error) {
       displaySnackbar(error.message, context);
     } catch (error) {
       print(error);
@@ -125,22 +153,38 @@ class _UserProfileUpdateTabState extends State<UserProfileUpdateTab> {
         // Prepare the file from the selected image.
         File imageFile = new File(imageXFile.path);
 
-        // // Upload the image to firebase and generate a URL.
-        // String uploadedUrl =
-        //     await uploadImageAndGenerateUrl(imageFile, "profile-pictures");
+        // Upload the image to firebase and generate a URL.
+        String uploadedUrl =
+            await uploadImageAndGenerateUrl(imageFile, "profile-pictures");
+
+        CreateOrUpdateDoctorDto createOrUpdateDoctorDto =
+            new CreateOrUpdateDoctorDto(
+          fullName: this._doctor.fullName,
+          imageUrl: uploadedUrl,
+          jobTitle: this._doctor.jobTitle,
+          clinicAddress: this._doctor.clinicAddress,
+          cost: this._doctor.cost,
+          specializations: this
+              ._doctor
+              .specializations
+              .map((s) => s.specialization)
+              .toList(),
+        );
+
+        Doctor updatedDoctor =
+            await this._doctorService.updateDoctor(createOrUpdateDoctorDto);
+
+        this._doctorProvider.doctor = updatedDoctor;
+
+        setState(() {
+          this._doctor = updatedDoctor;
+        });
+
+        // Update the user details
+        User user = await this._userService.updateProfilePicture(uploadedUrl);
         //
-        // Doctor newDoctor = this._doctor;
-        // newDoctor.imageUrl = uploadedUrl;
-        //
-        // Doctor updatedDoctor =
-        //     await this._doctorService.updateDoctor(newDoctor);
-        // this._doctorProvider.doctor = updatedDoctor;
-        //
-        // // Update the user details
-        // User user = await this._userService.updateProfilePicture(uploadedUrl);
-        //
-        // // Save the updated state.
-        // this._userProvider.user = user;
+        // Save the updated state.
+        this._userProvider.user = user;
 
         // Display a success snackbar.
         displaySnackbar(
@@ -154,8 +198,11 @@ class _UserProfileUpdateTabState extends State<UserProfileUpdateTab> {
       displaySnackbar(error.message, context);
     } on GeneralException catch (error) {
       displaySnackbar(error.message, context);
-    } catch (error) {
+    } on ServerException catch (error) {
+      displaySnackbar(error.message, context);
+    } catch (error, stacktrace) {
       print(error);
+      print(stacktrace);
       displaySnackbar("Something went wrong, please try again later", context);
     }
   }
@@ -191,23 +238,33 @@ class _UserProfileUpdateTabState extends State<UserProfileUpdateTab> {
       // Validate the form.
       if (this._formKey.currentState!.validate()) {
         // Update it on server and also update the state as well.
-        // User user = await this
-        //     ._userService
-        //     .updateFullName(this._fullNameController.text);
-        //
-        // this._userProvider.user = user;
-        //
-        // Doctor newDoctor = this._doctor;
-        // newDoctor.cost = double.parse(this._costController.text);
-        // newDoctor.fullName = this._fullNameController.text;
-        // newDoctor.clinicAddress = this._addressController.text;
-        //
-        // Doctor updatedDoctor =
-        //     await this._doctorService.updateDoctor(newDoctor);
-        // this._doctorProvider.doctor = updatedDoctor;
+        User user = await this
+            ._userService
+            .updateFullName(this._fullNameController.text);
+
+        this._userProvider.user = user;
+
+        CreateOrUpdateDoctorDto createOrUpdateDoctorDto =
+            new CreateOrUpdateDoctorDto(
+          fullName: this._fullNameController.text,
+          imageUrl: this._doctor.imageUrl,
+          jobTitle: this._jobTitleController.text,
+          clinicAddress: this._addressController.text,
+          cost: double.parse(this._costController.text),
+          specializations: this._specializationController.text.split(", "),
+        );
+
+        Doctor updatedDoctor =
+            await this._doctorService.updateDoctor(createOrUpdateDoctorDto);
+
+        this._doctorProvider.doctor = updatedDoctor;
+
+        setState(() {
+          this._doctor = updatedDoctor;
+        });
 
         // Display success snackbar.
-        displaySnackbar("Your profile name has been updated!", context);
+        displaySnackbar("Your profile has been updated!", context);
       }
     }
     // Handle errors gracefully.
@@ -223,145 +280,105 @@ class _UserProfileUpdateTabState extends State<UserProfileUpdateTab> {
 
   @override
   Widget build(BuildContext context) {
+    this._fullNameController.text = this._doctor.fullName;
+    this._costController.text = this._doctor.cost.toString();
+    this._addressController.text = this._doctor.clinicAddress;
+    this._jobTitleController.text = this._doctor.jobTitle;
+    this._specializationController.text = this._specializationTextBuilder();
+
     return SingleChildScrollView(
       child: Padding(
         padding: const EdgeInsets.symmetric(
           vertical: 20.0,
           horizontal: 10.0,
         ),
-        child: Consumer<DoctorProvider>(
-          builder: (BuildContext context, DoctorProvider state, _) {
-            this._doctor = state.doctor;
-
-            this._fullNameController.text = this._doctor.fullName;
-            this._costController.text = this._doctor.cost.toString();
-            this._addressController.text = this._doctor.clinicAddress;
-            return Form(
-              key: this._formKey,
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
+        child: Form(
+          key: this._formKey,
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Column(
                 children: [
-                  Column(
-                    children: [
-                      ProfilePictureWidget(
-                        imageUrl: state.doctor.imageUrl,
-                        size: 200,
+                  ProfilePictureWidget(
+                    imageUrl: this._doctor.imageUrl,
+                    size: 200,
+                  ),
+                  TextButton(
+                    onPressed: this._onUploadImage,
+                    child: Text(
+                      'Upload New Image',
+                      style: TextStyle(
+                        fontSize: 15.0,
                       ),
-                      TextButton(
-                        onPressed: this._onUploadImage,
-                        child: Text(
-                          'Upload New Image',
-                          style: TextStyle(
-                            fontSize: 15.0,
-                          ),
-                        ),
-                      )
-                    ],
-                  ),
-                  CustomFieldWidget(
-                    textFieldController: this._fullNameController,
-                    label: "First Name",
-                    validators: [
-                      RequiredValidator(errorText: "Full name is required"),
-                    ],
-                    textInputType: TextInputType.text,
-                  ),
-                  CustomFieldWidget(
-                    textFieldController: this._costController,
-                    label: "Cost",
-                    validators: [
-                      RequiredValidator(errorText: "Cost is required"),
-                    ],
-                    textInputType: TextInputType.number,
-                  ),
-                  CustomFieldWidget(
-                    textFieldController: this._addressController,
-                    label: "Clinic Address",
-                    validators: [
-                      RequiredValidator(errorText: "Address is required"),
-                    ],
-                    textInputType: TextInputType.streetAddress,
-                  ),
-                  Text(
-                    'Your Job',
-                    style: TextStyle(
-                      fontSize: MediaQuery.of(context).size.height * 0.03,
-                      fontWeight: FontWeight.bold,
                     ),
-                  ),
-                  _buildJobs(state),
-                  Text(
-                    'Your Specialization',
-                    style: TextStyle(
-                      fontSize: MediaQuery.of(context).size.height * 0.03,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                  _buildSpecialization(state),
-                  ElevatedButton(
-                    onPressed: this._onFormSubmit,
-                    child: Text('Update Profile'),
-                  ),
+                  )
                 ],
               ),
-            );
-          },
+              CustomFieldWidget(
+                textFieldController: this._fullNameController,
+                label: "First Name",
+                validators: [
+                  RequiredValidator(errorText: "Full name is required"),
+                ],
+                textInputType: TextInputType.text,
+              ),
+              CustomFieldWidget(
+                textFieldController: this._costController,
+                label: "Cost",
+                validators: [
+                  RequiredValidator(errorText: "Cost is required"),
+                ],
+                textInputType: TextInputType.number,
+              ),
+              CustomFieldWidget(
+                textFieldController: this._addressController,
+                label: "Clinic Address",
+                validators: [
+                  RequiredValidator(errorText: "Address is required"),
+                ],
+                textInputType: TextInputType.streetAddress,
+              ),
+              CustomFieldWidget(
+                textFieldController: this._jobTitleController,
+                label: "Job Title",
+                validators: [
+                  RequiredValidator(errorText: "Job Title is required"),
+                ],
+                textInputType: TextInputType.text,
+              ),
+              CustomFieldWidget(
+                textFieldController: this._specializationController,
+                label: "Specializations",
+                validators: [
+                  RequiredValidator(errorText: "Specializations is required"),
+                  CSVValidator(csvLength: 1),
+                ],
+                textInputType: TextInputType.text,
+              ),
+              ElevatedButton(
+                onPressed: this._onFormSubmit,
+                child: Text('Update Profile'),
+              ),
+            ],
+          ),
         ),
       ),
     );
   }
 
-  Widget _buildJobs(DoctorProvider state) {
-    return Flexible(
-      fit: FlexFit.loose,
-      child: ListView(
-        shrinkWrap: true,
-        physics: NeverScrollableScrollPhysics(),
-        children: Job.values
-            .map(
-              (job) => ListTile(
-                title: Text(
-                  job.toString().split(".")[1],
-                ),
-                leading: Radio(
-                  value: job,
-                  groupValue: this._doctor.jobTitle,
-                  onChanged: (Object? jobValue) {},
-                ),
-              ),
-            )
-            .toList(),
-      ),
-    );
-  }
+  String _specializationTextBuilder() {
+    String specializationText =
+        "${this._doctor.specializations[0].specialization}";
 
-  Widget _buildSpecialization(DoctorProvider state) {
-    return Flexible(
-      fit: FlexFit.loose,
-      child: ListView(
-        shrinkWrap: true,
-        physics: NeverScrollableScrollPhysics(),
-        children: Specialization.values
-            .map(
-              (s) => ListTile(
-                title: Text(
-                  s.toString().split(".")[1],
-                ),
-                leading: Checkbox(
-                  value: this._doctor.specializations.contains(s),
-                  onChanged: (bool? value) {
-                    if (value! == true) {
-                      // this._doctor.specializations.add(s);
-                    } else {
-                      // this._doctor.specializations.remove(s);
-                    }
-                    state.doctor = this._doctor;
-                  },
-                ),
-              ),
-            )
-            .toList(),
-      ),
-    );
+    this
+        ._doctor
+        .specializations
+        .getRange(1, this._doctor.specializations.length)
+        .toList()
+        .forEach((specialization) {
+      specializationText += ", ${specialization.specialization}";
+    });
+
+    return specializationText;
   }
 }

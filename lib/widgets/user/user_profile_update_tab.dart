@@ -326,12 +326,7 @@ class _UserProfileUpdateTabState extends State<UserProfileUpdateTab> {
                 leading: Radio(
                   value: job,
                   groupValue: this._doctor.jobTitle,
-                  onChanged: (Job? jobValue) {
-                    if (jobValue != null) {
-                      this._doctor.jobTitle = jobValue;
-                      state.doctor = this._doctor;
-                    }
-                  },
+                  onChanged: (Object? jobValue) {},
                 ),
               ),
             )

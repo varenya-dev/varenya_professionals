@@ -23,7 +23,7 @@ class AlertsService {
           await this._firebaseAuth.currentUser!.getIdToken();
 
       // Prepare URI for the request.
-      Uri uri = Uri.parse("$endpoint/notification/sos/response");
+      Uri uri = Uri.parse("$ENDPOINT/notification/sos/response");
 
       // Prepare authorization headers.
       Map<String, String> headers = {

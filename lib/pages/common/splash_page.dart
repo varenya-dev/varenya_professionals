@@ -39,8 +39,7 @@ class _SplashPageState extends State<SplashPage> {
         if (user != null) {
           Provider.of<DoctorService>(context, listen: false)
               .fetchDoctorDetails()
-              .then((data) {
-            Doctor doctor = Doctor.fromJson(data.data()!);
+              .then((doctor) {
             Provider.of<DoctorProvider>(context, listen: false).doctor = doctor;
 
             Provider.of<UserProvider>(context, listen: false).user = user;

@@ -7,7 +7,6 @@ import 'package:varenya_professionals/pages/appointment/appointment_list.page.da
 import 'package:varenya_professionals/pages/chat/threads_page.dart';
 import 'package:varenya_professionals/pages/user/user_update_page.dart';
 import 'package:varenya_professionals/providers/doctor.provider.dart';
-import 'package:varenya_professionals/providers/user_provider.dart';
 import 'package:varenya_professionals/services/alerts_service.dart';
 import 'package:varenya_professionals/services/auth_service.dart';
 import 'package:varenya_professionals/services/chat_service.dart';

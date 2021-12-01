@@ -6,6 +6,8 @@ part 'server_user.model.g.dart';
 @JsonSerializable()
 class ServerUser {
   String id;
+
+  @JsonKey(defaultValue: '')
   String firebaseId;
   Roles role;
 

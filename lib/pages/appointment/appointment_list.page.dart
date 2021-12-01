@@ -1,9 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
-import 'package:varenya_professionals/exceptions/server.exception.dart';
-import 'package:varenya_professionals/models/appointment/doctor_appointment_response/doctor_appointment_response.model.dart';
-import 'package:varenya_professionals/services/appointment.service.dart';
-import 'package:varenya_professionals/widgets/appointment/appointment_card.widget.dart';
+import 'package:intl/intl.dart';
+import 'package:varenya_professionals/widgets/appointment/appointment_display_list.widget.dart';
 
 class AppointmentList extends StatefulWidget {
   const AppointmentList({Key? key}) : super(key: key);
@@ -15,71 +12,51 @@ class AppointmentList extends StatefulWidget {
 }
 
 class _AppointmentListState extends State<AppointmentList> {
-  late final AppointmentService _appointmentService;
-
-  List<DoctorAppointmentResponse> _appointments = [];
+  List<DateTime> nextWeekDateList = [];
 
   @override
   void initState() {
     super.initState();
 
-    this._appointmentService =
-        Provider.of<AppointmentService>(context, listen: false);
-  }
+    DateTime dateTime = DateTime.now();
 
-  void _refreshAppointmentLists() {
-    setState(() {});
+    for (int i = 0; i <= 6; i++) {
+      DateTime newDateTime = dateTime.add(Duration(days: i));
+
+      nextWeekDateList.add(newDateTime);
+    }
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('Appointments'),
-      ),
-      body: FutureBuilder(
-        future: this._appointmentService.fetchAppointments(),
-        builder: (
-            BuildContext buildContext,
-            AsyncSnapshot<List<DoctorAppointmentResponse>> snapshot,
-            ) {
-          if (snapshot.hasError) {
-            switch (snapshot.error.runtimeType) {
-              case ServerException:
-                {
-                  ServerException exception = snapshot.error as ServerException;
-                  return Text(exception.message);
-                }
-              default:
-                {
-                  return Text("Something went wrong, please try again later");
-                }
-            }
-          }
 
-          if (snapshot.connectionState == ConnectionState.done) {
-            this._appointments = snapshot.data!;
-            return ListView.builder(
-              itemCount: this._appointments.length,
-              shrinkWrap: true,
-              itemBuilder: (BuildContext context, int index) {
-                DoctorAppointmentResponse appointmentResponse =
-                this._appointments[index];
-
-                return AppointmentCard(
-                  appointment: appointmentResponse,
-                  refreshAppointments: this._refreshAppointmentLists,
-                );
-              },
-            );
-          }
-
-          return Column(
-            children: [
-              CircularProgressIndicator(),
-            ],
-          );
-        },
+    return DefaultTabController(
+      length: nextWeekDateList.length,
+      child: Scaffold(
+        appBar: AppBar(
+          title: Text('Booked Appointments'),
+          bottom: TabBar(
+            isScrollable: true,
+            tabs: this
+                .nextWeekDateList
+                .map(
+                  (dateTime) => Tab(
+                text: DateFormat.yMMMd().format(dateTime).toString(),
+              ),
+            )
+                .toList(),
+          ),
+        ),
+        body: TabBarView(
+          children: this
+              .nextWeekDateList
+              .map(
+                (dateTime) => AppointmentDisplayList(
+              dateTime: dateTime,
+            ),
+          )
+              .toList(),
+        ),
       ),
     );
   }

@@ -22,6 +22,9 @@ class Doctor {
   @JsonKey(defaultValue: '')
   String jobTitle;
 
+  DateTime shiftStartTime;
+  DateTime shiftEndTime;
+
   @JsonKey(defaultValue: [])
   List<Specialization> specializations;
 
@@ -33,14 +36,11 @@ class Doctor {
     this.cost = 0.0,
     this.jobTitle = '',
     this.specializations = const [],
+    required this.shiftStartTime,
+    required this.shiftEndTime,
   });
 
   factory Doctor.fromJson(Map<String, dynamic> json) => _$DoctorFromJson(json);
 
   Map<String, dynamic> toJson() => _$DoctorToJson(this);
-
-  @override
-  String toString() {
-    return 'Doctor{id: $id, imageUrl: $imageUrl, fullName: $fullName, clinicAddress: $clinicAddress, cost: $cost, jobTitle: $jobTitle, specializations: $specializations}';
-  }
 }

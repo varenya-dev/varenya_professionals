@@ -10,6 +10,8 @@ class CreateOrUpdateDoctorDto {
   final String clinicAddress;
   final double cost;
   final List<String> specializations;
+  final DateTime shiftStartTime;
+  final DateTime shiftEndTime;
 
   CreateOrUpdateDoctorDto({
     required this.fullName,
@@ -18,6 +20,8 @@ class CreateOrUpdateDoctorDto {
     required this.clinicAddress,
     required this.cost,
     required this.specializations,
+    required this.shiftStartTime,
+    required this.shiftEndTime,
   });
 
   factory CreateOrUpdateDoctorDto.fromJson(Map<String, dynamic> json) =>

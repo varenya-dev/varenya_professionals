@@ -17,6 +17,8 @@ CreateOrUpdateDoctorDto _$CreateOrUpdateDoctorDtoFromJson(
       specializations: (json['specializations'] as List<dynamic>)
           .map((e) => e as String)
           .toList(),
+      shiftStartTime: DateTime.parse(json['shiftStartTime'] as String),
+      shiftEndTime: DateTime.parse(json['shiftEndTime'] as String),
     );
 
 Map<String, dynamic> _$CreateOrUpdateDoctorDtoToJson(
@@ -28,4 +30,6 @@ Map<String, dynamic> _$CreateOrUpdateDoctorDtoToJson(
       'clinicAddress': instance.clinicAddress,
       'cost': instance.cost,
       'specializations': instance.specializations,
+      'shiftStartTime': instance.shiftStartTime.toIso8601String(),
+      'shiftEndTime': instance.shiftEndTime.toIso8601String(),
     };

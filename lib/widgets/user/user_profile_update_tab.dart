@@ -21,6 +21,7 @@ import 'package:varenya_professionals/utils/upload_image_generate_url.dart';
 import 'package:varenya_professionals/validators/csv_validator.dart';
 import 'package:varenya_professionals/widgets/common/custom_field_widget.dart';
 import 'package:varenya_professionals/widgets/common/profile_picture_widget.dart';
+import 'package:intl/intl.dart';
 
 class UserProfileUpdateTab extends StatefulWidget {
   const UserProfileUpdateTab({Key? key}) : super(key: key);
@@ -101,6 +102,8 @@ class _UserProfileUpdateTabState extends State<UserProfileUpdateTab> {
               .specializations
               .map((s) => s.specialization)
               .toList(),
+          shiftStartTime: this._doctor.shiftStartTime,
+          shiftEndTime: this._doctor.shiftEndTime,
         );
 
         Doctor updatedDoctor =
@@ -167,6 +170,8 @@ class _UserProfileUpdateTabState extends State<UserProfileUpdateTab> {
               .specializations
               .map((s) => s.specialization)
               .toList(),
+          shiftStartTime: this._doctor.shiftStartTime,
+          shiftEndTime: this._doctor.shiftEndTime,
         );
 
         Doctor updatedDoctor =
@@ -250,6 +255,8 @@ class _UserProfileUpdateTabState extends State<UserProfileUpdateTab> {
           clinicAddress: this._addressController.text,
           cost: double.parse(this._costController.text),
           specializations: this._specializationController.text.split(", "),
+          shiftStartTime: this._doctor.shiftStartTime,
+          shiftEndTime: this._doctor.shiftEndTime,
         );
 
         Doctor updatedDoctor =
@@ -273,6 +280,48 @@ class _UserProfileUpdateTabState extends State<UserProfileUpdateTab> {
     } catch (error) {
       print(error);
       displaySnackbar("Something went wrong, please try again later", context);
+    }
+  }
+
+  void _setShiftStartTime() async {
+    TimeOfDay? timeOfDay = await showTimePicker(
+      context: context,
+      initialTime: TimeOfDay.fromDateTime(this._doctor.shiftStartTime),
+    );
+
+    if (timeOfDay != null) {
+      DateTime dateTime = new DateTime(
+        2000,
+        1,
+        1,
+        timeOfDay.hour,
+        timeOfDay.minute,
+      );
+
+      setState(() {
+        this._doctor.shiftStartTime = dateTime;
+      });
+    }
+  }
+
+  void _setShiftEndTime() async {
+    TimeOfDay? timeOfDay = await showTimePicker(
+      context: context,
+      initialTime: TimeOfDay.fromDateTime(this._doctor.shiftEndTime),
+    );
+
+    if (timeOfDay != null) {
+      DateTime dateTime = new DateTime(
+        2000,
+        1,
+        1,
+        timeOfDay.hour,
+        timeOfDay.minute,
+      );
+
+      setState(() {
+        this._doctor.shiftEndTime = dateTime;
+      });
     }
   }
 
@@ -352,6 +401,22 @@ class _UserProfileUpdateTabState extends State<UserProfileUpdateTab> {
                   CSVValidator(csvLength: 1),
                 ],
                 textInputType: TextInputType.text,
+              ),
+              ListTile(
+                title: Text('Start Time Of Your Shift'),
+                trailing: Text(
+                  DateFormat.jm()
+                      .format(this._doctor.shiftStartTime)
+                      .toString(),
+                ),
+                onTap: this._setShiftStartTime,
+              ),
+              ListTile(
+                title: Text('End Time Of Your Shift'),
+                trailing: Text(
+                  DateFormat.jm().format(this._doctor.shiftEndTime).toString(),
+                ),
+                onTap: this._setShiftEndTime,
               ),
               ElevatedButton(
                 onPressed: this._onFormSubmit,

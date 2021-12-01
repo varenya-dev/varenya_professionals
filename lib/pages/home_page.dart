@@ -1,6 +1,7 @@
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:varenya_professionals/dtos/fetch_booked_appointments/fetch_booked_appointments.dto.dart';
 import 'package:varenya_professionals/exceptions/general.exception.dart';
 import 'package:varenya_professionals/notifications_handler.dart';
 import 'package:varenya_professionals/pages/appointment/appointment_list.page.dart';
@@ -9,6 +10,7 @@ import 'package:varenya_professionals/pages/user/user_update_page.dart';
 import 'package:varenya_professionals/providers/doctor.provider.dart';
 import 'package:varenya_professionals/providers/user_provider.dart';
 import 'package:varenya_professionals/services/alerts_service.dart';
+import 'package:varenya_professionals/services/appointment.service.dart';
 import 'package:varenya_professionals/services/auth_service.dart';
 import 'package:varenya_professionals/services/chat_service.dart';
 import 'package:varenya_professionals/services/user_service.dart';
@@ -30,6 +32,7 @@ class _HomePageState extends State<HomePage> {
   late final UserService _userService;
   late final ChatService _chatService;
   late final AlertsService _alertsService;
+  late final AppointmentService _appointmentService;
 
   @override
   void initState() {
@@ -39,6 +42,8 @@ class _HomePageState extends State<HomePage> {
     this._userService = Provider.of<UserService>(context, listen: false);
     this._chatService = Provider.of<ChatService>(context, listen: false);
     this._alertsService = Provider.of<AlertsService>(context, listen: false);
+    this._appointmentService =
+        Provider.of<AppointmentService>(context, listen: false);
 
     try {
       this._userService.generateAndSaveTokenToDatabase();
@@ -105,6 +110,18 @@ class _HomePageState extends State<HomePage> {
                   Navigator.of(context).pushNamed(AppointmentList.routeName);
                 },
                 child: Text('Appointments'),
+              ),
+              ElevatedButton(
+                onPressed: () async {
+                  print(
+                    await this._appointmentService.fetchAppointmentsByDay(
+                          new FetchBookedAppointmentsDto(
+                            date: DateTime.now(),
+                          ),
+                        ),
+                  );
+                },
+                child: Text('Test Fetching Booked Appointments'),
               ),
             ],
           ),

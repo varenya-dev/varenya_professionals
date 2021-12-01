@@ -55,36 +55,12 @@ class _AppointmentCardState extends State<AppointmentCard> {
                     Text(
                       'Patient Name: ${widget.appointment.patient.fullName}',
                     ),
-                    if (widget.appointment.appointment.status ==
-                        ConfirmationStatus.PENDING)
-                      Text(
-                        widget.appointment.appointment.status
-                            .toString()
-                            .split('.')[1],
-                        textAlign: TextAlign.left,
-                      ),
-                    if (widget.appointment.appointment.status ==
-                        ConfirmationStatus.CONFIRMED)
-                      Text(
-                        'Confirmed for: ${DateFormat.yMd().add_jm().format(
-                              widget.appointment.appointment.scheduledFor,
-                            ).toString()}',
-                        textAlign: TextAlign.left,
-                      ),
+
                   ],
                 ),
                 PopupMenuButton(
                   elevation: 40,
                   itemBuilder: (context) => [
-                    PopupMenuItem(
-                      child: Text(
-                        widget.appointment.appointment.status ==
-                                ConfirmationStatus.PENDING
-                            ? "Confirm Appointment"
-                            : "Update Appointment",
-                      ),
-                      value: 1,
-                    ),
                     PopupMenuItem(
                       child: Text("Cancel Appointment"),
                       value: 2,
@@ -189,7 +165,6 @@ class _AppointmentCardState extends State<AppointmentCard> {
 
   Future<void> _onUpdateConfirmation() async {
     try {
-      widget.appointment.appointment.status = ConfirmationStatus.CONFIRMED;
       widget.appointment.appointment.scheduledFor = this._dateTime;
 
       await this

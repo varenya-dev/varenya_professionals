@@ -6,14 +6,14 @@ part of 'fetch_booked_appointments.dto.dart';
 // JsonSerializableGenerator
 // **************************************************************************
 
-FetchBookedAppointments _$FetchBookedAppointmentsFromJson(
+FetchBookedAppointmentsDto _$FetchBookedAppointmentsDtoFromJson(
         Map<String, dynamic> json) =>
-    FetchBookedAppointments(
+    FetchBookedAppointmentsDto(
       date: DateTime.parse(json['date'] as String),
     );
 
-Map<String, dynamic> _$FetchBookedAppointmentsToJson(
-        FetchBookedAppointments instance) =>
+Map<String, dynamic> _$FetchBookedAppointmentsDtoToJson(
+        FetchBookedAppointmentsDto instance) =>
     <String, dynamic>{
       'date': instance.date.toIso8601String(),
     };

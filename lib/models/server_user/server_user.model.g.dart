@@ -8,7 +8,7 @@ part of 'server_user.model.dart';
 
 ServerUser _$ServerUserFromJson(Map<String, dynamic> json) => ServerUser(
       id: json['id'] as String,
-      firebaseId: json['firebaseId'] as String,
+      firebaseId: json['firebaseId'] as String? ?? '',
       role: $enumDecode(_$RolesEnumMap, json['role']),
     );
 

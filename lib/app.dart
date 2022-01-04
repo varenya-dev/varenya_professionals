@@ -7,6 +7,7 @@ import 'package:varenya_professionals/pages/chat/chat_page.dart';
 import 'package:varenya_professionals/pages/common/splash_page.dart';
 import 'package:varenya_professionals/pages/home_page.dart';
 import 'package:varenya_professionals/pages/chat/threads_page.dart';
+import 'package:varenya_professionals/pages/post/new_posts.page.dart';
 import 'package:varenya_professionals/pages/user/user_update_page.dart';
 
 class App extends StatelessWidget {
@@ -31,6 +32,7 @@ class App extends StatelessWidget {
         ThreadsPage.routeName: (context) => ThreadsPage(),
         ChatPage.routeName: (context) => ChatPage(),
         AppointmentList.routeName: (context) => AppointmentList(),
+        NewPosts.routeName: (context) => NewPosts(),
       },
     );
   }

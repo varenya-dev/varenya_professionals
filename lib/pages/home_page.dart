@@ -5,6 +5,7 @@ import 'package:varenya_professionals/exceptions/general.exception.dart';
 import 'package:varenya_professionals/notifications_handler.dart';
 import 'package:varenya_professionals/pages/appointment/appointment_list.page.dart';
 import 'package:varenya_professionals/pages/chat/threads_page.dart';
+import 'package:varenya_professionals/pages/post/new_posts.page.dart';
 import 'package:varenya_professionals/pages/user/user_update_page.dart';
 import 'package:varenya_professionals/providers/doctor.provider.dart';
 import 'package:varenya_professionals/services/alerts_service.dart';
@@ -104,6 +105,12 @@ class _HomePageState extends State<HomePage> {
                   Navigator.of(context).pushNamed(AppointmentList.routeName);
                 },
                 child: Text('Appointments'),
+              ),
+              ElevatedButton(
+                onPressed: () async {
+                  Navigator.of(context).pushNamed(NewPosts.routeName);
+                },
+                child: Text('New Posts'),
               ),
             ],
           ),

@@ -8,6 +8,7 @@ import 'package:varenya_professionals/pages/common/splash_page.dart';
 import 'package:varenya_professionals/pages/home_page.dart';
 import 'package:varenya_professionals/pages/chat/threads_page.dart';
 import 'package:varenya_professionals/pages/post/categorized_posts.page.dart';
+import 'package:varenya_professionals/pages/post/new_post.page.dart';
 import 'package:varenya_professionals/pages/post/new_posts.page.dart';
 import 'package:varenya_professionals/pages/user/user_update_page.dart';
 
@@ -35,6 +36,7 @@ class App extends StatelessWidget {
         AppointmentList.routeName: (context) => AppointmentList(),
         NewPosts.routeName: (context) => NewPosts(),
         CategorizedPosts.routeName: (context) => CategorizedPosts(),
+        NewPost.routeName: (context) => NewPost(),
       },
     );
   }

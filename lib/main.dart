@@ -9,6 +9,7 @@ import 'package:varenya_professionals/services/alerts_service.dart';
 import 'package:varenya_professionals/services/appointment.service.dart';
 import 'package:varenya_professionals/services/auth_service.dart';
 import 'package:varenya_professionals/services/chat_service.dart';
+import 'package:varenya_professionals/services/comments.service.dart';
 import 'package:varenya_professionals/services/doctor.service.dart';
 import 'package:varenya_professionals/services/post.service.dart';
 import 'package:varenya_professionals/services/user_service.dart';
@@ -65,6 +66,9 @@ class Root extends StatelessWidget {
         ),
         Provider<PostService>(
           create: (context) => PostService(),
+        ),
+        Provider<CommentsService>(
+          create: (context) => CommentsService(),
         ),
       ],
       child: App(),

@@ -7,6 +7,7 @@ import 'package:varenya_professionals/exceptions/auth/not_logged_in_exception.da
 import 'package:varenya_professionals/exceptions/server.exception.dart';
 import 'package:varenya_professionals/models/post/post.model.dart';
 import 'package:varenya_professionals/models/server_user/server_user.model.dart';
+import 'package:varenya_professionals/pages/post/update_post.page.dart';
 import 'package:varenya_professionals/providers/user_provider.dart';
 import 'package:varenya_professionals/services/post.service.dart';
 import 'package:varenya_professionals/utils/display_bottom_sheet.dart';
@@ -161,10 +162,10 @@ class _PostUserDetailsState extends State<PostUserDetails> {
                             ],
                             onSelected: (PostOptionsType selectedData) {
                               if (selectedData == PostOptionsType.UPDATE) {
-                                // Navigator.of(context).pushNamed(
-                                //   UpdatePost.routeName,
-                                //   arguments: this.widget.post,
-                                // );
+                                Navigator.of(context).pushNamed(
+                                  UpdatePost.routeName,
+                                  arguments: this.widget.post,
+                                );
                               }
                               if (selectedData == PostOptionsType.DELETE) {
                                 this._onDeletePost(context);

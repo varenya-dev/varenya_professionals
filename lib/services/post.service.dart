@@ -13,13 +13,52 @@ import 'package:varenya_professionals/models/post/post_category/post_category.mo
 class PostService {
   final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
 
+  Future<Post> fetchPostsById(String postId) async {
+    // Fetch the ID token for the user.
+    String firebaseAuthToken =
+        await this._firebaseAuth.currentUser!.getIdToken();
+
+    // Prepare URI for the request.
+    Uri uri = Uri.http(
+      RAW_ENDPOINT,
+      "/v1/api/post",
+      {"postId": postId},
+    );
+
+    // Prepare authorization headers.
+    Map<String, String> headers = {
+      "Authorization": "Bearer $firebaseAuthToken",
+    };
+
+    // Send the post request to the server.
+    http.Response response = await http.get(
+      uri,
+      headers: headers,
+    );
+
+    // Check for any errors.
+    if (response.statusCode >= 400 && response.statusCode < 500) {
+      Map<String, dynamic> body = json.decode(response.body);
+      throw ServerException(message: body['message']);
+    } else if (response.statusCode >= 500) {
+      throw ServerException(
+        message: 'Something went wrong, please try again later.',
+      );
+    }
+
+    dynamic jsonResponse = json.decode(response.body);
+    Post post = Post.fromJson(jsonResponse);
+
+    return post;
+  }
+
   Future<List<Post>> fetchNewPosts() async {
     // Fetch the ID token for the user.
     String firebaseAuthToken =
         await this._firebaseAuth.currentUser!.getIdToken();
 
     // Prepare URI for the request.
-    Uri uri = Uri.parse("$ENDPOINT/post");
+    Uri uri = Uri.parse("$ENDPOINT/post/new");
 
     // Prepare authorization headers.
     Map<String, String> headers = {

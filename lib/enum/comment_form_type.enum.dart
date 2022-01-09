@@ -1,0 +1,4 @@
+enum CommentFormType {
+  CREATE,
+  UPDATE,
+}

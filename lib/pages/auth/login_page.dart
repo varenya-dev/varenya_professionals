@@ -14,6 +14,7 @@ import 'package:varenya_professionals/providers/doctor.provider.dart';
 import 'package:varenya_professionals/providers/user_provider.dart';
 import 'package:varenya_professionals/services/auth_service.dart';
 import 'package:varenya_professionals/services/doctor.service.dart';
+import 'package:varenya_professionals/utils/logger.util.dart';
 import 'package:varenya_professionals/utils/snackbar.dart';
 import 'package:varenya_professionals/widgets/common/custom_field_widget.dart';
 
@@ -87,8 +88,8 @@ class _LoginPageState extends State<LoginPage> {
       displaySnackbar(error.message, context);
     } on GeneralException catch (error) {
       displaySnackbar(error.message, context);
-    } catch (error) {
-      print(error);
+    } catch (error, stackTrace) {
+      log.e("LoginPage:_onFormSubmit", error, stackTrace);
       displaySnackbar("Something went wrong, please try again later.", context);
     }
   }

@@ -10,6 +10,7 @@ import 'package:varenya_professionals/constants/endpoint_constant.dart';
 import 'package:varenya_professionals/models/chat/chat/chat_model.dart';
 import 'package:varenya_professionals/models/chat/chat_thread/chat_thread_model.dart';
 import 'package:http/http.dart' as http;
+import 'package:varenya_professionals/utils/logger.util.dart';
 
 class ChatService {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
@@ -159,8 +160,8 @@ class ChatService {
         Map<String, dynamic> body = json.decode(response.body);
         throw Exception(body);
       }
-    } catch (error) {
-      print(error);
+    } catch (error, stackTrace) {
+      log.e("ChatService:_sendChatNotification Error", error, stackTrace);
     }
   }
 }

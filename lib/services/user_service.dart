@@ -12,6 +12,7 @@ import 'package:varenya_professionals/exceptions/auth/wrong_password_exception.d
 import 'package:http/http.dart' as http;
 import 'package:varenya_professionals/exceptions/general.exception.dart';
 import 'package:varenya_professionals/exceptions/server.exception.dart';
+import 'package:varenya_professionals/utils/logger.util.dart';
 
 /*
  * Service implementation for User module.
@@ -35,8 +36,8 @@ class UserService {
 
       // Return updated user.
       return this._firebaseAuth.currentUser!;
-    } catch (error) {
-      print(error);
+    } catch (error, stackTrace) {
+      log.e("UserService:updateProfilePicture Error", error, stackTrace);
       throw GeneralException(
           message: "Something went wrong, please try again later");
     }
@@ -56,8 +57,8 @@ class UserService {
 
       // Returning updated user data.
       return this._firebaseAuth.currentUser!;
-    } catch (error) {
-      print(error);
+    } catch (error, stackTrace) {
+      log.e("UserService:updateFullName Error", error, stackTrace);
       throw GeneralException(
           message: "Something went wrong, please try again later");
     }
@@ -89,7 +90,7 @@ class UserService {
 
       // Returning updated user data.
       return this._firebaseAuth.currentUser!;
-    } on FirebaseAuthException catch (error) {
+    } on FirebaseAuthException catch (error, stackTrace) {
       // Firebase Error: If the user has typed a weak password.
       if (error.code == "email-already-in-use") {
         throw UserAlreadyExistsException(
@@ -106,12 +107,12 @@ class UserService {
 
       // Handle other unknown errors
       else {
-        print(error);
+        log.e("UserService:updateEmailAddress Error", error, stackTrace);
         throw GeneralException(
             message: "Something went wrong, please try again later");
       }
-    } catch (error) {
-      print(error);
+    } catch (error, stackTrace) {
+      log.e("UserService:updateEmailAddress Error", error, stackTrace);
       throw GeneralException(
           message: "Something went wrong, please try again later");
     }
@@ -140,7 +141,7 @@ class UserService {
 
       // Update password for the user.
       await loggedInUser.updatePassword(updatePasswordDto.newPassword);
-    } on FirebaseAuthException catch (error) {
+    } on FirebaseAuthException catch (error, stackTrace) {
       // Firebase Error: If the user has typed a weak password.
       if (error.code == "weak-password") {
         throw WeakPasswordException(message: "Password provided is weak.");
@@ -155,12 +156,12 @@ class UserService {
 
       // Handle other unknown errors
       else {
-        print(error);
+        log.e("UserService:updatePassword Error", error, stackTrace);
         throw GeneralException(
             message: "Something went wrong, please try again later");
       }
-    } catch (error) {
-      print(error);
+    } catch (error, stackTrace) {
+      log.e("UserService:updatePassword Error", error, stackTrace);
       throw GeneralException(
           message: "Something went wrong, please try again later");
     }
@@ -190,7 +191,7 @@ class UserService {
       // Deleting user account.
       await this._deleteUserFromServer();
       await loggedInUser.delete();
-    } on FirebaseAuthException catch (error) {
+    } on FirebaseAuthException catch (error, stackTrace) {
       // Firebase Error: If the user has typed the wrong password.
       if (error.code == 'wrong-password') {
         throw WrongPasswordException(
@@ -200,14 +201,14 @@ class UserService {
 
       // Handle other unknown errors
       else {
-        print(error);
+        log.e("UserService:deleteAccount Error", error, stackTrace);
         throw GeneralException(
             message: "Something went wrong, please try again later");
       }
     } on ServerException catch (error) {
       throw ServerException(message: error.message);
-    } catch (error) {
-      print(error);
+    } catch (error, stackTrace) {
+      log.e("UserService:deleteAccount Error", error, stackTrace);
       throw GeneralException(
           message: "Something went wrong, please try again later");
     }
@@ -238,6 +239,7 @@ class UserService {
     // Check for any errors.
     if (response.statusCode >= 400 && response.statusCode < 500) {
       Map<String, dynamic> body = json.decode(response.body);
+      log.e("UserService:_deleteUserFromServer Error", body['message']);
       throw ServerException(message: body['message']);
     } else if (response.statusCode >= 500) {
       throw ServerException(
@@ -257,8 +259,8 @@ class UserService {
         'id': userId,
         'token': token,
       });
-    } catch (error) {
-      print(error);
+    } catch (error, stackTrace) {
+      log.e("UserService:saveTokenToDatabase Error", error, stackTrace);
       throw GeneralException(
           message: "Something went wrong with notifications.");
     }
@@ -273,9 +275,9 @@ class UserService {
       String? token = await this._firebaseMessaging.getToken();
       this.saveTokenToDatabase(token!);
 
-      print('TOKEN GENERATED AND SAVED.');
-    } catch (error) {
-      print(error);
+      log.i("Token Generated and Saved To Firestore.");
+    } catch (error, stackTrace) {
+      log.e("UserService:saveTokenToDatabase Error", error, stackTrace);
       throw GeneralException(
           message: "Something went wrong with notifications.");
     }

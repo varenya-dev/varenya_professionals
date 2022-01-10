@@ -11,6 +11,7 @@ import 'package:varenya_professionals/models/post/post_category/post_category.mo
 import 'package:varenya_professionals/services/post.service.dart';
 import 'package:varenya_professionals/utils/display_bottom_sheet.dart';
 import 'package:varenya_professionals/utils/image_picker.dart';
+import 'package:varenya_professionals/utils/logger.util.dart';
 import 'package:varenya_professionals/utils/snackbar.dart';
 import 'package:varenya_professionals/utils/upload_image_generate_url.dart';
 import 'package:varenya_professionals/widgets/common/custom_text_area.widget.dart';
@@ -103,7 +104,7 @@ class _UpdatePostState extends State<UpdatePost> {
     try {
       List<String> uploadedImages = await Future.wait(
         this._images.map(
-              (img) async {
+          (img) async {
             if (img.startsWith("http")) {
               return img;
             } else {
@@ -114,7 +115,7 @@ class _UpdatePostState extends State<UpdatePost> {
       );
 
       List<String> selectedCategories =
-      this._categories.map((category) => category.categoryName).toList();
+          this._categories.map((category) => category.categoryName).toList();
 
       if (selectedCategories.length == 0) {
         throw new ServerException(
@@ -138,8 +139,7 @@ class _UpdatePostState extends State<UpdatePost> {
     } on ServerException catch (error) {
       displaySnackbar(error.message, context);
     } catch (error, stackTrace) {
-      print(error);
-      print(stackTrace);
+      log.e("UpdatePost:_onUpdatePost", error, stackTrace);
       displaySnackbar(
         "Something went wrong, please try again later.",
         context,
@@ -185,11 +185,16 @@ class _UpdatePostState extends State<UpdatePost> {
                     case ServerException:
                       {
                         ServerException exception =
-                        snapshot.error as ServerException;
+                            snapshot.error as ServerException;
                         return Text(exception.message);
                       }
                     default:
                       {
+                        log.e(
+                          "UpdatePost Error",
+                          snapshot.error,
+                          snapshot.stackTrace,
+                        );
                         return Text(
                             "Something went wrong, please try again later");
                       }
@@ -204,32 +209,32 @@ class _UpdatePostState extends State<UpdatePost> {
                     children: fetchedCategories
                         .map(
                           (category) => ListTile(
-                        title: Text(
-                          category.categoryName,
-                        ),
-                        leading: Checkbox(
-                          value: this
-                              ._categories
-                              .where((cty) => cty.id == category.id)
-                              .isNotEmpty,
-                          onChanged: (bool? value) {
-                            if (value == true) {
-                              setState(() {
-                                this._categories.add(category);
-                              });
-                            } else {
-                              setState(() {
-                                this._categories = this
-                                    ._categories
-                                    .where((cty) => cty.id != category.id)
-                                    .toList();
-                              });
-                            }
-                            setStateInner(() {});
-                          },
-                        ),
-                      ),
-                    )
+                            title: Text(
+                              category.categoryName,
+                            ),
+                            leading: Checkbox(
+                              value: this
+                                  ._categories
+                                  .where((cty) => cty.id == category.id)
+                                  .isNotEmpty,
+                              onChanged: (bool? value) {
+                                if (value == true) {
+                                  setState(() {
+                                    this._categories.add(category);
+                                  });
+                                } else {
+                                  setState(() {
+                                    this._categories = this
+                                        ._categories
+                                        .where((cty) => cty.id != category.id)
+                                        .toList();
+                                  });
+                                }
+                                setStateInner(() {});
+                              },
+                            ),
+                          ),
+                        )
                         .toList(),
                   );
                 }

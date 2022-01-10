@@ -7,6 +7,7 @@ import 'package:varenya_professionals/exceptions/auth/weak_password_exception.da
 import 'package:varenya_professionals/exceptions/auth/wrong_password_exception.dart';
 import 'package:varenya_professionals/exceptions/general.exception.dart';
 import 'package:varenya_professionals/services/user_service.dart';
+import 'package:varenya_professionals/utils/logger.util.dart';
 import 'package:varenya_professionals/utils/snackbar.dart';
 import 'package:varenya_professionals/validators/value_validator.dart';
 import 'package:varenya_professionals/widgets/common/custom_field_widget.dart';
@@ -30,7 +31,6 @@ class _UserPasswordUpdateTabState extends State<UserPasswordUpdateTab> {
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
 
     // Initializing the user service
@@ -39,7 +39,6 @@ class _UserPasswordUpdateTabState extends State<UserPasswordUpdateTab> {
 
   @override
   void dispose() {
-    // TODO: implement dispose
     super.dispose();
 
     // Dispose off the controllers.
@@ -77,8 +76,8 @@ class _UserPasswordUpdateTabState extends State<UserPasswordUpdateTab> {
       displaySnackbar(error.message, context);
     } on GeneralException catch (error) {
       displaySnackbar(error.message, context);
-    } catch (error) {
-      print(error);
+    } catch (error, stackTrace) {
+      log.e("UserPasswordUpdateTab:_onFormSubmit", error, stackTrace);
       displaySnackbar("Something went wrong, please try again later", context);
     }
   }

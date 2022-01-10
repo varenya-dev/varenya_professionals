@@ -18,6 +18,7 @@ import 'package:varenya_professionals/services/auth_service.dart';
 import 'package:varenya_professionals/services/doctor.service.dart';
 import 'package:varenya_professionals/utils/display_bottom_sheet.dart';
 import 'package:varenya_professionals/utils/image_picker.dart';
+import 'package:varenya_professionals/utils/logger.util.dart';
 import 'package:varenya_professionals/utils/snackbar.dart';
 import 'package:varenya_professionals/utils/upload_image_generate_url.dart';
 import 'package:varenya_professionals/validators/value_validator.dart';
@@ -102,8 +103,8 @@ class _RegisterPageState extends State<RegisterPage> {
       displaySnackbar(error.message, context);
     } on GeneralException catch (error) {
       displaySnackbar(error.message, context);
-    } catch (error) {
-      print(error);
+    } catch (error, stackTrace) {
+      log.e("RegisterPage:_onFormSubmit", error, stackTrace);
       displaySnackbar("Something went wrong, please try again later.", context);
     }
   }

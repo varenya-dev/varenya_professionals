@@ -10,6 +10,7 @@ import 'package:varenya_professionals/providers/doctor.provider.dart';
 import 'package:varenya_professionals/providers/user_provider.dart';
 import 'package:varenya_professionals/services/doctor.service.dart';
 import 'package:varenya_professionals/services/user_service.dart';
+import 'package:varenya_professionals/utils/logger.util.dart';
 import 'package:varenya_professionals/utils/snackbar.dart';
 import 'package:varenya_professionals/widgets/common/custom_field_widget.dart';
 
@@ -33,7 +34,6 @@ class _UserDeleteTabState extends State<UserDeleteTab> {
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
 
     // Initializing the user provider.
@@ -47,7 +47,6 @@ class _UserDeleteTabState extends State<UserDeleteTab> {
 
   @override
   void dispose() {
-    // TODO: implement dispose
     super.dispose();
 
     // Dispose off the controller.
@@ -81,8 +80,8 @@ class _UserDeleteTabState extends State<UserDeleteTab> {
       displaySnackbar(error.message, context);
     } on GeneralException catch (error) {
       displaySnackbar(error.message, context);
-    } catch (error) {
-      print(error);
+    } catch (error, stackTrace) {
+      log.e("UserDeleteTab:_onFormSubmit", error, stackTrace);
       displaySnackbar("Something went wrong, please try again later", context);
     }
   }

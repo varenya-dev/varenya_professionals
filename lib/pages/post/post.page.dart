@@ -8,6 +8,7 @@ import 'package:varenya_professionals/models/post/post.model.dart' as PM;
 import 'package:varenya_professionals/services/comments.service.dart';
 import 'package:varenya_professionals/services/post.service.dart';
 import 'package:varenya_professionals/utils/display_bottom_sheet.dart';
+import 'package:varenya_professionals/utils/logger.util.dart';
 import 'package:varenya_professionals/utils/snackbar.dart';
 import 'package:varenya_professionals/widgets/comments/comment_list.widget.dart';
 import 'package:varenya_professionals/widgets/comments/comments_form.widget.dart';
@@ -92,8 +93,8 @@ class _PostState extends State<Post> {
       BuildContext context, String commentId) async {
     try {
       await this._commentsService.deleteComment(
-        new DeleteCommentDto(commentId: commentId),
-      );
+            new DeleteCommentDto(commentId: commentId),
+          );
 
       setState(() {});
 
@@ -111,8 +112,7 @@ class _PostState extends State<Post> {
         context,
       );
     } catch (error, stackTrace) {
-      print(error);
-      print(stackTrace);
+      log.e("Post:_confirmCommentDeletion", error, stackTrace);
 
       displaySnackbar(
         "Something went wrong, please try again later.",
@@ -134,9 +134,9 @@ class _PostState extends State<Post> {
       body: FutureBuilder(
         future: this._postService.fetchPostsById(this._postId!),
         builder: (
-            BuildContext context,
-            AsyncSnapshot<PM.Post> snapshot,
-            ) {
+          BuildContext context,
+          AsyncSnapshot<PM.Post> snapshot,
+        ) {
           if (snapshot.hasError) {
             switch (snapshot.error.runtimeType) {
               case ServerException:
@@ -146,7 +146,11 @@ class _PostState extends State<Post> {
                 }
               default:
                 {
-                  print(snapshot.error);
+                  log.e(
+                    "Post Error",
+                    snapshot.error,
+                    snapshot.stackTrace,
+                  );
                   return Text("Something went wrong, please try again later");
                 }
             }
@@ -160,10 +164,10 @@ class _PostState extends State<Post> {
 
           return this._post == null
               ? Column(
-            children: [
-              CircularProgressIndicator(),
-            ],
-          )
+                  children: [
+                    CircularProgressIndicator(),
+                  ],
+                )
               : _buildBody();
         },
       ),

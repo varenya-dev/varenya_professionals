@@ -7,7 +7,7 @@ import 'package:varenya_professionals/dtos/comments/create_comment/create_commen
 import 'package:varenya_professionals/dtos/comments/delete_comment/delete_comment.dto.dart';
 import 'package:varenya_professionals/dtos/comments/update_comment/update_comment.dto.dart';
 import 'package:varenya_professionals/exceptions/server.exception.dart';
-
+import 'package:varenya_professionals/utils/logger.util.dart';
 
 class CommentsService {
   final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
@@ -15,7 +15,7 @@ class CommentsService {
   Future<void> createNewComment(CreateCommentDto createCommentDto) async {
     // Fetch the ID token for the user.
     String firebaseAuthToken =
-    await this._firebaseAuth.currentUser!.getIdToken();
+        await this._firebaseAuth.currentUser!.getIdToken();
 
     // Prepare URI for the request.
     Uri uri = Uri.parse("$ENDPOINT/comment");
@@ -38,6 +38,8 @@ class CommentsService {
       print(response.body);
       throw ServerException(message: body['message']);
     } else if (response.statusCode >= 500) {
+      Map<String, dynamic> body = json.decode(response.body);
+      log.e("CommentsService:createNewComment Error", body['message']);
       throw ServerException(
           message: 'Something went wrong, please try again later.');
     }
@@ -46,7 +48,7 @@ class CommentsService {
   Future<void> updateComment(UpdateCommentDto updateCommentDto) async {
     // Fetch the ID token for the user.
     String firebaseAuthToken =
-    await this._firebaseAuth.currentUser!.getIdToken();
+        await this._firebaseAuth.currentUser!.getIdToken();
 
     // Prepare URI for the request.
     Uri uri = Uri.parse("$ENDPOINT/comment");
@@ -69,6 +71,8 @@ class CommentsService {
       print(response.body);
       throw ServerException(message: body['message']);
     } else if (response.statusCode >= 500) {
+      Map<String, dynamic> body = json.decode(response.body);
+      log.e("CommentsService:updateComment Error", body['message']);
       throw ServerException(
           message: 'Something went wrong, please try again later.');
     }
@@ -77,7 +81,7 @@ class CommentsService {
   Future<void> deleteComment(DeleteCommentDto deleteCommentDto) async {
     // Fetch the ID token for the user.
     String firebaseAuthToken =
-    await this._firebaseAuth.currentUser!.getIdToken();
+        await this._firebaseAuth.currentUser!.getIdToken();
 
     // Prepare URI for the request.
     Uri uri = Uri.parse("$ENDPOINT/comment");
@@ -100,9 +104,10 @@ class CommentsService {
       print(response.body);
       throw ServerException(message: body['message']);
     } else if (response.statusCode >= 500) {
+      Map<String, dynamic> body = json.decode(response.body);
+      log.e("CommentsService:deleteComment Error", body['message']);
       throw ServerException(
           message: 'Something went wrong, please try again later.');
     }
   }
-
 }

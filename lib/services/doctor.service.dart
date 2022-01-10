@@ -6,6 +6,7 @@ import 'package:varenya_professionals/dtos/doctor/create_update_doctor.dto.dart'
 import 'package:varenya_professionals/exceptions/server.exception.dart';
 import 'package:varenya_professionals/models/doctor/doctor.model.dart';
 import 'package:http/http.dart' as http;
+import 'package:varenya_professionals/utils/logger.util.dart';
 
 class DoctorService {
   final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
@@ -34,6 +35,8 @@ class DoctorService {
       Map<String, dynamic> body = json.decode(response.body);
       throw ServerException(message: body['message']);
     } else if (response.statusCode >= 500) {
+      Map<String, dynamic> body = json.decode(response.body);
+      log.e("DoctorService:fetchDoctorDetails Error", body['message']);
       throw ServerException(
           message: 'Something went wrong, please try again later.');
     }
@@ -69,7 +72,7 @@ class DoctorService {
       throw ServerException(message: body['message']);
     } else if (response.statusCode >= 500) {
       Map<String, dynamic> body = json.decode(response.body);
-      print(body['message']);
+      log.e("DoctorService:createPlaceholderData Error", body['message']);
       throw ServerException(
           message: 'Something went wrong, please try again later.');
     }
@@ -109,7 +112,7 @@ class DoctorService {
       throw ServerException(message: body['message']);
     } else if (response.statusCode >= 500) {
       Map<String, dynamic> body = json.decode(response.body);
-      print(body['message']);
+      log.e("DoctorService:updateDoctor Error", body['message']);
       throw ServerException(
           message: 'Something went wrong, please try again later.');
     }

@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 import 'package:varenya_professionals/exceptions/server.exception.dart';
 import 'package:varenya_professionals/models/post/post.model.dart';
 import 'package:varenya_professionals/services/post.service.dart';
+import 'package:varenya_professionals/utils/logger.util.dart';
 import 'package:varenya_professionals/widgets/posts/post_card.widget.dart';
 
 class NewPosts extends StatefulWidget {
@@ -47,7 +48,11 @@ class _NewPostsState extends State<NewPosts> {
                   }
                 default:
                   {
-                    print(snapshot.error);
+                    log.e(
+                      "NewPosts Error",
+                      snapshot.error,
+                      snapshot.stackTrace,
+                    );
                     return Text("Something went wrong, please try again later");
                   }
               }

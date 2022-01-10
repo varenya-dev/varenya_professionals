@@ -9,6 +9,7 @@ import 'package:varenya_professionals/dtos/post/update_post/update_post.dto.dart
 import 'package:varenya_professionals/exceptions/server.exception.dart';
 import 'package:varenya_professionals/models/post/post.model.dart';
 import 'package:varenya_professionals/models/post/post_category/post_category.model.dart';
+import 'package:varenya_professionals/utils/logger.util.dart';
 
 class PostService {
   final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
@@ -41,6 +42,8 @@ class PostService {
       Map<String, dynamic> body = json.decode(response.body);
       throw ServerException(message: body['message']);
     } else if (response.statusCode >= 500) {
+      Map<String, dynamic> body = json.decode(response.body);
+      log.e("PostService:fetchPostsById Error", body['message']);
       throw ServerException(
         message: 'Something went wrong, please try again later.',
       );
@@ -76,6 +79,8 @@ class PostService {
       Map<String, dynamic> body = json.decode(response.body);
       throw ServerException(message: body['message']);
     } else if (response.statusCode >= 500) {
+      Map<String, dynamic> body = json.decode(response.body);
+      log.e("PostService:fetchNewPosts Error", body['message']);
       throw ServerException(
         message: 'Something went wrong, please try again later.',
       );
@@ -119,6 +124,8 @@ class PostService {
       Map<String, dynamic> body = json.decode(response.body);
       throw ServerException(message: body['message']);
     } else if (response.statusCode >= 500) {
+      Map<String, dynamic> body = json.decode(response.body);
+      log.e("PostService:fetchPostsByCategory Error", body['message']);
       throw ServerException(
         message: 'Something went wrong, please try again later.',
       );
@@ -155,6 +162,8 @@ class PostService {
       Map<String, dynamic> body = json.decode(response.body);
       throw ServerException(message: body['message']);
     } else if (response.statusCode >= 500) {
+      Map<String, dynamic> body = json.decode(response.body);
+      log.e("PostService:fetchCategories Error", body['message']);
       throw ServerException(
         message: 'Something went wrong, please try again later.',
       );
@@ -194,6 +203,8 @@ class PostService {
       print(response.body);
       throw ServerException(message: body['message']);
     } else if (response.statusCode >= 500) {
+      Map<String, dynamic> body = json.decode(response.body);
+      log.e("PostService:createNewPost Error", body['message']);
       throw ServerException(
           message: 'Something went wrong, please try again later.');
     }
@@ -225,6 +236,8 @@ class PostService {
       Map<String, dynamic> body = json.decode(response.body);
       throw ServerException(message: body['message']);
     } else if (response.statusCode >= 500) {
+      Map<String, dynamic> body = json.decode(response.body);
+      log.e("PostService:updatePost Error", body['message']);
       throw ServerException(
           message: 'Something went wrong, please try again later.');
     }
@@ -255,6 +268,8 @@ class PostService {
       Map<String, dynamic> body = json.decode(response.body);
       throw ServerException(message: body['message']);
     } else if (response.statusCode >= 500) {
+      Map<String, dynamic> body = json.decode(response.body);
+      log.e("PostService:deletePost Error", body['message']);
       throw ServerException(
           message: 'Something went wrong, please try again later.');
     }

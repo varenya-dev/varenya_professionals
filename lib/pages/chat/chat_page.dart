@@ -9,6 +9,7 @@ import 'package:provider/provider.dart';
 import 'package:varenya_professionals/models/chat/chat/chat_model.dart';
 import 'package:varenya_professionals/models/chat/chat_thread/chat_thread_model.dart';
 import 'package:varenya_professionals/services/chat_service.dart';
+import 'package:varenya_professionals/utils/logger.util.dart';
 import 'package:varenya_professionals/widgets/chat/chat_bubble_widget.dart';
 import 'package:varenya_professionals/widgets/common/custom_field_widget.dart';
 
@@ -104,6 +105,11 @@ class _ChatPageState extends State<ChatPage> {
                 AsyncSnapshot<DocumentSnapshot<Map<String, dynamic>>>
                     snapshot) {
               if (snapshot.hasError) {
+                log.e(
+                  "ChatPage Error",
+                  snapshot.error,
+                  snapshot.stackTrace,
+                );
                 return Text('Something went wrong');
               }
 

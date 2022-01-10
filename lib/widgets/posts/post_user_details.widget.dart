@@ -11,6 +11,7 @@ import 'package:varenya_professionals/pages/post/update_post.page.dart';
 import 'package:varenya_professionals/providers/user_provider.dart';
 import 'package:varenya_professionals/services/post.service.dart';
 import 'package:varenya_professionals/utils/display_bottom_sheet.dart';
+import 'package:varenya_professionals/utils/logger.util.dart';
 import 'package:varenya_professionals/utils/snackbar.dart';
 import 'package:varenya_professionals/widgets/common/profile_picture_widget.dart';
 
@@ -93,8 +94,7 @@ class _PostUserDetailsState extends State<PostUserDetails> {
         context,
       );
     } catch (error, stackTrace) {
-      print(error);
-      print(stackTrace);
+      log.e("PostUserDetails:_confirmPostDeletion", error, stackTrace);
 
       displaySnackbar(
         "Something went wrong, please try again later.",

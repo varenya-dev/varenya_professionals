@@ -13,6 +13,7 @@ import 'package:varenya_professionals/services/comments.service.dart';
 import 'package:varenya_professionals/services/doctor.service.dart';
 import 'package:varenya_professionals/services/post.service.dart';
 import 'package:varenya_professionals/services/user_service.dart';
+import 'package:varenya_professionals/utils/logger.util.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -30,7 +31,7 @@ Future<void> main() async {
     sound: true,
   );
 
-  print("FCM STATUS: ${settings.authorizationStatus}");
+  log.i("FCM Authorization Status: ${settings.authorizationStatus}");
 
   runApp(Root());
 }

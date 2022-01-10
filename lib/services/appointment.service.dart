@@ -7,6 +7,7 @@ import 'package:varenya_professionals/dtos/fetch_booked_appointments/fetch_booke
 import 'package:varenya_professionals/exceptions/server.exception.dart';
 import 'package:varenya_professionals/models/appointment/appointment/appointment.model.dart';
 import 'package:varenya_professionals/models/appointment/doctor_appointment_response/doctor_appointment_response.model.dart';
+import 'package:varenya_professionals/utils/logger.util.dart';
 
 class AppointmentService {
   final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
@@ -35,6 +36,8 @@ class AppointmentService {
       Map<String, dynamic> body = json.decode(response.body);
       throw ServerException(message: body['message']);
     } else if (response.statusCode >= 500) {
+      Map<String, dynamic> body = json.decode(response.body);
+      log.e("AppointmentService:fetchAppointments Error", body['message']);
       throw ServerException(
           message: 'Something went wrong, please try again later.');
     }
@@ -73,6 +76,8 @@ class AppointmentService {
       Map<String, dynamic> body = json.decode(response.body);
       throw ServerException(message: body['message']);
     } else if (response.statusCode >= 500) {
+      Map<String, dynamic> body = json.decode(response.body);
+      log.e("AppointmentService:fetchAppointmentsByDay Error", body['message']);
       throw ServerException(
           message: 'Something went wrong, please try again later.');
     }
@@ -114,6 +119,8 @@ class AppointmentService {
       Map<String, dynamic> body = json.decode(response.body);
       throw ServerException(message: body['message']);
     } else if (response.statusCode >= 500) {
+      Map<String, dynamic> body = json.decode(response.body);
+      log.e("AppointmentService:updateAppointment Error", body['message']);
       throw ServerException(
           message: 'Something went wrong, please try again later.');
     }
@@ -148,6 +155,8 @@ class AppointmentService {
       Map<String, dynamic> body = json.decode(response.body);
       throw ServerException(message: body['message']);
     } else if (response.statusCode >= 500) {
+      Map<String, dynamic> body = json.decode(response.body);
+      log.e("AppointmentService:deleteAppointment Error", body['message']);
       throw ServerException(
           message: 'Something went wrong, please try again later.');
     }

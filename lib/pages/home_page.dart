@@ -14,6 +14,7 @@ import 'package:varenya_professionals/services/alerts_service.dart';
 import 'package:varenya_professionals/services/auth_service.dart';
 import 'package:varenya_professionals/services/chat_service.dart';
 import 'package:varenya_professionals/services/user_service.dart';
+import 'package:varenya_professionals/utils/logger.util.dart';
 import 'package:varenya_professionals/utils/snackbar.dart';
 
 import 'auth/auth_page.dart';
@@ -49,8 +50,8 @@ class _HomePageState extends State<HomePage> {
           .listen(this._userService.saveTokenToDatabase);
     } on GeneralException catch (error) {
       displaySnackbar(error.message, context);
-    } catch (error) {
-      print(error);
+    } catch (error, stackTrace) {
+      log.e("HomePage:initState Error", error, stackTrace);
       displaySnackbar(
           "Something went wrong with notifications, error has been informed.",
           context);
@@ -59,7 +60,7 @@ class _HomePageState extends State<HomePage> {
     this
         ._alertsService
         .toggleSubscribeToSOSTopic(true)
-        .then((_) => print('SOS TOPIC SUBSCRIBED'))
+        .then((_) => log.i('Subscribed to SOS Topic'))
         .catchError((error) => print(error));
   }
 

@@ -16,6 +16,7 @@ import 'package:varenya_professionals/services/doctor.service.dart';
 import 'package:varenya_professionals/services/user_service.dart';
 import 'package:varenya_professionals/utils/display_bottom_sheet.dart';
 import 'package:varenya_professionals/utils/image_picker.dart';
+import 'package:varenya_professionals/utils/logger.util.dart';
 import 'package:varenya_professionals/utils/snackbar.dart';
 import 'package:varenya_professionals/utils/upload_image_generate_url.dart';
 import 'package:varenya_professionals/validators/csv_validator.dart';
@@ -135,8 +136,8 @@ class _UserProfileUpdateTabState extends State<UserProfileUpdateTab> {
       displaySnackbar(error.message, context);
     } on ServerException catch (error) {
       displaySnackbar(error.message, context);
-    } catch (error) {
-      print(error);
+    } catch (error, stackTrace) {
+      log.e("UserProfileUpdateTab:_uploadFromGallery", error, stackTrace);
       displaySnackbar("Something went wrong, please try again later", context);
     }
   }
@@ -203,9 +204,8 @@ class _UserProfileUpdateTabState extends State<UserProfileUpdateTab> {
       displaySnackbar(error.message, context);
     } on ServerException catch (error) {
       displaySnackbar(error.message, context);
-    } catch (error, stacktrace) {
-      print(error);
-      print(stacktrace);
+    } catch (error, stackTrace) {
+      log.e("UserProfileUpdateTab:_uploadFromCamera", error, stackTrace);
       displaySnackbar("Something went wrong, please try again later", context);
     }
   }
@@ -277,8 +277,8 @@ class _UserProfileUpdateTabState extends State<UserProfileUpdateTab> {
       displaySnackbar(error.message, context);
     } on GeneralException catch (error) {
       displaySnackbar(error.message, context);
-    } catch (error) {
-      print(error);
+    } catch (error, stackTrace) {
+      log.e("UserProfileUpdateTab:_onFormSubmit", error, stackTrace);
       displaySnackbar("Something went wrong, please try again later", context);
     }
   }

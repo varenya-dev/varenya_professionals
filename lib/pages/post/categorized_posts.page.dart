@@ -5,6 +5,7 @@ import 'package:varenya_professionals/models/post/post.model.dart';
 import 'package:varenya_professionals/models/post/post_category/post_category.model.dart';
 import 'package:varenya_professionals/services/post.service.dart';
 import 'package:varenya_professionals/utils/display_bottom_sheet.dart';
+import 'package:varenya_professionals/utils/logger.util.dart';
 import 'package:varenya_professionals/widgets/posts/post_card.widget.dart';
 
 class CategorizedPosts extends StatefulWidget {
@@ -42,12 +43,16 @@ class _CategorizedPostsState extends State<CategorizedPosts> {
                     case ServerException:
                       {
                         ServerException exception =
-                        snapshot.error as ServerException;
+                            snapshot.error as ServerException;
                         return Text(exception.message);
                       }
                     default:
                       {
-                        print(snapshot.error);
+                        log.e(
+                          "CategorizedPosts Error",
+                          snapshot.error,
+                          snapshot.stackTrace,
+                        );
                         return Text(
                           "Something went wrong, please try again later",
                         );
@@ -63,23 +68,23 @@ class _CategorizedPostsState extends State<CategorizedPosts> {
                     children: categories
                         .map(
                           (category) => ListTile(
-                        title: Text(
-                          category.categoryName,
-                        ),
-                        leading: Radio(
-                          value: category.categoryName,
-                          groupValue: this._categoryName,
-                          onChanged: (String? categoryValue) {
-                            if (categoryValue != null) {
-                              setState(() {
-                                this._categoryName = categoryValue;
-                              });
-                              setStateInner(() {});
-                            }
-                          },
-                        ),
-                      ),
-                    )
+                            title: Text(
+                              category.categoryName,
+                            ),
+                            leading: Radio(
+                              value: category.categoryName,
+                              groupValue: this._categoryName,
+                              onChanged: (String? categoryValue) {
+                                if (categoryValue != null) {
+                                  setState(() {
+                                    this._categoryName = categoryValue;
+                                  });
+                                  setStateInner(() {});
+                                }
+                              },
+                            ),
+                          ),
+                        )
                         .toList(),
                   );
                 }
@@ -121,22 +126,26 @@ class _CategorizedPostsState extends State<CategorizedPosts> {
             _buildFilter(),
             FutureBuilder(
               future:
-              this._postService.fetchPostsByCategory(this._categoryName),
+                  this._postService.fetchPostsByCategory(this._categoryName),
               builder: (
-                  BuildContext context,
-                  AsyncSnapshot<List<Post>> snapshot,
-                  ) {
+                BuildContext context,
+                AsyncSnapshot<List<Post>> snapshot,
+              ) {
                 if (snapshot.hasError) {
                   switch (snapshot.error.runtimeType) {
                     case ServerException:
                       {
                         ServerException exception =
-                        snapshot.error as ServerException;
+                            snapshot.error as ServerException;
                         return Text(exception.message);
                       }
                     default:
                       {
-                        print(snapshot.error);
+                        log.e(
+                          "ChatPage Error",
+                          snapshot.error,
+                          snapshot.stackTrace,
+                        );
                         return Text(
                             "Something went wrong, please try again later");
                       }

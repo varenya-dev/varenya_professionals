@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:varenya_professionals/models/chat/chat_thread/chat_thread_model.dart';
 import 'package:varenya_professionals/services/chat_service.dart';
+import 'package:varenya_professionals/utils/logger.util.dart';
 
 import 'chat_page.dart';
 
@@ -40,6 +41,8 @@ class _ThreadsPageState extends State<ThreadsPage> {
           AsyncSnapshot<QuerySnapshot<Map<String, dynamic>>> snapshot,
         ) {
           if (snapshot.hasError) {
+            log.e("ThreadsPage Error", snapshot.error, snapshot.stackTrace);
+
             return Text('Something went wrong');
           }
 

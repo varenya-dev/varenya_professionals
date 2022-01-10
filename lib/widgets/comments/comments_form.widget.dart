@@ -7,6 +7,7 @@ import 'package:varenya_professionals/enum/comment_form_type.enum.dart';
 import 'package:varenya_professionals/exceptions/auth/not_logged_in_exception.dart';
 import 'package:varenya_professionals/exceptions/server.exception.dart';
 import 'package:varenya_professionals/services/comments.service.dart';
+import 'package:varenya_professionals/utils/logger.util.dart';
 import 'package:varenya_professionals/utils/snackbar.dart';
 import 'package:varenya_professionals/widgets/common/custom_text_area.widget.dart';
 
@@ -69,8 +70,8 @@ class _CommentFormState extends State<CommentForm> {
       displaySnackbar(error.message, context);
     } on NotLoggedInException catch (error) {
       displaySnackbar(error.message, context);
-    } catch (error) {
-      print(error);
+    } catch (error, stackTrace) {
+      log.e("CommentForm:_onFormSubmit", error, stackTrace);
       displaySnackbar("Something went wrong, please try again later.", context);
     }
   }
@@ -99,16 +100,16 @@ class _CommentFormState extends State<CommentForm> {
         key: this._formKey,
         child: widget.commentFormType == CommentFormType.CREATE
             ? Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: _children(context),
-        )
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: _children(context),
+              )
             : Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          mainAxisSize: MainAxisSize.min,
-          children: _children(context),
-        ),
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                mainAxisSize: MainAxisSize.min,
+                children: _children(context),
+              ),
       ),
     );
   }

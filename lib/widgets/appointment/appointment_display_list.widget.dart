@@ -4,6 +4,7 @@ import 'package:varenya_professionals/dtos/fetch_booked_appointments/fetch_booke
 import 'package:varenya_professionals/exceptions/server.exception.dart';
 import 'package:varenya_professionals/models/appointment/doctor_appointment_response/doctor_appointment_response.model.dart';
 import 'package:varenya_professionals/services/appointment.service.dart';
+import 'package:varenya_professionals/utils/logger.util.dart';
 
 import 'appointment_card.widget.dart';
 
@@ -51,7 +52,11 @@ class _AppointmentDisplayListState extends State<AppointmentDisplayList> {
               }
             default:
               {
-                print(snapshot.error);
+                log.e(
+                  "AppointmentDisplayList Error",
+                  snapshot.error,
+                  snapshot.stackTrace,
+                );
                 return Text("Something went wrong, please try again later");
               }
           }

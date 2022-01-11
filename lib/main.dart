@@ -6,6 +6,7 @@ import 'package:hive_flutter/hive_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:varenya_professionals/app.dart';
 import 'package:varenya_professionals/enum/roles.enum.dart';
+import 'package:varenya_professionals/models/appointment/appointment/appointment.model.dart';
 import 'package:varenya_professionals/models/doctor/doctor.model.dart';
 import 'package:varenya_professionals/models/server_user/random_name/random_name.model.dart';
 import 'package:varenya_professionals/models/server_user/server_user.model.dart';
@@ -41,6 +42,7 @@ Future<void> main() async {
   Hive.registerAdapter<RandomName>(new RandomNameAdapter());
   Hive.registerAdapter<Roles>(new RolesAdapter());
   Hive.registerAdapter<ServerUser>(new ServerUserAdapter());
+  Hive.registerAdapter<Appointment>(new AppointmentAdapter());
 
   log.i("Registered Hive Adapters");
 

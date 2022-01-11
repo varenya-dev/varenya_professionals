@@ -14,6 +14,7 @@ import 'package:varenya_professionals/services/alerts_service.dart';
 import 'package:varenya_professionals/services/auth_service.dart';
 import 'package:varenya_professionals/services/chat_service.dart';
 import 'package:varenya_professionals/services/user_service.dart';
+import 'package:varenya_professionals/utils/check_connectivity.util.dart';
 import 'package:varenya_professionals/utils/logger.util.dart';
 import 'package:varenya_professionals/utils/snackbar.dart';
 
@@ -43,25 +44,34 @@ class _HomePageState extends State<HomePage> {
     this._chatService = Provider.of<ChatService>(context, listen: false);
     this._alertsService = Provider.of<AlertsService>(context, listen: false);
 
-    try {
-      this._userService.generateAndSaveTokenToDatabase();
+    checkConnectivity().then((value) {
+      if (value) {
+        try {
+          this._userService.generateAndSaveTokenToDatabase();
 
-      FirebaseMessaging.instance.onTokenRefresh
-          .listen(this._userService.saveTokenToDatabase);
-    } on GeneralException catch (error) {
-      displaySnackbar(error.message, context);
-    } catch (error, stackTrace) {
-      log.e("HomePage:initState Error", error, stackTrace);
-      displaySnackbar(
-          "Something went wrong with notifications, error has been informed.",
-          context);
-    }
+          FirebaseMessaging.instance.onTokenRefresh
+              .listen(this._userService.saveTokenToDatabase);
+        } on GeneralException catch (error) {
+          displaySnackbar(error.message, context);
+        } catch (error, stackTrace) {
+          log.e("HomePage:initState Error", error, stackTrace);
+          displaySnackbar(
+              "Something went wrong with notifications, error has been informed.",
+              context);
+        }
 
-    this
-        ._alertsService
-        .toggleSubscribeToSOSTopic(true)
-        .then((_) => log.i('Subscribed to SOS Topic'))
-        .catchError((error) => print(error));
+        this
+            ._alertsService
+            .toggleSubscribeToSOSTopic(true)
+            .then((_) => log.i('Subscribed to SOS Topic'))
+            .catchError((error) => print(error));
+      } else {
+        log.i(
+            "Device offline, suspending FCM Token Generation and Topic Subscription");
+      }
+    }).catchError((error, stackTrace) {
+      log.e("HomePage Error", error, stackTrace);
+    });
   }
 
   @override

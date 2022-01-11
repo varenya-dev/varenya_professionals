@@ -8,6 +8,7 @@ import 'package:varenya_professionals/app.dart';
 import 'package:varenya_professionals/enum/roles.enum.dart';
 import 'package:varenya_professionals/models/appointment/appointment/appointment.model.dart';
 import 'package:varenya_professionals/models/doctor/doctor.model.dart';
+import 'package:varenya_professionals/models/patient/patient.model.dart';
 import 'package:varenya_professionals/models/server_user/random_name/random_name.model.dart';
 import 'package:varenya_professionals/models/server_user/server_user.model.dart';
 import 'package:varenya_professionals/providers/doctor.provider.dart';
@@ -43,6 +44,7 @@ Future<void> main() async {
   Hive.registerAdapter<Roles>(new RolesAdapter());
   Hive.registerAdapter<ServerUser>(new ServerUserAdapter());
   Hive.registerAdapter<Appointment>(new AppointmentAdapter());
+  Hive.registerAdapter<Patient>(new PatientAdapter());
 
   log.i("Registered Hive Adapters");
 

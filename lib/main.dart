@@ -62,6 +62,7 @@ Future<void> main() async {
   log.i("Opening Hive Boxes");
 
   await Hive.openBox<List<dynamic>>(VARENYA_DOCTORS_BOX);
+  await Hive.openBox<Doctor>(VARENYA_LOGGED_IN_DOCTOR_BOX);
   await Hive.openBox<List<dynamic>>(VARENYA_POSTS_BOX);
   await Hive.openBox<List<dynamic>>(VARENYA_POST_CATEGORY_BOX);
   await Hive.openBox<List<dynamic>>(VARENYA_APPOINTMENT_BOX);

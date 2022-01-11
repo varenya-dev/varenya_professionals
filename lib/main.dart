@@ -10,6 +10,7 @@ import 'package:varenya_professionals/models/appointment/appointment/appointment
 import 'package:varenya_professionals/models/appointment/doctor_appointment_response/doctor_appointment_response.model.dart';
 import 'package:varenya_professionals/models/doctor/doctor.model.dart';
 import 'package:varenya_professionals/models/patient/patient.model.dart';
+import 'package:varenya_professionals/models/post/post_image/post_image.model.dart';
 import 'package:varenya_professionals/models/server_user/random_name/random_name.model.dart';
 import 'package:varenya_professionals/models/server_user/server_user.model.dart';
 import 'package:varenya_professionals/providers/doctor.provider.dart';
@@ -48,6 +49,7 @@ Future<void> main() async {
   Hive.registerAdapter<Patient>(new PatientAdapter());
   Hive.registerAdapter<DoctorAppointmentResponse>(
       new DoctorAppointmentResponseAdapter());
+  Hive.registerAdapter<PostImage>(new PostImageAdapter());
 
   log.i("Registered Hive Adapters");
 

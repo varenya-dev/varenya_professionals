@@ -5,6 +5,7 @@ import 'package:hive/hive.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:varenya_professionals/app.dart';
+import 'package:varenya_professionals/enum/post_type.enum.dart';
 import 'package:varenya_professionals/enum/roles.enum.dart';
 import 'package:varenya_professionals/models/appointment/appointment/appointment.model.dart';
 import 'package:varenya_professionals/models/appointment/doctor_appointment_response/doctor_appointment_response.model.dart';
@@ -52,6 +53,7 @@ Future<void> main() async {
       new DoctorAppointmentResponseAdapter());
   Hive.registerAdapter<PostImage>(new PostImageAdapter());
   Hive.registerAdapter<PostCategory>(new PostCategoryAdapter());
+  Hive.registerAdapter<PostType>(new PostTypeAdapter());
 
   log.i("Registered Hive Adapters");
 

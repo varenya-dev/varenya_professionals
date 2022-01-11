@@ -28,6 +28,7 @@ import 'package:varenya_professionals/services/user_service.dart';
 import 'package:varenya_professionals/utils/logger.util.dart';
 
 import 'constants/hive_boxes.constant.dart';
+import 'models/post/post.model.dart';
 import 'models/specialization/specialization.model.dart';
 
 Future<void> main() async {
@@ -54,6 +55,7 @@ Future<void> main() async {
   Hive.registerAdapter<PostImage>(new PostImageAdapter());
   Hive.registerAdapter<PostCategory>(new PostCategoryAdapter());
   Hive.registerAdapter<PostType>(new PostTypeAdapter());
+  Hive.registerAdapter<Post>(new PostAdapter());
 
   log.i("Registered Hive Adapters");
 

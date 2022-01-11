@@ -117,49 +117,65 @@ class PostService {
   }
 
   Future<List<Post>> fetchPostsByCategory(String category) async {
-    if (category == 'NEW') {
-      return await this.fetchNewPosts();
-    }
+    try {
+      if (category == 'NEW') {
+        return await this.fetchNewPosts();
+      }
 
-    // Fetch the ID token for the user.
-    String firebaseAuthToken =
-        await this._firebaseAuth.currentUser!.getIdToken();
+      // Fetch the ID token for the user.
+      String firebaseAuthToken =
+          await this._firebaseAuth.currentUser!.getIdToken();
 
-    // Prepare URI for the request.
-    Uri uri = Uri.http(
-      RAW_ENDPOINT,
-      "/v1/api/post/category",
-      {"category": category},
-    );
-
-    // Prepare authorization headers.
-    Map<String, String> headers = {
-      "Authorization": "Bearer $firebaseAuthToken",
-    };
-
-    // Send the post request to the server.
-    http.Response response = await http.get(
-      uri,
-      headers: headers,
-    );
-
-    // Check for any errors.
-    if (response.statusCode >= 400 && response.statusCode < 500) {
-      Map<String, dynamic> body = json.decode(response.body);
-      throw ServerException(message: body['message']);
-    } else if (response.statusCode >= 500) {
-      Map<String, dynamic> body = json.decode(response.body);
-      log.e("PostService:fetchPostsByCategory Error", body['message']);
-      throw ServerException(
-        message: 'Something went wrong, please try again later.',
+      // Prepare URI for the request.
+      Uri uri = Uri.http(
+        RAW_ENDPOINT,
+        "/v1/api/post/category",
+        {"category": category},
       );
+
+      // Prepare authorization headers.
+      Map<String, String> headers = {
+        "Authorization": "Bearer $firebaseAuthToken",
+      };
+
+      // Send the post request to the server.
+      http.Response response = await http.get(
+        uri,
+        headers: headers,
+      );
+
+      // Check for any errors.
+      if (response.statusCode >= 400 && response.statusCode < 500) {
+        Map<String, dynamic> body = json.decode(response.body);
+        throw ServerException(message: body['message']);
+      } else if (response.statusCode >= 500) {
+        Map<String, dynamic> body = json.decode(response.body);
+        log.e("PostService:fetchPostsByCategory Error", body['message']);
+        throw ServerException(
+          message: 'Something went wrong, please try again later.',
+        );
+      }
+
+      List<dynamic> jsonResponse = json.decode(response.body);
+      List<Post> posts =
+          jsonResponse.map((postJson) => Post.fromJson(postJson)).toList();
+
+      this._savePostsToDevice(posts, category);
+
+      return posts;
+    } on SocketException {
+      log.wtf("Dedicated Server Offline");
+      return this._fetchPostsFromDevice(category);
+    } on TimeoutException {
+      log.wtf("Dedicated Server Offline");
+      return this._fetchPostsFromDevice(category);
+    } on FirebaseAuthException catch (error) {
+      if (error.code == "network-request-failed") {
+        return this._fetchPostsFromDevice(category);
+      } else {
+        throw error;
+      }
     }
-
-    List<dynamic> jsonResponse = json.decode(response.body);
-    List<Post> posts =
-        jsonResponse.map((postJson) => Post.fromJson(postJson)).toList();
-
-    return posts;
   }
 
   Future<List<PostCategory>> fetchCategories() async {

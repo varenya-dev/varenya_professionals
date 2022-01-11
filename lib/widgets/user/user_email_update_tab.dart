@@ -1,5 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_offline/flutter_offline.dart';
 import 'package:form_field_validator/form_field_validator.dart';
 import 'package:provider/provider.dart';
 import 'package:varenya_professionals/dtos/user/update_email_dto/update_email_dto.dart';
@@ -134,10 +135,22 @@ class _UserEmailUpdateTabState extends State<UserEmailUpdateTab> {
                     textInputType: TextInputType.visiblePassword,
                     obscureText: true,
                   ),
-                  ElevatedButton(
-                    onPressed: this._onFormSubmit,
-                    child: Text('Update Email Address'),
-                  )
+                  OfflineBuilder(
+                    connectivityBuilder:
+                        (BuildContext context, ConnectivityResult result, _) {
+                      final bool connected = result != ConnectivityResult.none;
+
+                      return ElevatedButton(
+                        onPressed: connected ? this._onFormSubmit : null,
+                        child: Text(
+                          connected
+                              ? 'Update Email Address'
+                              : 'You Are Offline',
+                        ),
+                      );
+                    },
+                    child: SizedBox(),
+                  ),
                 ],
               ),
             );

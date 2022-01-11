@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_offline/flutter_offline.dart';
 import 'package:form_field_validator/form_field_validator.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
@@ -418,9 +419,19 @@ class _UserProfileUpdateTabState extends State<UserProfileUpdateTab> {
                 ),
                 onTap: this._setShiftEndTime,
               ),
-              ElevatedButton(
-                onPressed: this._onFormSubmit,
-                child: Text('Update Profile'),
+              OfflineBuilder(
+                connectivityBuilder:
+                    (BuildContext context, ConnectivityResult result, _) {
+                  final bool connected = result != ConnectivityResult.none;
+
+                  return ElevatedButton(
+                    onPressed: connected ? this._onFormSubmit : null,
+                    child: Text(
+                      connected ? 'Update Profile' : 'You Are Offline',
+                    ),
+                  );
+                },
+                child: SizedBox(),
               ),
             ],
           ),

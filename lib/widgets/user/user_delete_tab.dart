@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_offline/flutter_offline.dart';
 import 'package:form_field_validator/form_field_validator.dart';
 import 'package:provider/provider.dart';
 import 'package:varenya_professionals/exceptions/auth/not_logged_in_exception.dart';
@@ -136,10 +137,19 @@ class _UserDeleteTabState extends State<UserDeleteTab> {
                 textInputType: TextInputType.visiblePassword,
                 obscureText: true,
               ),
-              ElevatedButton(
-                onPressed: this._onFormSubmit,
-                child: Text('Delete Account'),
-              )
+              OfflineBuilder(
+                connectivityBuilder:
+                    (BuildContext context, ConnectivityResult result, _) {
+                  final bool connected = result != ConnectivityResult.none;
+
+                  return ElevatedButton(
+                    onPressed: connected ? this._onFormSubmit : null,
+                    child:
+                        Text(connected ? 'Delete Account' : 'You Are Offline'),
+                  );
+                },
+                child: SizedBox(),
+              ),
             ],
           ),
         ),

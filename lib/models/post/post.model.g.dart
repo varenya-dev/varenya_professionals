@@ -3,6 +3,69 @@
 part of 'post.model.dart';
 
 // **************************************************************************
+// TypeAdapterGenerator
+// **************************************************************************
+
+class PostAdapter extends TypeAdapter<Post> {
+  @override
+  final int typeId = 12;
+
+  @override
+  Post read(BinaryReader reader) {
+    final numOfFields = reader.readByte();
+    final fields = <int, dynamic>{
+      for (int i = 0; i < numOfFields; i++) reader.readByte(): reader.read(),
+    };
+    return Post(
+      id: fields[0] == null ? '' : fields[0] as String,
+      postType: fields[1] == null ? PostType.Post : fields[1] as PostType,
+      body: fields[2] == null ? '' : fields[2] as String,
+      images: fields[3] == null ? [] : (fields[3] as List).cast<PostImage>(),
+      user: fields[4] as ServerUser,
+      comments: fields[5] == null ? [] : (fields[5] as List).cast<Post>(),
+      categories:
+          fields[6] == null ? [] : (fields[6] as List).cast<PostCategory>(),
+      createdAt: fields[7] as DateTime,
+      updatedAt: fields[8] as DateTime,
+    );
+  }
+
+  @override
+  void write(BinaryWriter writer, Post obj) {
+    writer
+      ..writeByte(9)
+      ..writeByte(0)
+      ..write(obj.id)
+      ..writeByte(1)
+      ..write(obj.postType)
+      ..writeByte(2)
+      ..write(obj.body)
+      ..writeByte(3)
+      ..write(obj.images)
+      ..writeByte(4)
+      ..write(obj.user)
+      ..writeByte(5)
+      ..write(obj.comments)
+      ..writeByte(6)
+      ..write(obj.categories)
+      ..writeByte(7)
+      ..write(obj.createdAt)
+      ..writeByte(8)
+      ..write(obj.updatedAt);
+  }
+
+  @override
+  int get hashCode => typeId.hashCode;
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is PostAdapter &&
+          runtimeType == other.runtimeType &&
+          typeId == other.typeId;
+}
+
+// **************************************************************************
 // JsonSerializableGenerator
 // **************************************************************************
 

@@ -28,6 +28,9 @@ dependencies:
   intl: ^0.17.0
   cached_network_image: ^3.2.0
   logger: ^1.1.0
+  hive: ^2.0.5
+  hive_flutter: ^1.1.0
+  flutter_offline: ^2.0.0
 
 flutter_icons:
   android: "launcher_icon"
@@ -38,6 +41,7 @@ dev_dependencies:
   flutter_test:
     sdk: flutter
   json_serializable: ^6.1.0
+  hive_generator: ^1.1.2
 
 flutter:
   uses-material-design: true

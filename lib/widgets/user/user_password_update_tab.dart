@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_offline/flutter_offline.dart';
 import 'package:form_field_validator/form_field_validator.dart';
 import 'package:provider/provider.dart';
 import 'package:varenya_professionals/dtos/user/update_password_dto/update_password_dto.dart';
@@ -146,10 +147,19 @@ class _UserPasswordUpdateTabState extends State<UserPasswordUpdateTab> {
                 textInputType: TextInputType.visiblePassword,
                 obscureText: true,
               ),
-              ElevatedButton(
-                onPressed: this._onFormSubmit,
-                child: Text('Update Password'),
-              )
+              OfflineBuilder(
+                connectivityBuilder:
+                    (BuildContext context, ConnectivityResult result, _) {
+                  final bool connected = result != ConnectivityResult.none;
+
+                  return ElevatedButton(
+                    onPressed: connected ? this._onFormSubmit : null,
+                    child:
+                    Text(connected ? 'Update Password' : 'You Are Offline'),
+                  );
+                },
+                child: SizedBox(),
+              ),
             ],
           ),
         ),

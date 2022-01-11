@@ -1,10 +1,15 @@
+import 'package:hive/hive.dart';
 import 'package:json_annotation/json_annotation.dart';
 
 part 'post_image.model.g.dart';
 
+@HiveType(typeId: 9)
 @JsonSerializable()
 class PostImage {
+  @HiveField(0, defaultValue: '')
   final String id;
+
+  @HiveField(1, defaultValue: '')
   final String imageUrl;
 
   const PostImage({

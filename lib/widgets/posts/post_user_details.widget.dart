@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_offline/flutter_offline.dart';
 import 'package:provider/provider.dart';
 import 'package:varenya_professionals/dtos/post/delete_post/delete_post.dto.dart';
 import 'package:varenya_professionals/enum/post_options_type.enum.dart';
@@ -147,30 +148,41 @@ class _PostUserDetailsState extends State<PostUserDetails> {
                             horizontal:
                                 MediaQuery.of(context).size.width * 0.05,
                           ),
-                          child: PopupMenuButton(
-                            enabled: true,
-                            child: Icon(Icons.more_vert),
-                            itemBuilder: (context) => [
-                              PopupMenuItem(
-                                child: Text("Update Post"),
-                                value: PostOptionsType.UPDATE,
-                              ),
-                              PopupMenuItem(
-                                child: Text("Delete Post"),
-                                value: PostOptionsType.DELETE,
-                              ),
-                            ],
-                            onSelected: (PostOptionsType selectedData) {
-                              if (selectedData == PostOptionsType.UPDATE) {
-                                Navigator.of(context).pushNamed(
-                                  UpdatePost.routeName,
-                                  arguments: this.widget.post,
-                                );
-                              }
-                              if (selectedData == PostOptionsType.DELETE) {
-                                this._onDeletePost(context);
-                              }
+                          child: OfflineBuilder(
+                            connectivityBuilder: (
+                              BuildContext context,
+                              ConnectivityResult value,
+                              Widget child,
+                            ) {
+                              final bool connected =
+                                  value != ConnectivityResult.none;
+                              return PopupMenuButton(
+                                enabled: connected,
+                                child: Icon(Icons.more_vert),
+                                itemBuilder: (context) => [
+                                  PopupMenuItem(
+                                    child: Text("Update Post"),
+                                    value: PostOptionsType.UPDATE,
+                                  ),
+                                  PopupMenuItem(
+                                    child: Text("Delete Post"),
+                                    value: PostOptionsType.DELETE,
+                                  ),
+                                ],
+                                onSelected: (PostOptionsType selectedData) {
+                                  if (selectedData == PostOptionsType.UPDATE) {
+                                    Navigator.of(context).pushNamed(
+                                      UpdatePost.routeName,
+                                      arguments: this.widget.post,
+                                    );
+                                  }
+                                  if (selectedData == PostOptionsType.DELETE) {
+                                    this._onDeletePost(context);
+                                  }
+                                },
+                              );
                             },
+                            child: SizedBox(),
                           ),
                         )
                       : SizedBox(),

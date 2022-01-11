@@ -6,6 +6,7 @@ import 'package:hive_flutter/hive_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:varenya_professionals/app.dart';
 import 'package:varenya_professionals/models/doctor/doctor.model.dart';
+import 'package:varenya_professionals/models/server_user/random_name/random_name.model.dart';
 import 'package:varenya_professionals/providers/doctor.provider.dart';
 import 'package:varenya_professionals/providers/user_provider.dart';
 import 'package:varenya_professionals/services/alerts_service.dart';
@@ -35,6 +36,7 @@ Future<void> main() async {
 
   Hive.registerAdapter<Specialization>(new SpecializationAdapter());
   Hive.registerAdapter<Doctor>(new DoctorAdapter());
+  Hive.registerAdapter<RandomName>(new RandomNameAdapter());
 
   log.i("Registered Hive Adapters");
 

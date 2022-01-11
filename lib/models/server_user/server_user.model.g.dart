@@ -3,6 +3,56 @@
 part of 'server_user.model.dart';
 
 // **************************************************************************
+// TypeAdapterGenerator
+// **************************************************************************
+
+class ServerUserAdapter extends TypeAdapter<ServerUser> {
+  @override
+  final int typeId = 5;
+
+  @override
+  ServerUser read(BinaryReader reader) {
+    final numOfFields = reader.readByte();
+    final fields = <int, dynamic>{
+      for (int i = 0; i < numOfFields; i++) reader.readByte(): reader.read(),
+    };
+    return ServerUser(
+      id: fields[0] == null ? '' : fields[0] as String,
+      firebaseId: fields[1] == null ? '' : fields[1] as String,
+      role: fields[2] == null ? Roles.PROFESSIONAL : fields[2] as Roles,
+      doctor: fields[3] as Doctor?,
+      randomName: fields[4] as RandomName?,
+    );
+  }
+
+  @override
+  void write(BinaryWriter writer, ServerUser obj) {
+    writer
+      ..writeByte(5)
+      ..writeByte(0)
+      ..write(obj.id)
+      ..writeByte(1)
+      ..write(obj.firebaseId)
+      ..writeByte(2)
+      ..write(obj.role)
+      ..writeByte(3)
+      ..write(obj.doctor)
+      ..writeByte(4)
+      ..write(obj.randomName);
+  }
+
+  @override
+  int get hashCode => typeId.hashCode;
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is ServerUserAdapter &&
+          runtimeType == other.runtimeType &&
+          typeId == other.typeId;
+}
+
+// **************************************************************************
 // JsonSerializableGenerator
 // **************************************************************************
 

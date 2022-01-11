@@ -1,5 +1,4 @@
 import 'package:json_annotation/json_annotation.dart';
-import 'package:varenya_professionals/enum/confirmation_status.enum.dart';
 import 'package:varenya_professionals/models/doctor/doctor.model.dart';
 import 'package:varenya_professionals/models/server_user/server_user.model.dart';
 

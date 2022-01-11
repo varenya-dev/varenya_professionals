@@ -1,6 +1,8 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
+import 'package:hive/hive.dart';
+import 'package:hive_flutter/hive_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:varenya_professionals/app.dart';
 import 'package:varenya_professionals/providers/doctor.provider.dart';
@@ -15,10 +17,33 @@ import 'package:varenya_professionals/services/post.service.dart';
 import 'package:varenya_professionals/services/user_service.dart';
 import 'package:varenya_professionals/utils/logger.util.dart';
 
+import 'constants/hive_boxes.constant.dart';
+import 'models/specialization/specialization.model.dart';
+
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
+  log.i("Firebase and Hive Initializing");
+
   await Firebase.initializeApp();
+  await Hive.initFlutter();
+
+  log.i("Firebase and Hive Initialized");
+
+  log.i("Registering Hive Adapters");
+
+  Hive.registerAdapter<Specialization>(new SpecializationAdapter());
+
+  log.i("Registered Hive Adapters");
+
+  log.i("Opening Hive Boxes");
+
+  await Hive.openBox<List<dynamic>>(VARENYA_DOCTORS_BOX);
+  await Hive.openBox<List<dynamic>>(VARENYA_POSTS_BOX);
+  await Hive.openBox<List<dynamic>>(VARENYA_POST_CATEGORY_BOX);
+  await Hive.openBox<List<dynamic>>(VARENYA_APPOINTMENT_BOX);
+
+  log.i("Opened Hive Boxes");
 
   NotificationSettings settings =
       await FirebaseMessaging.instance.requestPermission(

@@ -9,6 +9,7 @@ part of 'update_post.dto.dart';
 UpdatePostDto _$UpdatePostDtoFromJson(Map<String, dynamic> json) =>
     UpdatePostDto(
       id: json['id'] as String,
+      title: json['title'] as String,
       body: json['body'] as String,
       images:
           (json['images'] as List<dynamic>).map((e) => e as String).toList(),
@@ -20,6 +21,7 @@ UpdatePostDto _$UpdatePostDtoFromJson(Map<String, dynamic> json) =>
 Map<String, dynamic> _$UpdatePostDtoToJson(UpdatePostDto instance) =>
     <String, dynamic>{
       'id': instance.id,
+      'title': instance.title,
       'body': instance.body,
       'images': instance.images,
       'categories': instance.categories,

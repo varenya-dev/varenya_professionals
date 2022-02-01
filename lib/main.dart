@@ -31,18 +31,15 @@ import 'constants/hive_boxes.constant.dart';
 import 'models/post/post.model.dart';
 import 'models/specialization/specialization.model.dart';
 
-Future<void> main() async {
-  WidgetsFlutterBinding.ensureInitialized();
+Future<void> openHiveBoxes() async {
+  await Hive.openBox<List<dynamic>>(VARENYA_DOCTORS_BOX);
+  await Hive.openBox<Doctor>(VARENYA_LOGGED_IN_DOCTOR_BOX);
+  await Hive.openBox<List<dynamic>>(VARENYA_POSTS_BOX);
+  await Hive.openBox<List<dynamic>>(VARENYA_POST_CATEGORY_BOX);
+  await Hive.openBox<List<dynamic>>(VARENYA_APPOINTMENT_BOX);
+}
 
-  log.i("Firebase and Hive Initializing");
-
-  await Firebase.initializeApp();
-  await Hive.initFlutter();
-
-  log.i("Firebase and Hive Initialized");
-
-  log.i("Registering Hive Adapters");
-
+void registerHiveAdapters() {
   Hive.registerAdapter<Specialization>(new SpecializationAdapter());
   Hive.registerAdapter<Doctor>(new DoctorAdapter());
   Hive.registerAdapter<RandomName>(new RandomNameAdapter());
@@ -56,21 +53,11 @@ Future<void> main() async {
   Hive.registerAdapter<PostCategory>(new PostCategoryAdapter());
   Hive.registerAdapter<PostType>(new PostTypeAdapter());
   Hive.registerAdapter<Post>(new PostAdapter());
+}
 
-  log.i("Registered Hive Adapters");
-
-  log.i("Opening Hive Boxes");
-
-  await Hive.openBox<List<dynamic>>(VARENYA_DOCTORS_BOX);
-  await Hive.openBox<Doctor>(VARENYA_LOGGED_IN_DOCTOR_BOX);
-  await Hive.openBox<List<dynamic>>(VARENYA_POSTS_BOX);
-  await Hive.openBox<List<dynamic>>(VARENYA_POST_CATEGORY_BOX);
-  await Hive.openBox<List<dynamic>>(VARENYA_APPOINTMENT_BOX);
-
-  log.i("Opened Hive Boxes");
-
+Future<void> registerFCMService() async {
   NotificationSettings settings =
-      await FirebaseMessaging.instance.requestPermission(
+  await FirebaseMessaging.instance.requestPermission(
     alert: true,
     announcement: false,
     badge: true,
@@ -81,6 +68,31 @@ Future<void> main() async {
   );
 
   log.i("FCM Authorization Status: ${settings.authorizationStatus}");
+}
+
+Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+
+  log.i("Firebase and Hive Initializing");
+
+  await Firebase.initializeApp();
+  await Hive.initFlutter();
+
+  log.i("Firebase and Hive Initialized");
+
+  log.i("Registering Hive Adapters");
+
+  registerHiveAdapters();
+
+  log.i("Registered Hive Adapters");
+
+  log.i("Opening Hive Boxes");
+
+  await openHiveBoxes();
+
+  log.i("Opened Hive Boxes");
+
+  await registerFCMService();
 
   runApp(Root());
 }

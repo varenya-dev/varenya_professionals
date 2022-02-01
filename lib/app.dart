@@ -9,10 +9,11 @@ import 'package:varenya_professionals/pages/home_page.dart';
 import 'package:varenya_professionals/pages/chat/threads_page.dart';
 import 'package:varenya_professionals/pages/post/categorized_posts.page.dart';
 import 'package:varenya_professionals/pages/post/new_post.page.dart';
-import 'package:varenya_professionals/pages/post/new_posts.page.dart';
 import 'package:varenya_professionals/pages/post/post.page.dart';
 import 'package:varenya_professionals/pages/post/update_post.page.dart';
 import 'package:varenya_professionals/pages/user/user_update_page.dart';
+import 'package:varenya_professionals/utils/generate_swatch.util.dart';
+import 'package:varenya_professionals/utils/palette.util.dart';
 
 class App extends StatelessWidget {
   const App({Key? key}) : super(key: key);
@@ -24,7 +25,36 @@ class App extends StatelessWidget {
       title: 'Varenya Professionals',
       theme: ThemeData(
         brightness: Brightness.dark,
-        primarySwatch: Colors.yellow,
+        primarySwatch: generateMaterialColor(
+          Palette.primary,
+        ),
+        primaryColor: Palette.primary,
+        scaffoldBackgroundColor: Color(0xff1f1d24),
+        bottomSheetTheme: BottomSheetThemeData(
+          backgroundColor: Colors.transparent,
+        ),
+        elevatedButtonTheme: ElevatedButtonThemeData(
+          style: ButtonStyle(
+            backgroundColor: MaterialStateProperty.all(
+              Palette.primary,
+            ),
+          ),
+        ),
+        appBarTheme: AppBarTheme(
+          backgroundColor: Color(
+            0XFF282A2E,
+          ),
+        ),
+        textTheme: TextTheme(
+          subtitle1: TextStyle(
+            color: Colors.white.withOpacity(
+              0.44,
+            ),
+          ),
+        ),
+        cardTheme: CardTheme(
+          color: Palette.secondary,
+        ),
       ),
       routes: {
         SplashPage.routeName: (context) => SplashPage(),
@@ -36,7 +66,6 @@ class App extends StatelessWidget {
         ThreadsPage.routeName: (context) => ThreadsPage(),
         ChatPage.routeName: (context) => ChatPage(),
         AppointmentList.routeName: (context) => AppointmentList(),
-        NewPosts.routeName: (context) => NewPosts(),
         CategorizedPosts.routeName: (context) => CategorizedPosts(),
         NewPost.routeName: (context) => NewPost(),
         UpdatePost.routeName: (context) => UpdatePost(),

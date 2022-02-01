@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:varenya_professionals/utils/palette.util.dart';
 
 class ProfilePictureWidget extends StatelessWidget {
   final String imageUrl;
@@ -13,6 +14,7 @@ class ProfilePictureWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return CircleAvatar(
+      backgroundColor: Palette.primary,
       backgroundImage: imageUrl.length == 0 ? null : NetworkImage(imageUrl),
       child: imageUrl.length == 0
           ? Icon(

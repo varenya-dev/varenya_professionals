@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:varenya_professionals/models/post/post_image/post_image.model.dart';
 
 class ImageCarousel extends StatelessWidget {
+  // List of all images.
   final List<PostImage> imageUrls;
 
   const ImageCarousel({
@@ -30,7 +31,8 @@ class ImageCarousel extends StatelessWidget {
           progressIndicatorBuilder: (context, url, downloadProgress) {
             return Center(
               child: CircularProgressIndicator(
-                  value: downloadProgress.progress),
+                value: downloadProgress.progress,
+              ),
             );
           },
           errorWidget: (context, url, error) {

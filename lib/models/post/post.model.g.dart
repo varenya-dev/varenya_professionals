@@ -19,6 +19,7 @@ class PostAdapter extends TypeAdapter<Post> {
     return Post(
       id: fields[0] == null ? '' : fields[0] as String,
       postType: fields[1] == null ? PostType.Post : fields[1] as PostType,
+      title: fields[9] == null ? '' : fields[9] as String,
       body: fields[2] == null ? '' : fields[2] as String,
       images: fields[3] == null ? [] : (fields[3] as List).cast<PostImage>(),
       user: fields[4] as ServerUser,
@@ -33,11 +34,13 @@ class PostAdapter extends TypeAdapter<Post> {
   @override
   void write(BinaryWriter writer, Post obj) {
     writer
-      ..writeByte(9)
+      ..writeByte(10)
       ..writeByte(0)
       ..write(obj.id)
       ..writeByte(1)
       ..write(obj.postType)
+      ..writeByte(9)
+      ..write(obj.title)
       ..writeByte(2)
       ..write(obj.body)
       ..writeByte(3)
@@ -72,6 +75,7 @@ class PostAdapter extends TypeAdapter<Post> {
 Post _$PostFromJson(Map<String, dynamic> json) => Post(
       id: json['id'] as String,
       postType: $enumDecode(_$PostTypeEnumMap, json['postType']),
+      title: json['title'] as String? ?? '',
       body: json['body'] as String,
       images: (json['images'] as List<dynamic>?)
               ?.map((e) => PostImage.fromJson(e as Map<String, dynamic>))
@@ -93,6 +97,7 @@ Post _$PostFromJson(Map<String, dynamic> json) => Post(
 Map<String, dynamic> _$PostToJson(Post instance) => <String, dynamic>{
       'id': instance.id,
       'postType': _$PostTypeEnumMap[instance.postType],
+      'title': instance.title,
       'body': instance.body,
       'images': instance.images,
       'user': instance.user,

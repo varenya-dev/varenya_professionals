@@ -5,12 +5,14 @@ part 'update_post.dto.g.dart';
 @JsonSerializable()
 class UpdatePostDto {
   final String id;
+  final String title;
   final String body;
   final List<String> images;
   final List<String> categories;
 
   const UpdatePostDto({
     required this.id,
+    required this.title,
     required this.body,
     required this.images,
     required this.categories,

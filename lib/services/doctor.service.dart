@@ -130,6 +130,7 @@ class DoctorService {
     // Check for any errors.
     if (response.statusCode >= 400 && response.statusCode < 500) {
       Map<String, dynamic> body = json.decode(response.body);
+      log.e(body);
       throw ServerException(message: body['message']);
     } else if (response.statusCode >= 500) {
       Map<String, dynamic> body = json.decode(response.body);

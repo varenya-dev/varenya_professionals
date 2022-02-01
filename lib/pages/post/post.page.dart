@@ -178,10 +178,10 @@ class _PostState extends State<Post> {
     return SingleChildScrollView(
       child: Column(
         children: [
-          PostCard(
-            post: this._post!,
-            fullPagePost: true,
-          ),
+          // PostCard(
+          //   post: this._post!,
+          //   fullPagePost: true,
+          // ),
           CommentForm(
             refreshPost: () {
               setState(() {});

@@ -4,11 +4,13 @@ part 'create_post.dto.g.dart';
 
 @JsonSerializable()
 class CreatePostDto {
+  final String title;
   final String body;
   final List<String> images;
   final List<String> categories;
 
   const CreatePostDto({
+    required this.title,
     required this.body,
     required this.images,
     required this.categories,

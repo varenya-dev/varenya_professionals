@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'dart:ui';
 
 import 'package:flutter/material.dart';
 
@@ -18,28 +19,42 @@ class FileImageCarousel extends StatelessWidget {
       height: this.fileImages.length != 0
           ? MediaQuery.of(context).size.height * 0.45
           : 0,
-      child: this.fileImages.length != 0
-          ? ListView.builder(
+      child: ListView.builder(
         shrinkWrap: true,
         scrollDirection: Axis.horizontal,
+        physics: const PageScrollPhysics(),
         itemCount: this.fileImages.length,
         itemBuilder: (context, index) => Container(
-          child: Stack(
-            children: [
-              Image.file(
-                this.fileImages[index],
-              ),
-              IconButton(
-                onPressed: () {
-                  this.onDelete(this.fileImages[index]);
-                },
-                icon: Icon(Icons.clear),
-              ),
-            ],
+          child: Center(
+            child: Stack(
+              alignment: Alignment.topCenter,
+              children: [
+                Image.file(
+                  this.fileImages[index],
+                  width: MediaQuery.of(context).size.width,
+                  height: MediaQuery.of(context).size.height,
+                ),
+                ClipRRect(
+                  child: BackdropFilter(
+                    filter: ImageFilter.blur(sigmaX: 50, sigmaY: 50),
+                    child: Image.file(
+                      this.fileImages[index],
+                      width: MediaQuery.of(context).size.width,
+                      height: MediaQuery.of(context).size.height,
+                    ),
+                  ),
+                ),
+                IconButton(
+                  onPressed: () {
+                    this.onDelete(this.fileImages[index]);
+                  },
+                  icon: Icon(Icons.clear),
+                ),
+              ],
+            ),
           ),
         ),
-      )
-          : Container(),
+      ),
     );
   }
 }

@@ -8,6 +8,7 @@ part of 'create_post.dto.dart';
 
 CreatePostDto _$CreatePostDtoFromJson(Map<String, dynamic> json) =>
     CreatePostDto(
+      title: json['title'] as String,
       body: json['body'] as String,
       images:
           (json['images'] as List<dynamic>).map((e) => e as String).toList(),
@@ -18,6 +19,7 @@ CreatePostDto _$CreatePostDtoFromJson(Map<String, dynamic> json) =>
 
 Map<String, dynamic> _$CreatePostDtoToJson(CreatePostDto instance) =>
     <String, dynamic>{
+      'title': instance.title,
       'body': instance.body,
       'images': instance.images,
       'categories': instance.categories,

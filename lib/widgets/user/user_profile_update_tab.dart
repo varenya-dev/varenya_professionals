@@ -441,6 +441,11 @@ class _UserProfileUpdateTabState extends State<UserProfileUpdateTab> {
   }
 
   String _specializationTextBuilder() {
+
+    if (this._doctor.specializations.length == 0) {
+      return "";
+    }
+
     String specializationText =
         "${this._doctor.specializations[0].specialization}";
 

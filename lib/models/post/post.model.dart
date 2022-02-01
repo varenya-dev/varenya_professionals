@@ -16,6 +16,10 @@ class Post {
   @HiveField(1, defaultValue: PostType.Post)
   final PostType postType;
 
+  @JsonKey(defaultValue: '')
+  @HiveField(9, defaultValue: '')
+  final String title;
+
   @HiveField(2, defaultValue: '')
   final String body;
 
@@ -43,6 +47,7 @@ class Post {
   Post({
     required this.id,
     required this.postType,
+    required this.title,
     required this.body,
     required this.images,
     required this.user,

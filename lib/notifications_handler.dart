@@ -4,7 +4,7 @@ import 'package:provider/provider.dart';
 import 'package:varenya_professionals/pages/appointment/appointment_list.page.dart';
 import 'package:varenya_professionals/pages/chat/chat.page.dart';
 import 'package:varenya_professionals/services/alerts_service.dart';
-import 'package:varenya_professionals/services/chat_service.dart';
+import 'package:varenya_professionals/services/chat.service.dart';
 
 class NotificationsHandler extends StatefulWidget {
   final Widget child;

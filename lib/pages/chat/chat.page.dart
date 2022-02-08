@@ -13,7 +13,7 @@ import 'package:varenya_professionals/exceptions/server.exception.dart';
 import 'package:varenya_professionals/models/chat/chat/chat.model.dart' as CM;
 import 'package:varenya_professionals/models/chat/thread/thread.model.dart';
 import 'package:varenya_professionals/models/server_user/server_user.model.dart';
-import 'package:varenya_professionals/services/chat_service.dart';
+import 'package:varenya_professionals/services/chat.service.dart';
 import 'package:varenya_professionals/utils/logger.util.dart';
 import 'package:varenya_professionals/utils/palette.util.dart';
 import 'package:varenya_professionals/utils/snackbar.dart';

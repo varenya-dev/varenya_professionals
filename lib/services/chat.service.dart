@@ -139,28 +139,6 @@ class ChatService {
   Future<void> closeThread(Thread thread) async =>
       await this._firestore.collection("threads").doc(thread.id).delete();
 
-  Future<void> openDummyThread() async {
-    DocumentReference threadDocumentReference =
-        this._firestore.collection('threads').doc();
-
-    List<String> participants = [
-      "2Mp0U8gyHISRWJlPklzcxnoTKCV2",
-      "AogJeR814fgYkTzTvNSwnQx8o8p1"
-    ];
-
-    Thread chatThread = new Thread(
-      id: threadDocumentReference.id,
-      participants: participants,
-      messages: [],
-    );
-
-    await this
-        ._firestore
-        .collection('threads')
-        .doc(chatThread.id)
-        .set(chatThread.toJson());
-  }
-
   Future<void> _sendChatNotification(String threadId, String message) async {
     try {
       // Fetch the ID token for the user.

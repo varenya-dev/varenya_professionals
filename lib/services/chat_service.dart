@@ -51,16 +51,25 @@ class ChatService {
   }
 
   Future<String> _checkForExistingThreads(List<String> participants) async {
-    QuerySnapshot chatQuerySnapshot = await this
+    QuerySnapshot firstChatQuerySnapshot = await this
         ._firestore
         .collection('threads')
         .where("participants", whereIn: [participants]).get();
 
-    List<DocumentSnapshot> chatDocumentSnapshotList = chatQuerySnapshot.docs;
+    QuerySnapshot secondChatQuerySnapshot = await this
+        ._firestore
+        .collection('threads')
+        .where("participants", whereIn: [participants.reversed.toList()]).get();
 
-    if (chatDocumentSnapshotList.isNotEmpty &&
-        chatDocumentSnapshotList[0].exists) {
-      return chatDocumentSnapshotList[0].reference.id;
+    List<DocumentSnapshot> firstChatDocumentSnapshotList = firstChatQuerySnapshot.docs;
+    List<DocumentSnapshot> secondChatDocumentSnapshotList = secondChatQuerySnapshot.docs;
+
+    if (firstChatDocumentSnapshotList.isNotEmpty &&
+        firstChatDocumentSnapshotList[0].exists) {
+      return firstChatDocumentSnapshotList[0].reference.id;
+    } else if (secondChatDocumentSnapshotList.isNotEmpty &&
+        secondChatDocumentSnapshotList[0].exists) {
+      return secondChatDocumentSnapshotList[0].reference.id;
     } else {
       return 'EMPTY';
     }

@@ -5,6 +5,7 @@ import 'package:provider/provider.dart';
 import 'package:varenya_professionals/models/chat/chat/chat_model.dart';
 import 'package:varenya_professionals/providers/user_provider.dart';
 import 'package:varenya_professionals/utils/display_bottom_sheet.dart';
+import 'package:varenya_professionals/utils/palette.util.dart';
 
 class ChatBubbleWidget extends StatelessWidget {
   final Chat chat;
@@ -17,48 +18,23 @@ class ChatBubbleWidget extends StatelessWidget {
   }) : super(key: key);
 
   void _openDeleteDialog(BuildContext context) {
-    String formattedMessage = this.chat.message.length > 15
-        ? "${this.chat.message.substring(0, 15)}..."
-        : this.chat.message;
-    displayBottomSheet(
-      context,
-      Wrap(
-        children: [
-          Column(
-            children: [
-              Padding(
-                padding: const EdgeInsets.all(20.0),
-                child: Center(
-                  child: Text(
-                    formattedMessage,
-                    style: TextStyle(fontWeight: FontWeight.bold),
-                  ),
-                ),
-              ),
-              Center(
-                child: Text(
-                  'Do you want to delete this message?',
-                ),
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  TextButton(
-                    onPressed: () async {
-                      Navigator.of(context).pop();
-                      await this.onDelete(this.chat.id);
-                    },
-                    child: Text('YES'),
-                  ),
-                  TextButton(
-                    onPressed: () {
-                      Navigator.of(context).pop();
-                    },
-                    child: Text('NO'),
-                  ),
-                ],
-              )
-            ],
+    showDialog(
+      context: context,
+      builder: (BuildContext context) => AlertDialog(
+        title: Text('Do you want to delete this message?'),
+        actions: [
+          TextButton(
+            onPressed: () async {
+              Navigator.of(context).pop();
+              await this.onDelete(this.chat.id);
+            },
+            child: Text('YES'),
+          ),
+          TextButton(
+            onPressed: () {
+              Navigator.of(context).pop();
+            },
+            child: Text('NO'),
           ),
         ],
       ),
@@ -90,7 +66,7 @@ class ChatBubbleWidget extends StatelessWidget {
                     10.0,
                   ),
                   decoration: BoxDecoration(
-                    color: userCheck ? Colors.black38 : Colors.yellow,
+                    color: userCheck ? Palette.secondary : Palette.primary,
                     borderRadius: BorderRadius.circular(
                       20.0,
                     ),

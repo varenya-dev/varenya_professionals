@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 import 'package:varenya_professionals/models/chat/chat_thread/chat_thread_model.dart';
 import 'package:varenya_professionals/services/chat_service.dart';
 import 'package:varenya_professionals/utils/logger.util.dart';
+import 'package:varenya_professionals/widgets/chat/single_thread.widget.dart';
 
 import 'chat_page.dart';
 
@@ -31,9 +32,6 @@ class _ThreadsPageState extends State<ThreadsPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text('Threads'),
-      ),
       body: StreamBuilder<QuerySnapshot<Map<String, dynamic>>>(
         stream: this._chatService.fetchAllThreads(),
         builder: (
@@ -41,9 +39,8 @@ class _ThreadsPageState extends State<ThreadsPage> {
           AsyncSnapshot<QuerySnapshot<Map<String, dynamic>>> snapshot,
         ) {
           if (snapshot.hasError) {
-            log.e("ThreadsPage Error", snapshot.error, snapshot.stackTrace);
-
-            return Text('Something went wrong');
+            log.e("Threads Error", snapshot.error, snapshot.stackTrace);
+            return Text('Something went wrong, please try again later.');
           }
 
           if (snapshot.connectionState == ConnectionState.waiting) {
@@ -55,24 +52,88 @@ class _ThreadsPageState extends State<ThreadsPage> {
             this._threads.add(ChatThread.fromJson(thread.data()));
           });
 
-          return ListView.builder(
-            itemCount: this._threads.length,
-            itemBuilder: (context, index) {
-              ChatThread thread = this._threads[index];
-              return ListTile(
-                leading: Icon(Icons.person),
-                title: Text(thread.id),
-                subtitle: Text(thread.participants.join(", ")),
-                onTap: () {
-                  Navigator.of(context).pushNamed(
-                    ChatPage.routeName,
-                    arguments: thread.id,
-                  );
-                },
-              );
-            },
-          );
+          return _buildThreadsPage(context);
         },
+      ),
+    );
+  }
+
+  Widget _buildThreadsPage(BuildContext context) {
+    return SingleChildScrollView(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Container(
+            height: MediaQuery.of(context).size.height * 0.3,
+            width: MediaQuery.of(context).size.width,
+            color: Colors.black54,
+            padding: EdgeInsets.symmetric(
+              horizontal: MediaQuery.of(context).size.width * 0.05,
+              vertical: MediaQuery.of(context).size.height * 0.05,
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  DateTime.now().hour < 12
+                      ? 'Good Morning,'
+                      : DateTime.now().hour >= 12 && DateTime.now().hour < 16
+                          ? 'Good Afternoon,'
+                          : 'Good Evening,',
+                  style: TextStyle(
+                    fontSize: MediaQuery.of(context).size.height * 0.025,
+                    color: Theme.of(context).textTheme.subtitle1!.color,
+                  ),
+                ),
+                Text(
+                  this._threads.isEmpty
+                      ? 'You have no messages yet'
+                      : 'Your\nmessages',
+                  style: TextStyle(
+                    fontSize: MediaQuery.of(context).size.height * 0.07,
+                    fontWeight: FontWeight.w900,
+                  ),
+                ),
+              ],
+            ),
+          ),
+          if (this._threads.isNotEmpty)
+            Container(
+              margin: EdgeInsets.only(
+                  left: MediaQuery.of(context).size.width * 0.07,
+                  top: MediaQuery.of(context).size.height * 0.04),
+              child: Text(
+                'Recent:',
+                style: Theme.of(context).textTheme.subtitle1,
+              ),
+            ),
+          this._threads.isNotEmpty
+              ? ListView.builder(
+                  physics: const NeverScrollableScrollPhysics(),
+                  shrinkWrap: true,
+                  itemCount: this._threads.length,
+                  itemBuilder: (context, index) {
+                    ChatThread thread = this._threads[index];
+                    return SingleThread(
+                      chatThread: thread,
+                    );
+                  },
+                )
+              : Container(
+                  height: MediaQuery.of(context).size.height * 0.6,
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Center(
+                        child: Text(
+                          'No messages here',
+                          style: Theme.of(context).textTheme.subtitle1,
+                        ),
+                      ),
+                    ],
+                  ),
+                )
+        ],
       ),
     );
   }

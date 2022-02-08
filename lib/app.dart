@@ -3,10 +3,10 @@ import 'package:varenya_professionals/pages/appointment/appointment_list.page.da
 import 'package:varenya_professionals/pages/auth/auth_page.dart';
 import 'package:varenya_professionals/pages/auth/login_page.dart';
 import 'package:varenya_professionals/pages/auth/register_page.dart';
-import 'package:varenya_professionals/pages/chat/chat_page.dart';
+import 'package:varenya_professionals/pages/chat/chat.page.dart';
 import 'package:varenya_professionals/pages/common/splash_page.dart';
 import 'package:varenya_professionals/pages/home_page.dart';
-import 'package:varenya_professionals/pages/chat/threads_page.dart';
+import 'package:varenya_professionals/pages/chat/threads.page.dart';
 import 'package:varenya_professionals/pages/post/categorized_posts.page.dart';
 import 'package:varenya_professionals/pages/post/new_post.page.dart';
 import 'package:varenya_professionals/pages/post/post.page.dart';
@@ -63,8 +63,8 @@ class App extends StatelessWidget {
         LoginPage.routeName: (context) => LoginPage(),
         RegisterPage.routeName: (context) => RegisterPage(),
         UserUpdatePage.routeName: (context) => UserUpdatePage(),
-        ThreadsPage.routeName: (context) => ThreadsPage(),
-        ChatPage.routeName: (context) => ChatPage(),
+        Threads.routeName: (context) => Threads(),
+        Chat.routeName: (context) => Chat(),
         AppointmentList.routeName: (context) => AppointmentList(),
         CategorizedPosts.routeName: (context) => CategorizedPosts(),
         NewPost.routeName: (context) => NewPost(),

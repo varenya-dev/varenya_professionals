@@ -34,14 +34,20 @@ class CustomTextArea extends StatelessWidget {
         horizontal: 10.0,
       ),
       child: TextFormField(
+        style: TextStyle(
+          color: Colors.black,
+        ),
         minLines: this.minLines,
         maxLines: this.maxLines,
         keyboardType: textInputType,
         decoration: InputDecoration(
+          hintStyle: TextStyle(
+            color: Palette.secondary,
+          ),
           hintText: this.helperText,
           floatingLabelBehavior: FloatingLabelBehavior.always,
           filled: true,
-          fillColor: Palette.secondary,
+          fillColor: Colors.white,
           labelText: label,
           border: OutlineInputBorder(
             borderRadius: BorderRadius.circular(

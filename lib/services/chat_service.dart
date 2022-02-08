@@ -18,15 +18,22 @@ class ChatService {
   final Uuid uuid = new Uuid();
 
   Future<String> createNewThread(String userId) async {
-    DocumentReference threadDocumentReference =
-        this._firestore.collection('threads').doc();
-
     String loggedInUserId = this._auth.currentUser!.uid;
 
     List<String> participants = [
       userId,
       loggedInUserId,
     ];
+
+    String checkForDuplicates =
+        await this._checkForExistingThreads(participants);
+
+    if (checkForDuplicates != 'EMPTY') {
+      return checkForDuplicates;
+    }
+
+    DocumentReference threadDocumentReference =
+        this._firestore.collection('threads').doc();
 
     ChatThread chatThread = new ChatThread(
       id: threadDocumentReference.id,
@@ -41,6 +48,22 @@ class ChatService {
         .set(chatThread.toJson());
 
     return threadDocumentReference.id;
+  }
+
+  Future<String> _checkForExistingThreads(List<String> participants) async {
+    QuerySnapshot chatQuerySnapshot = await this
+        ._firestore
+        .collection('threads')
+        .where("participants", whereIn: [participants]).get();
+
+    List<DocumentSnapshot> chatDocumentSnapshotList = chatQuerySnapshot.docs;
+
+    if (chatDocumentSnapshotList.isNotEmpty &&
+        chatDocumentSnapshotList[0].exists) {
+      return chatDocumentSnapshotList[0].reference.id;
+    } else {
+      return 'EMPTY';
+    }
   }
 
   /*

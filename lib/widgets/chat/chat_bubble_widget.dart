@@ -2,7 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
-import 'package:varenya_professionals/models/chat/chat/chat_model.dart';
+import 'package:varenya_professionals/models/chat/chat/chat.model.dart';
 import 'package:varenya_professionals/providers/user_provider.dart';
 import 'package:varenya_professionals/utils/display_bottom_sheet.dart';
 import 'package:varenya_professionals/utils/palette.util.dart';

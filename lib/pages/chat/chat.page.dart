@@ -10,8 +10,8 @@ import 'package:provider/provider.dart';
 import 'package:varenya_professionals/arguments/chat.argument.dart';
 import 'package:varenya_professionals/enum/roles.enum.dart';
 import 'package:varenya_professionals/exceptions/server.exception.dart';
-import 'package:varenya_professionals/models/chat/chat/chat_model.dart';
-import 'package:varenya_professionals/models/chat/chat_thread/chat_thread_model.dart';
+import 'package:varenya_professionals/models/chat/chat/chat.model.dart' as CM;
+import 'package:varenya_professionals/models/chat/thread/thread.model.dart';
 import 'package:varenya_professionals/models/server_user/server_user.model.dart';
 import 'package:varenya_professionals/services/chat_service.dart';
 import 'package:varenya_professionals/utils/logger.util.dart';
@@ -22,18 +22,18 @@ import 'package:varenya_professionals/widgets/common/custom_field_widget.dart';
 import 'package:varenya_professionals/widgets/common/custom_text_area.widget.dart';
 import 'package:varenya_professionals/widgets/common/profile_picture_widget.dart';
 
-class ChatPage extends StatefulWidget {
-  const ChatPage({Key? key}) : super(key: key);
+class Chat extends StatefulWidget {
+  const Chat({Key? key}) : super(key: key);
 
   static const routeName = "/chat";
 
   @override
-  _ChatPageState createState() => _ChatPageState();
+  _ChatState createState() => _ChatState();
 }
 
-class _ChatPageState extends State<ChatPage> {
+class _ChatState extends State<Chat> {
   late ChatService _chatService;
-  late ChatThread _chatThread;
+  late Thread _chatThread;
   List<Chat> _chats = [];
 
   final TextEditingController _chatController = new TextEditingController();
@@ -190,9 +190,9 @@ class _ChatPageState extends State<ChatPage> {
               this._chats.clear();
 
               if (snapshot.data!.data() != null) {
-                this._chatThread = ChatThread.fromJson(snapshot.data!.data()!);
+                this._chatThread = Thread.fromJson(snapshot.data!.data()!);
                 this._chatThread.messages.sort(
-                    (Chat a, Chat b) => a.timestamp.compareTo(b.timestamp));
+                    (CM.Chat a, CM.Chat b) => a.timestamp.compareTo(b.timestamp));
               }
 
               ScrollController controller = ScrollController();
@@ -207,7 +207,7 @@ class _ChatPageState extends State<ChatPage> {
                   shrinkWrap: true,
                   itemCount: this._chatThread.messages.length,
                   itemBuilder: (context, index) {
-                    Chat chat = this._chatThread.messages[index];
+                    CM.Chat chat = this._chatThread.messages[index];
                     return ChatBubbleWidget(
                       chat: chat,
                       onDelete: this.onMessageDelete,

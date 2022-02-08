@@ -7,9 +7,9 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:uuid/uuid.dart';
 import 'package:varenya_professionals/constants/endpoint_constant.dart';
-import 'package:varenya_professionals/models/chat/chat/chat_model.dart';
-import 'package:varenya_professionals/models/chat/chat_thread/chat_thread_model.dart';
+import 'package:varenya_professionals/models/chat/chat/chat.model.dart';
 import 'package:http/http.dart' as http;
+import 'package:varenya_professionals/models/chat/thread/thread.model.dart';
 import 'package:varenya_professionals/utils/logger.util.dart';
 
 class ChatService {
@@ -35,7 +35,7 @@ class ChatService {
     DocumentReference threadDocumentReference =
         this._firestore.collection('threads').doc();
 
-    ChatThread chatThread = new ChatThread(
+    Thread chatThread = new Thread(
       id: threadDocumentReference.id,
       participants: participants,
       messages: [],
@@ -96,7 +96,7 @@ class ChatService {
    * @param message Message text to be saved.
    * @param thread Thread where the message is to be saved.
    */
-  Future<void> sendMessage(String message, ChatThread thread) async {
+  Future<void> sendMessage(String message, Thread thread) async {
     // Create the chat message object based on the message.
     Chat chatMessage = new Chat(
       id: uuid.v4(),
@@ -122,7 +122,7 @@ class ChatService {
    * @param id ID for the message to be deleted.
    * @param thread Thread from which the message is needed to be deleted.
    */
-  Future<void> deleteMessage(String id, ChatThread thread) async {
+  Future<void> deleteMessage(String id, Thread thread) async {
     // Filter out the message list using the message ID.
     thread.messages = thread.messages.where((chat) => chat.id != id).toList();
 
@@ -136,7 +136,7 @@ class ChatService {
   /*
    * Close chat thread in firestore.
    */
-  Future<void> closeThread(ChatThread thread) async =>
+  Future<void> closeThread(Thread thread) async =>
       await this._firestore.collection("threads").doc(thread.id).delete();
 
   Future<void> openDummyThread() async {
@@ -148,7 +148,7 @@ class ChatService {
       "AogJeR814fgYkTzTvNSwnQx8o8p1"
     ];
 
-    ChatThread chatThread = new ChatThread(
+    Thread chatThread = new Thread(
       id: threadDocumentReference.id,
       participants: participants,
       messages: [],

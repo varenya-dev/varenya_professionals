@@ -1,12 +1,12 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'chat_thread_model.dart';
+part of 'thread.model.dart';
 
 // **************************************************************************
 // JsonSerializableGenerator
 // **************************************************************************
 
-ChatThread _$ChatThreadFromJson(Map<String, dynamic> json) => ChatThread(
+Thread _$ThreadFromJson(Map<String, dynamic> json) => Thread(
       id: json['id'] as String,
       participants: (json['participants'] as List<dynamic>)
           .map((e) => e as String)
@@ -16,8 +16,7 @@ ChatThread _$ChatThreadFromJson(Map<String, dynamic> json) => ChatThread(
           .toList(),
     );
 
-Map<String, dynamic> _$ChatThreadToJson(ChatThread instance) =>
-    <String, dynamic>{
+Map<String, dynamic> _$ThreadToJson(Thread instance) => <String, dynamic>{
       'id': instance.id,
       'participants': instance.participants,
       'messages': instance.messages,

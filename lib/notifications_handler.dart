@@ -2,7 +2,7 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:varenya_professionals/pages/appointment/appointment_list.page.dart';
-import 'package:varenya_professionals/pages/chat/chat_page.dart';
+import 'package:varenya_professionals/pages/chat/chat.page.dart';
 import 'package:varenya_professionals/services/alerts_service.dart';
 import 'package:varenya_professionals/services/chat_service.dart';
 
@@ -38,7 +38,7 @@ class _NotificationsHandlerState extends State<NotificationsHandler> {
     if (message.data['type'] == 'chat') {
       Navigator.pushNamed(
         context,
-        ChatPage.routeName,
+        Chat.routeName,
         arguments: message.data['thread'],
       );
     }
@@ -49,7 +49,7 @@ class _NotificationsHandlerState extends State<NotificationsHandler> {
 
       Navigator.pushNamed(
         context,
-        ChatPage.routeName,
+        Chat.routeName,
         arguments: threadId,
       );
     }

@@ -4,7 +4,7 @@ import 'package:provider/provider.dart';
 import 'package:varenya_professionals/exceptions/general.exception.dart';
 import 'package:varenya_professionals/notifications_handler.dart';
 import 'package:varenya_professionals/pages/appointment/appointment_list.page.dart';
-import 'package:varenya_professionals/pages/chat/threads_page.dart';
+import 'package:varenya_professionals/pages/chat/threads.page.dart';
 import 'package:varenya_professionals/pages/post/categorized_posts.page.dart';
 import 'package:varenya_professionals/pages/user/user_update_page.dart';
 import 'package:varenya_professionals/providers/doctor.provider.dart';
@@ -96,7 +96,7 @@ class _HomePageState extends State<HomePage> {
               ),
               ElevatedButton(
                 onPressed: () {
-                  Navigator.of(context).pushNamed(ThreadsPage.routeName);
+                  Navigator.of(context).pushNamed(Threads.routeName);
                 },
                 child: Text('Threads'),
               ),

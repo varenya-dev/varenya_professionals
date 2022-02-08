@@ -17,7 +17,7 @@ import 'package:varenya_professionals/services/chat_service.dart';
 import 'package:varenya_professionals/utils/logger.util.dart';
 import 'package:varenya_professionals/utils/palette.util.dart';
 import 'package:varenya_professionals/utils/snackbar.dart';
-import 'package:varenya_professionals/widgets/chat/chat_bubble_widget.dart';
+import 'package:varenya_professionals/widgets/chat/chat_bubble.widget.dart';
 import 'package:varenya_professionals/widgets/common/custom_field_widget.dart';
 import 'package:varenya_professionals/widgets/common/custom_text_area.widget.dart';
 import 'package:varenya_professionals/widgets/common/profile_picture_widget.dart';
@@ -208,7 +208,7 @@ class _ChatState extends State<Chat> {
                   itemCount: this._chatThread.messages.length,
                   itemBuilder: (context, index) {
                     CM.Chat chat = this._chatThread.messages[index];
-                    return ChatBubbleWidget(
+                    return ChatBubble(
                       chat: chat,
                       onDelete: this.onMessageDelete,
                     );

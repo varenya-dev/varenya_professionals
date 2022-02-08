@@ -7,11 +7,11 @@ import 'package:varenya_professionals/providers/user_provider.dart';
 import 'package:varenya_professionals/utils/display_bottom_sheet.dart';
 import 'package:varenya_professionals/utils/palette.util.dart';
 
-class ChatBubbleWidget extends StatelessWidget {
+class ChatBubble extends StatelessWidget {
   final Chat chat;
   final Function onDelete;
 
-  const ChatBubbleWidget({
+  const ChatBubble({
     Key? key,
     required this.chat,
     required this.onDelete,

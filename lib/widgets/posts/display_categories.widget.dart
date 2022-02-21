@@ -4,6 +4,7 @@ import 'package:varenya_professionals/exceptions/server.exception.dart';
 import 'package:varenya_professionals/models/post/post_category/post_category.model.dart';
 import 'package:varenya_professionals/services/post.service.dart';
 import 'package:varenya_professionals/utils/logger.util.dart';
+import 'package:varenya_professionals/utils/palette.util.dart';
 
 class DisplayCategories extends StatefulWidget {
   final List<PostCategory> selectedCategories;
@@ -90,7 +91,7 @@ class _DisplayCategoriesState extends State<DisplayCategories> {
             child: Container(
               decoration: BoxDecoration(
                 color: !checkSelected
-                    ? Color(0XFF303439)
+                    ? Palette.secondary
                     : Theme.of(context).primaryColor,
                 borderRadius: BorderRadius.circular(
                   15.0,

@@ -24,6 +24,8 @@ import 'package:varenya_professionals/validators/csv_validator.dart';
 import 'package:varenya_professionals/widgets/common/custom_field_widget.dart';
 import 'package:varenya_professionals/widgets/common/profile_picture_widget.dart';
 import 'package:intl/intl.dart';
+import 'package:varenya_professionals/widgets/doctor/job_selector.widget.dart';
+import 'package:varenya_professionals/widgets/doctor/specialization_selector.widget.dart';
 
 class UserProfileUpdateTab extends StatefulWidget {
   const UserProfileUpdateTab({Key? key}) : super(key: key);
@@ -61,6 +63,11 @@ class _UserProfileUpdateTabState extends State<UserProfileUpdateTab> {
     this._doctorService = Provider.of<DoctorService>(context, listen: false);
 
     this._doctor = this._doctorProvider.doctor;
+    this._fullNameController.text = this._doctor.fullName;
+    this._costController.text = this._doctor.cost.toString();
+    this._addressController.text = this._doctor.clinicAddress;
+    this._jobTitleController.text = this._doctor.jobTitle;
+    this._specializationController.text = this._specializationTextBuilder();
   }
 
   @override
@@ -328,12 +335,6 @@ class _UserProfileUpdateTabState extends State<UserProfileUpdateTab> {
 
   @override
   Widget build(BuildContext context) {
-    this._fullNameController.text = this._doctor.fullName;
-    this._costController.text = this._doctor.cost.toString();
-    this._addressController.text = this._doctor.clinicAddress;
-    this._jobTitleController.text = this._doctor.jobTitle;
-    this._specializationController.text = this._specializationTextBuilder();
-
     return SingleChildScrollView(
       child: Padding(
         padding: const EdgeInsets.symmetric(
@@ -386,6 +387,8 @@ class _UserProfileUpdateTabState extends State<UserProfileUpdateTab> {
                 ],
                 textInputType: TextInputType.streetAddress,
               ),
+              JobSelector(),
+              SpecializationSelector(),
               CustomFieldWidget(
                 textFieldController: this._jobTitleController,
                 label: "Job Title",
@@ -441,7 +444,6 @@ class _UserProfileUpdateTabState extends State<UserProfileUpdateTab> {
   }
 
   String _specializationTextBuilder() {
-
     if (this._doctor.specializations.length == 0) {
       return "";
     }

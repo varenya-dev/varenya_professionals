@@ -24,7 +24,7 @@ class DoctorService {
     try {
       // Fetch the ID token for the user.
       String firebaseAuthToken =
-      await this._firebaseAuth.currentUser!.getIdToken();
+          await this._firebaseAuth.currentUser!.getIdToken();
 
       // Prepare URI for the request.
       Uri uri = Uri.parse("$ENDPOINT/doctor/specialization");
@@ -54,7 +54,7 @@ class DoctorService {
 
       List<dynamic> jsonResponse = json.decode(response.body);
       List<Specialization> specializations =
-      jsonResponse.map((json) => Specialization.fromJson(json)).toList();
+          jsonResponse.map((json) => Specialization.fromJson(json)).toList();
 
       this._saveSpecializationsToDevice(specializations);
 
@@ -68,6 +68,60 @@ class DoctorService {
     } on FirebaseAuthException catch (error) {
       if (error.code == "network-request-failed") {
         return this._fetchSpecializationsFromDevice();
+      } else {
+        throw error;
+      }
+    }
+  }
+
+  Future<List<String>> fetchJobTitles() async {
+    try {
+      // Fetch the ID token for the user.
+      String firebaseAuthToken =
+          await this._firebaseAuth.currentUser!.getIdToken();
+
+      // Prepare URI for the request.
+      Uri uri = Uri.parse("$ENDPOINT/doctor/title");
+
+      // Prepare authorization headers.
+      Map<String, String> headers = {
+        "Authorization": "Bearer $firebaseAuthToken",
+      };
+
+      // Send the post request to the server.
+      http.Response response = await http.get(
+        uri,
+        headers: headers,
+      );
+
+      // Check for any errors.
+      if (response.statusCode >= 400 && response.statusCode < 500) {
+        Map<String, dynamic> body = json.decode(response.body);
+        throw ServerException(message: body['message']);
+      } else if (response.statusCode >= 500) {
+        Map<String, dynamic> body = json.decode(response.body);
+        log.e("DoctorService:fetchJobTitles Error", body['message']);
+        throw ServerException(
+          message: 'Something went wrong, please try again later.',
+        );
+      }
+
+      List<dynamic> titlesData = json.decode(response.body);
+      List<String> titles =
+          titlesData.map((element) => element.toString()).toList();
+
+      this._saveJobsToDevice(titles);
+
+      return titles;
+    } on SocketException {
+      log.wtf("Dedicated Server Offline");
+      return this._fetchJobsFromDevice();
+    } on TimeoutException {
+      log.wtf("Dedicated Server Offline");
+      return this._fetchJobsFromDevice();
+    } on FirebaseAuthException catch (error) {
+      if (error.code == "network-request-failed") {
+        return this._fetchJobsFromDevice();
       } else {
         throw error;
       }

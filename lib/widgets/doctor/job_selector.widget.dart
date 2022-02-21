@@ -3,9 +3,17 @@ import 'package:provider/provider.dart';
 import 'package:varenya_professionals/exceptions/server.exception.dart';
 import 'package:varenya_professionals/services/doctor.service.dart';
 import 'package:varenya_professionals/utils/logger.util.dart';
+import 'package:varenya_professionals/utils/palette.util.dart';
 
 class JobSelector extends StatefulWidget {
-  const JobSelector({Key? key}) : super(key: key);
+  final String job;
+  final Function addOrRemoveJob;
+
+  JobSelector({
+    Key? key,
+    required this.job,
+    required this.addOrRemoveJob,
+  }) : super(key: key);
 
   @override
   _JobSelectorState createState() => _JobSelectorState();
@@ -64,21 +72,28 @@ class _JobSelectorState extends State<JobSelector> {
     );
   }
 
+  bool _checkSelected(String job) => job == this.widget.job;
+
   Widget _buildJobList() {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       mainAxisSize: MainAxisSize.min,
       children: [
-        Row(
-          children: [
-            Text('Job Title'),
-            IconButton(
-              onPressed: () {},
-              icon: Icon(
-                Icons.add,
+        Container(
+          margin: EdgeInsets.symmetric(
+            horizontal: MediaQuery.of(context).size.width * 0.05,
+          ),
+          child: Row(
+            children: [
+              Text('Job Title'),
+              IconButton(
+                onPressed: () {},
+                icon: Icon(
+                  Icons.add,
+                ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
         Container(
           height: MediaQuery.of(context).size.height * 0.08,
@@ -92,7 +107,9 @@ class _JobSelectorState extends State<JobSelector> {
                 onTap: () {},
                 child: Container(
                   decoration: BoxDecoration(
-                    color: Theme.of(context).primaryColor,
+                    color: _checkSelected(jobTitle)
+                        ? Theme.of(context).primaryColor
+                        : Palette.secondary,
                     borderRadius: BorderRadius.circular(
                       15.0,
                     ),
@@ -108,7 +125,9 @@ class _JobSelectorState extends State<JobSelector> {
                   child: Text(
                     jobTitle,
                     style: TextStyle(
-                      color: Colors.black,
+                      color: _checkSelected(jobTitle)
+                          ? Colors.black
+                          : Colors.white,
                     ),
                   ),
                 ),

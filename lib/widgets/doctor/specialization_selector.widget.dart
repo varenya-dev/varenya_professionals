@@ -1,12 +1,22 @@
 import 'package:flutter/material.dart';
+import 'package:form_field_validator/form_field_validator.dart';
 import 'package:provider/provider.dart';
 import 'package:varenya_professionals/exceptions/server.exception.dart';
 import 'package:varenya_professionals/models/specialization/specialization.model.dart';
 import 'package:varenya_professionals/services/doctor.service.dart';
 import 'package:varenya_professionals/utils/logger.util.dart';
+import 'package:varenya_professionals/utils/palette.util.dart';
+import 'package:varenya_professionals/widgets/common/custom_field_widget.dart';
 
 class SpecializationSelector extends StatefulWidget {
-  const SpecializationSelector({Key? key}) : super(key: key);
+  final List<Specialization> selectedSpecializations;
+  final Function addOrRemoveSpecialization;
+
+  SpecializationSelector({
+    Key? key,
+    required this.selectedSpecializations,
+    required this.addOrRemoveSpecialization,
+  }) : super(key: key);
 
   @override
   _SpecializationSelectorState createState() => _SpecializationSelectorState();
@@ -16,11 +26,74 @@ class _SpecializationSelectorState extends State<SpecializationSelector> {
   late final DoctorService _doctorService;
   List<Specialization>? _specializations;
 
+  final TextEditingController _specializationController =
+      new TextEditingController();
+
+  final GlobalKey<FormState> _formKey = new GlobalKey();
+
   @override
   void initState() {
     super.initState();
 
     this._doctorService = Provider.of<DoctorService>(context, listen: false);
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+
+    this._specializationController.dispose();
+  }
+
+  void _addSpecialization() {
+    if (!this._formKey.currentState!.validate()) {
+      return;
+    }
+
+    Specialization specialization = new Specialization(
+      id: 'NEW',
+      specialization: this._specializationController.text,
+      createdAt: DateTime.now(),
+      updatedAt: DateTime.now(),
+    );
+
+    this.widget.addOrRemoveSpecialization(specialization);
+  }
+
+  void _onAddNewSpecialization() {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        this._specializationController.clear();
+
+        return AlertDialog(
+          title: Text('Add a new specialization'),
+          content: Form(
+            key: this._formKey,
+            child: CustomFieldWidget(
+              textFieldController: this._specializationController,
+              label: 'Specialization',
+              validators: [
+                RequiredValidator(errorText: 'Specialization is required.'),
+              ],
+              textInputType: TextInputType.text,
+            ),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () {},
+              child: Text('Okay'),
+            ),
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: Text('Cancel'),
+            ),
+          ],
+        );
+      },
+    );
   }
 
   @override
@@ -65,21 +138,36 @@ class _SpecializationSelectorState extends State<SpecializationSelector> {
     );
   }
 
+  bool _checkSelected(Specialization specialization) {
+    return this
+        .widget
+        .selectedSpecializations
+        .where(
+          (element) => element.id == specialization.id,
+        )
+        .isNotEmpty;
+  }
+
   Widget _buildSpecializationList() {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       mainAxisSize: MainAxisSize.min,
       children: [
-        Row(
-          children: [
-            Text('Specialization'),
-            IconButton(
-              onPressed: () {},
-              icon: Icon(
-                Icons.add,
+        Container(
+          margin: EdgeInsets.symmetric(
+            horizontal: MediaQuery.of(context).size.width * 0.05,
+          ),
+          child: Row(
+            children: [
+              Text('Specialization'),
+              IconButton(
+                onPressed: () {},
+                icon: Icon(
+                  Icons.add,
+                ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
         Container(
           height: MediaQuery.of(context).size.height * 0.08,
@@ -90,10 +178,14 @@ class _SpecializationSelectorState extends State<SpecializationSelector> {
             itemBuilder: (BuildContext context, int index) {
               Specialization specialization = this._specializations![index];
               return GestureDetector(
-                onTap: () {},
+                onTap: () {
+                  this.widget.addOrRemoveSpecialization(specialization);
+                },
                 child: Container(
                   decoration: BoxDecoration(
-                    color: Theme.of(context).primaryColor,
+                    color: _checkSelected(specialization)
+                        ? Theme.of(context).primaryColor
+                        : Palette.secondary,
                     borderRadius: BorderRadius.circular(
                       15.0,
                     ),
@@ -109,7 +201,9 @@ class _SpecializationSelectorState extends State<SpecializationSelector> {
                   child: Text(
                     specialization.specialization,
                     style: TextStyle(
-                      color: Colors.black,
+                      color: _checkSelected(specialization)
+                          ? Colors.black
+                          : Colors.white,
                     ),
                   ),
                 ),

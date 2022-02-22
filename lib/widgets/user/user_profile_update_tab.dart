@@ -389,7 +389,7 @@ class _UserProfileUpdateTabState extends State<UserProfileUpdateTab> {
                 children: [
                   ProfilePictureWidget(
                     imageUrl: this._doctor.imageUrl,
-                    size: 200,
+                    size: MediaQuery.of(context).size.height * 0.3,
                   ),
                   TextButton(
                     onPressed: this._onUploadImage,

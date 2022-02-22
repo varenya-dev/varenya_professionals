@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:varenya_professionals/utils/palette.util.dart';
 import 'package:varenya_professionals/widgets/user/user_delete_tab.dart';
 import 'package:varenya_professionals/widgets/user/user_email_update_tab.dart';
 import 'package:varenya_professionals/widgets/user/user_password_update_tab.dart';
@@ -15,32 +16,52 @@ class UserUpdatePage extends StatelessWidget {
       length: 4,
       child: Scaffold(
         appBar: AppBar(
-          title: Text('Update Your Profile'),
+          backgroundColor: Colors.black54,
+          title: Text(
+            'Update\nProfile',
+            style: TextStyle(
+              fontSize: MediaQuery.of(context).size.height * 0.07,
+            ),
+          ),
+          toolbarHeight: MediaQuery.of(context).size.height * 0.16,
+          automaticallyImplyLeading: false,
           bottom: TabBar(
-            indicatorColor: Colors.pink,
+            indicatorColor: Palette.primary,
             tabs: [
               Tab(
                 child: Text(
                   'User Details',
                   textAlign: TextAlign.center,
+                  style: TextStyle(
+                    color: Colors.white,
+                  ),
                 ),
               ),
               Tab(
                 child: Text(
                   'Email Details',
                   textAlign: TextAlign.center,
+                  style: TextStyle(
+                    color: Colors.white,
+                  ),
                 ),
               ),
               Tab(
                 child: Text(
                   'Password Details',
                   textAlign: TextAlign.center,
+                  style: TextStyle(
+                    color: Colors.white,
+                  ),
                 ),
               ),
               Tab(
                 child: Text(
                   'Delete Account',
                   textAlign: TextAlign.center,
+                  style: TextStyle(
+                    color: Colors.white,
+                  ),
                 ),
               ),
             ],

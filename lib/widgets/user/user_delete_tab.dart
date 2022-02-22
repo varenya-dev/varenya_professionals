@@ -14,6 +14,7 @@ import 'package:varenya_professionals/services/user_service.dart';
 import 'package:varenya_professionals/utils/logger.util.dart';
 import 'package:varenya_professionals/utils/snackbar.dart';
 import 'package:varenya_professionals/widgets/common/custom_field_widget.dart';
+import 'package:varenya_professionals/widgets/common/loading_icon_button.widget.dart';
 
 class UserDeleteTab extends StatefulWidget {
   const UserDeleteTab({Key? key}) : super(key: key);
@@ -28,10 +29,10 @@ class _UserDeleteTabState extends State<UserDeleteTab> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
   late UserService _userService;
-  late final DoctorService _doctorService;
 
   late UserProvider _userProvider;
   late final DoctorProvider _doctorProvider;
+  bool _loading = false;
 
   @override
   void initState() {
@@ -43,7 +44,6 @@ class _UserDeleteTabState extends State<UserDeleteTab> {
 
     // Initializing the user service.
     this._userService = Provider.of<UserService>(context, listen: false);
-    this._doctorService = Provider.of<DoctorService>(context, listen: false);
   }
 
   @override
@@ -61,6 +61,9 @@ class _UserDeleteTabState extends State<UserDeleteTab> {
     try {
       // Validate the form.
       if (this._formKey.currentState!.validate()) {
+        setState(() {
+          this._loading = true;
+        });
         // Delete the account from the server.
         await this._userService.deleteAccount(this._passwordController.text);
 
@@ -85,6 +88,10 @@ class _UserDeleteTabState extends State<UserDeleteTab> {
       log.e("UserDeleteTab:_onFormSubmit", error, stackTrace);
       displaySnackbar("Something went wrong, please try again later", context);
     }
+
+    setState(() {
+      this._loading = false;
+    });
   }
 
   @override
@@ -99,6 +106,12 @@ class _UserDeleteTabState extends State<UserDeleteTab> {
           key: this._formKey,
           child: Column(
             children: [
+              Container(
+                height: MediaQuery.of(context).size.height * 0.3,
+                child: Image.asset(
+                  'assets/logo/app_logo.png',
+                ),
+              ),
               Padding(
                 padding: const EdgeInsets.all(10.0),
                 child: RichText(
@@ -142,11 +155,23 @@ class _UserDeleteTabState extends State<UserDeleteTab> {
                     (BuildContext context, ConnectivityResult result, _) {
                   final bool connected = result != ConnectivityResult.none;
 
-                  return ElevatedButton(
-                    onPressed: connected ? this._onFormSubmit : null,
-                    child:
-                        Text(connected ? 'Delete Account' : 'You Are Offline'),
-                  );
+                  return connected
+                      ? LoadingIconButton(
+                          connected: true,
+                          loading: this._loading,
+                          onFormSubmit: this._onFormSubmit,
+                          text: 'Delete Account',
+                          loadingText: 'Deleting',
+                          icon: Icon(Icons.delete_outline),
+                        )
+                      : LoadingIconButton(
+                          connected: false,
+                          loading: this._loading,
+                          onFormSubmit: this._onFormSubmit,
+                          text: 'Delete Account',
+                          loadingText: 'Deleting',
+                          icon: Icon(Icons.delete_outline),
+                        );
                 },
                 child: SizedBox(),
               ),

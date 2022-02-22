@@ -11,6 +11,7 @@ import 'package:varenya_professionals/exceptions/auth/not_logged_in_exception.da
 import 'package:varenya_professionals/exceptions/general.exception.dart';
 import 'package:varenya_professionals/exceptions/server.exception.dart';
 import 'package:varenya_professionals/models/doctor/doctor.model.dart';
+import 'package:varenya_professionals/models/specialization/specialization.model.dart';
 import 'package:varenya_professionals/providers/doctor.provider.dart';
 import 'package:varenya_professionals/providers/user_provider.dart';
 import 'package:varenya_professionals/services/doctor.service.dart';
@@ -20,10 +21,12 @@ import 'package:varenya_professionals/utils/image_picker.dart';
 import 'package:varenya_professionals/utils/logger.util.dart';
 import 'package:varenya_professionals/utils/snackbar.dart';
 import 'package:varenya_professionals/utils/upload_image_generate_url.dart';
-import 'package:varenya_professionals/validators/csv_validator.dart';
 import 'package:varenya_professionals/widgets/common/custom_field_widget.dart';
+import 'package:varenya_professionals/widgets/common/loading_icon_button.widget.dart';
 import 'package:varenya_professionals/widgets/common/profile_picture_widget.dart';
-import 'package:intl/intl.dart';
+import 'package:varenya_professionals/widgets/doctor/job_selector.widget.dart';
+import 'package:varenya_professionals/widgets/doctor/shift_selector.widget.dart';
+import 'package:varenya_professionals/widgets/doctor/specialization_selector.widget.dart';
 
 class UserProfileUpdateTab extends StatefulWidget {
   const UserProfileUpdateTab({Key? key}) : super(key: key);
@@ -36,9 +39,6 @@ class _UserProfileUpdateTabState extends State<UserProfileUpdateTab> {
   final TextEditingController _fullNameController = new TextEditingController();
   final TextEditingController _costController = new TextEditingController();
   final TextEditingController _addressController = new TextEditingController();
-  final TextEditingController _jobTitleController = new TextEditingController();
-  final TextEditingController _specializationController =
-      new TextEditingController();
 
   late final UserProvider _userProvider;
   late final DoctorProvider _doctorProvider;
@@ -49,6 +49,10 @@ class _UserProfileUpdateTabState extends State<UserProfileUpdateTab> {
   late final DoctorService _doctorService;
 
   late Doctor _doctor;
+  late List<Specialization> _specializations;
+  late String _job;
+
+  bool _loading = false;
 
   @override
   void initState() {
@@ -61,6 +65,12 @@ class _UserProfileUpdateTabState extends State<UserProfileUpdateTab> {
     this._doctorService = Provider.of<DoctorService>(context, listen: false);
 
     this._doctor = this._doctorProvider.doctor;
+    this._fullNameController.text = this._doctor.fullName;
+    this._costController.text = this._doctor.cost.toString();
+    this._addressController.text = this._doctor.clinicAddress;
+
+    this._specializations = this._doctor.specializations;
+    this._job = this._doctor.jobTitle;
   }
 
   @override
@@ -71,8 +81,6 @@ class _UserProfileUpdateTabState extends State<UserProfileUpdateTab> {
     this._fullNameController.dispose();
     this._costController.dispose();
     this._addressController.dispose();
-    this._jobTitleController.dispose();
-    this._specializationController.dispose();
   }
 
   /*
@@ -241,6 +249,10 @@ class _UserProfileUpdateTabState extends State<UserProfileUpdateTab> {
     try {
       // Validate the form.
       if (this._formKey.currentState!.validate()) {
+        setState(() {
+          this._loading = true;
+        });
+
         // Update it on server and also update the state as well.
         User user = await this
             ._userService
@@ -252,10 +264,11 @@ class _UserProfileUpdateTabState extends State<UserProfileUpdateTab> {
             new CreateOrUpdateDoctorDto(
           fullName: this._fullNameController.text,
           imageUrl: this._doctor.imageUrl,
-          jobTitle: this._jobTitleController.text,
+          jobTitle: this._job,
           clinicAddress: this._addressController.text,
           cost: double.parse(this._costController.text),
-          specializations: this._specializationController.text.split(", "),
+          specializations:
+              this._specializations.map((e) => e.specialization).toList(),
           shiftStartTime: this._doctor.shiftStartTime,
           shiftEndTime: this._doctor.shiftEndTime,
         );
@@ -267,6 +280,8 @@ class _UserProfileUpdateTabState extends State<UserProfileUpdateTab> {
 
         setState(() {
           this._doctor = updatedDoctor;
+          this._specializations = this._doctor.specializations;
+          this._job = this._doctor.jobTitle;
         });
 
         // Display success snackbar.
@@ -282,6 +297,10 @@ class _UserProfileUpdateTabState extends State<UserProfileUpdateTab> {
       log.e("UserProfileUpdateTab:_onFormSubmit", error, stackTrace);
       displaySnackbar("Something went wrong, please try again later", context);
     }
+
+    setState(() {
+      this._loading = false;
+    });
   }
 
   void _setShiftStartTime() async {
@@ -326,14 +345,35 @@ class _UserProfileUpdateTabState extends State<UserProfileUpdateTab> {
     }
   }
 
+  void _addOrRemoveSpecialization(Specialization specialization) {
+    bool check = this
+        ._specializations
+        .where((element) => element.id == specialization.id)
+        .isNotEmpty;
+
+    if (check) {
+      setState(() {
+        this
+            ._specializations
+            .removeWhere((element) => element.id == specialization.id);
+      });
+    } else {
+      setState(() {
+        this._specializations.add(specialization);
+      });
+
+      return;
+    }
+  }
+
+  void _addOrRemoveJob(String job) {
+    setState(() {
+      this._job = job;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
-    this._fullNameController.text = this._doctor.fullName;
-    this._costController.text = this._doctor.cost.toString();
-    this._addressController.text = this._doctor.clinicAddress;
-    this._jobTitleController.text = this._doctor.jobTitle;
-    this._specializationController.text = this._specializationTextBuilder();
-
     return SingleChildScrollView(
       child: Padding(
         padding: const EdgeInsets.symmetric(
@@ -349,7 +389,7 @@ class _UserProfileUpdateTabState extends State<UserProfileUpdateTab> {
                 children: [
                   ProfilePictureWidget(
                     imageUrl: this._doctor.imageUrl,
-                    size: 200,
+                    size: MediaQuery.of(context).size.height * 0.3,
                   ),
                   TextButton(
                     onPressed: this._onUploadImage,
@@ -364,7 +404,7 @@ class _UserProfileUpdateTabState extends State<UserProfileUpdateTab> {
               ),
               CustomFieldWidget(
                 textFieldController: this._fullNameController,
-                label: "First Name",
+                label: "Name",
                 validators: [
                   RequiredValidator(errorText: "Full name is required"),
                 ],
@@ -386,50 +426,40 @@ class _UserProfileUpdateTabState extends State<UserProfileUpdateTab> {
                 ],
                 textInputType: TextInputType.streetAddress,
               ),
-              CustomFieldWidget(
-                textFieldController: this._jobTitleController,
-                label: "Job Title",
-                validators: [
-                  RequiredValidator(errorText: "Job Title is required"),
-                ],
-                textInputType: TextInputType.text,
+              JobSelector(
+                job: this._job,
+                addOrRemoveJob: this._addOrRemoveJob,
               ),
-              CustomFieldWidget(
-                textFieldController: this._specializationController,
-                label: "Specializations",
-                validators: [
-                  RequiredValidator(errorText: "Specializations is required"),
-                  CSVValidator(csvLength: 1),
-                ],
-                textInputType: TextInputType.text,
+              SpecializationSelector(
+                selectedSpecializations: this._specializations,
+                addOrRemoveSpecialization: this._addOrRemoveSpecialization,
               ),
-              ListTile(
-                title: Text('Start Time Of Your Shift'),
-                trailing: Text(
-                  DateFormat.jm()
-                      .format(this._doctor.shiftStartTime)
-                      .toString(),
-                ),
-                onTap: this._setShiftStartTime,
-              ),
-              ListTile(
-                title: Text('End Time Of Your Shift'),
-                trailing: Text(
-                  DateFormat.jm().format(this._doctor.shiftEndTime).toString(),
-                ),
-                onTap: this._setShiftEndTime,
+              ShiftSelector(
+                startTime: this._doctor.shiftStartTime,
+                endTime: this._doctor.shiftEndTime,
+                onShiftStartSelect: this._setShiftStartTime,
+                onShiftEndSelect: this._setShiftEndTime,
               ),
               OfflineBuilder(
                 connectivityBuilder:
                     (BuildContext context, ConnectivityResult result, _) {
                   final bool connected = result != ConnectivityResult.none;
 
-                  return ElevatedButton(
-                    onPressed: connected ? this._onFormSubmit : null,
-                    child: Text(
-                      connected ? 'Update Profile' : 'You Are Offline',
-                    ),
-                  );
+                  return connected
+                      ? LoadingIconButton(
+                          connected: true,
+                          loading: this._loading,
+                          onFormSubmit: this._onFormSubmit,
+                          text: 'Update Profile',
+                          loadingText: 'Updating',
+                        )
+                      : LoadingIconButton(
+                          connected: false,
+                          loading: this._loading,
+                          onFormSubmit: this._onFormSubmit,
+                          text: 'Update Profile',
+                          loadingText: 'Updating',
+                        );
                 },
                 child: SizedBox(),
               ),
@@ -438,26 +468,5 @@ class _UserProfileUpdateTabState extends State<UserProfileUpdateTab> {
         ),
       ),
     );
-  }
-
-  String _specializationTextBuilder() {
-
-    if (this._doctor.specializations.length == 0) {
-      return "";
-    }
-
-    String specializationText =
-        "${this._doctor.specializations[0].specialization}";
-
-    this
-        ._doctor
-        .specializations
-        .getRange(1, this._doctor.specializations.length)
-        .toList()
-        .forEach((specialization) {
-      specializationText += ", ${specialization.specialization}";
-    });
-
-    return specializationText;
   }
 }

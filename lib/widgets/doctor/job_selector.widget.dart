@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:form_field_validator/form_field_validator.dart';
 import 'package:provider/provider.dart';
 import 'package:varenya_professionals/exceptions/server.exception.dart';
 import 'package:varenya_professionals/services/doctor.service.dart';
 import 'package:varenya_professionals/utils/logger.util.dart';
 import 'package:varenya_professionals/utils/palette.util.dart';
+import 'package:varenya_professionals/widgets/common/custom_field_widget.dart';
 
 class JobSelector extends StatefulWidget {
   final String job;
@@ -22,12 +24,76 @@ class JobSelector extends StatefulWidget {
 class _JobSelectorState extends State<JobSelector> {
   late final DoctorService _doctorService;
   List<String>? _jobTitles;
+  List<String> _newJobTitles = [];
+
+  final TextEditingController _jobController = new TextEditingController();
+
+  final GlobalKey<FormState> _formKey = new GlobalKey();
 
   @override
   void initState() {
     super.initState();
 
     this._doctorService = Provider.of<DoctorService>(context, listen: false);
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+
+    this._jobController.dispose();
+  }
+
+  void _addJob() {
+    if (!this._formKey.currentState!.validate()) {
+      return;
+    }
+
+    setState(() {
+      this._newJobTitles.add(this._jobController.text);
+    });
+
+    this.widget.addOrRemoveJob(this._jobController.text);
+  }
+
+  void _onAddNewJob() {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        this._jobController.clear();
+
+        return AlertDialog(
+          backgroundColor: Colors.grey[900],
+          title: Text('Add a new job title'),
+          content: Form(
+            key: this._formKey,
+            child: CustomFieldWidget(
+              textFieldController: this._jobController,
+              label: 'Job',
+              validators: [
+                RequiredValidator(errorText: 'Job is required.'),
+              ],
+              textInputType: TextInputType.text,
+            ),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () {
+                this._addJob();
+                Navigator.of(context).pop();
+              },
+              child: Text('Okay'),
+            ),
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: Text('Cancel'),
+            ),
+          ],
+        );
+      },
+    );
   }
 
   @override
@@ -75,6 +141,8 @@ class _JobSelectorState extends State<JobSelector> {
   bool _checkSelected(String job) => job == this.widget.job;
 
   Widget _buildJobList() {
+    List<String> combinedJobs = [...this._jobTitles!, ...this._newJobTitles];
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       mainAxisSize: MainAxisSize.min,
@@ -87,7 +155,7 @@ class _JobSelectorState extends State<JobSelector> {
             children: [
               Text('Job Title'),
               IconButton(
-                onPressed: () {},
+                onPressed: this._onAddNewJob,
                 icon: Icon(
                   Icons.add,
                 ),
@@ -100,9 +168,9 @@ class _JobSelectorState extends State<JobSelector> {
           child: ListView.builder(
             shrinkWrap: true,
             scrollDirection: Axis.horizontal,
-            itemCount: this._jobTitles!.length,
+            itemCount: combinedJobs.length,
             itemBuilder: (BuildContext context, int index) {
-              String jobTitle = this._jobTitles![index];
+              String jobTitle = combinedJobs[index];
               return GestureDetector(
                 onTap: () {},
                 child: Container(

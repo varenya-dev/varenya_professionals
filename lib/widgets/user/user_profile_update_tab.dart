@@ -274,6 +274,7 @@ class _UserProfileUpdateTabState extends State<UserProfileUpdateTab> {
         setState(() {
           this._doctor = updatedDoctor;
           this._specializations = this._doctor.specializations;
+          this._job = this._doctor.jobTitle;
         });
 
         // Display success snackbar.
@@ -354,6 +355,12 @@ class _UserProfileUpdateTabState extends State<UserProfileUpdateTab> {
     }
   }
 
+  void _addOrRemoveJob(String job) {
+    setState(() {
+      this._job = job;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return SingleChildScrollView(
@@ -410,7 +417,7 @@ class _UserProfileUpdateTabState extends State<UserProfileUpdateTab> {
               ),
               JobSelector(
                 job: this._job,
-                addOrRemoveJob: () {},
+                addOrRemoveJob: this._addOrRemoveJob,
               ),
               SpecializationSelector(
                 selectedSpecializations: this._specializations,

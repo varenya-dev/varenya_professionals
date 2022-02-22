@@ -13,6 +13,7 @@ import 'package:varenya_professionals/services/user_service.dart';
 import 'package:varenya_professionals/utils/logger.util.dart';
 import 'package:varenya_professionals/utils/snackbar.dart';
 import 'package:varenya_professionals/widgets/common/custom_field_widget.dart';
+import 'package:varenya_professionals/widgets/common/loading_icon_button.widget.dart';
 
 class UserEmailUpdateTab extends StatefulWidget {
   const UserEmailUpdateTab({Key? key}) : super(key: key);
@@ -30,6 +31,8 @@ class _UserEmailUpdateTabState extends State<UserEmailUpdateTab> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
   late UserService _userService;
+
+  bool _loading = false;
 
   @override
   void initState() {
@@ -58,6 +61,9 @@ class _UserEmailUpdateTabState extends State<UserEmailUpdateTab> {
     try {
       // Validate the form.
       if (this._formKey.currentState!.validate()) {
+        setState(() {
+          this._loading = true;
+        });
         // Prepare DTO for updating password.
         UpdateEmailDto updateEmailDto = new UpdateEmailDto(
           newEmailAddress: this._emailController.text,
@@ -88,6 +94,10 @@ class _UserEmailUpdateTabState extends State<UserEmailUpdateTab> {
       log.e("UserEmailUpdateTab:_onFormSubmit", error, stackTrace);
       displaySnackbar("Something went wrong, please try again later", context);
     }
+
+    setState(() {
+      this._loading = false;
+    });
   }
 
   @override
@@ -140,13 +150,20 @@ class _UserEmailUpdateTabState extends State<UserEmailUpdateTab> {
                         (BuildContext context, ConnectivityResult result, _) {
                       final bool connected = result != ConnectivityResult.none;
 
-                      return ElevatedButton(
-                        onPressed: connected ? this._onFormSubmit : null,
-                        child: Text(
-                          connected
-                              ? 'Update Email Address'
-                              : 'You Are Offline',
-                        ),
+                      return connected
+                          ? LoadingIconButton(
+                        connected: true,
+                        loading: this._loading,
+                        onFormSubmit: this._onFormSubmit,
+                        text: 'Update Email Address',
+                        loadingText: 'Updating',
+                      )
+                          : LoadingIconButton(
+                        connected: false,
+                        loading: this._loading,
+                        onFormSubmit: this._onFormSubmit,
+                        text: 'Update Email Address',
+                        loadingText: 'Updating',
                       );
                     },
                     child: SizedBox(),

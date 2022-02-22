@@ -25,6 +25,7 @@ class SpecializationSelector extends StatefulWidget {
 class _SpecializationSelectorState extends State<SpecializationSelector> {
   late final DoctorService _doctorService;
   List<Specialization>? _specializations;
+  List<Specialization> _newSpecializations = [];
 
   final TextEditingController _specializationController =
       new TextEditingController();
@@ -57,6 +58,10 @@ class _SpecializationSelectorState extends State<SpecializationSelector> {
       updatedAt: DateTime.now(),
     );
 
+    setState(() {
+      this._newSpecializations.add(specialization);
+    });
+
     this.widget.addOrRemoveSpecialization(specialization);
   }
 
@@ -67,6 +72,7 @@ class _SpecializationSelectorState extends State<SpecializationSelector> {
         this._specializationController.clear();
 
         return AlertDialog(
+          backgroundColor: Colors.grey[900],
           title: Text('Add a new specialization'),
           content: Form(
             key: this._formKey,
@@ -81,7 +87,10 @@ class _SpecializationSelectorState extends State<SpecializationSelector> {
           ),
           actions: [
             TextButton(
-              onPressed: () {},
+              onPressed: () {
+                this._addSpecialization();
+                Navigator.of(context).pop();
+              },
               child: Text('Okay'),
             ),
             TextButton(
@@ -149,6 +158,11 @@ class _SpecializationSelectorState extends State<SpecializationSelector> {
   }
 
   Widget _buildSpecializationList() {
+    List<Specialization> combinedSpecializations = [
+      ...this._specializations!,
+      ...this._newSpecializations
+    ];
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       mainAxisSize: MainAxisSize.min,
@@ -161,7 +175,7 @@ class _SpecializationSelectorState extends State<SpecializationSelector> {
             children: [
               Text('Specialization'),
               IconButton(
-                onPressed: () {},
+                onPressed: this._onAddNewSpecialization,
                 icon: Icon(
                   Icons.add,
                 ),
@@ -174,9 +188,9 @@ class _SpecializationSelectorState extends State<SpecializationSelector> {
           child: ListView.builder(
             shrinkWrap: true,
             scrollDirection: Axis.horizontal,
-            itemCount: this._specializations!.length,
+            itemCount: combinedSpecializations.length,
             itemBuilder: (BuildContext context, int index) {
-              Specialization specialization = this._specializations![index];
+              Specialization specialization = combinedSpecializations[index];
               return GestureDetector(
                 onTap: () {
                   this.widget.addOrRemoveSpecialization(specialization);

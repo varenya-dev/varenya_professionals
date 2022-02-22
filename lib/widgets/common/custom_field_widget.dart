@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:form_field_validator/form_field_validator.dart';
+import 'package:varenya_professionals/utils/palette.util.dart';
 
 class CustomFieldWidget extends StatelessWidget {
   final String label;
@@ -33,7 +34,7 @@ class CustomFieldWidget extends StatelessWidget {
         keyboardType: textInputType,
         decoration: InputDecoration(
           labelText: label,
-          fillColor: Colors.grey[800],
+          fillColor: Palette.secondary,
           filled: true,
           border: OutlineInputBorder(
             borderRadius: BorderRadius.circular(15.0),

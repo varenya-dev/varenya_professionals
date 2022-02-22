@@ -273,6 +273,7 @@ class _UserProfileUpdateTabState extends State<UserProfileUpdateTab> {
 
         setState(() {
           this._doctor = updatedDoctor;
+          this._specializations = this._doctor.specializations;
         });
 
         // Display success snackbar.

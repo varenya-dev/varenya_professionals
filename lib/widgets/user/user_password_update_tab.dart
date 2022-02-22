@@ -12,6 +12,7 @@ import 'package:varenya_professionals/utils/logger.util.dart';
 import 'package:varenya_professionals/utils/snackbar.dart';
 import 'package:varenya_professionals/validators/value_validator.dart';
 import 'package:varenya_professionals/widgets/common/custom_field_widget.dart';
+import 'package:varenya_professionals/widgets/common/loading_icon_button.widget.dart';
 
 class UserPasswordUpdateTab extends StatefulWidget {
   const UserPasswordUpdateTab({Key? key}) : super(key: key);
@@ -29,6 +30,7 @@ class _UserPasswordUpdateTabState extends State<UserPasswordUpdateTab> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
   late UserService _userService;
+  bool _loading = false;
 
   @override
   void initState() {
@@ -55,6 +57,9 @@ class _UserPasswordUpdateTabState extends State<UserPasswordUpdateTab> {
     try {
       // Validate the form.
       if (this._formKey.currentState!.validate()) {
+        setState(() {
+          this._loading = true;
+        });
         // Prepare DTO for updating password.
         UpdatePasswordDto updatePasswordDto = new UpdatePasswordDto(
           oldPassword: this._oldPasswordController.text,
@@ -81,6 +86,10 @@ class _UserPasswordUpdateTabState extends State<UserPasswordUpdateTab> {
       log.e("UserPasswordUpdateTab:_onFormSubmit", error, stackTrace);
       displaySnackbar("Something went wrong, please try again later", context);
     }
+
+    setState(() {
+      this._loading = false;
+    });
   }
 
   @override
@@ -152,10 +161,20 @@ class _UserPasswordUpdateTabState extends State<UserPasswordUpdateTab> {
                     (BuildContext context, ConnectivityResult result, _) {
                   final bool connected = result != ConnectivityResult.none;
 
-                  return ElevatedButton(
-                    onPressed: connected ? this._onFormSubmit : null,
-                    child:
-                    Text(connected ? 'Update Password' : 'You Are Offline'),
+                  return connected
+                      ? LoadingIconButton(
+                    connected: true,
+                    loading: this._loading,
+                    onFormSubmit: this._onFormSubmit,
+                    text: 'Update Password',
+                    loadingText: 'Updating',
+                  )
+                      : LoadingIconButton(
+                    connected: false,
+                    loading: this._loading,
+                    onFormSubmit: this._onFormSubmit,
+                    text: 'Update Password',
+                    loadingText: 'Updating',
                   );
                 },
                 child: SizedBox(),

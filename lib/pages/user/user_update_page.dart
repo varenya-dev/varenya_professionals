@@ -16,7 +16,15 @@ class UserUpdatePage extends StatelessWidget {
       length: 4,
       child: Scaffold(
         appBar: AppBar(
-          title: Text('Update Your Profile'),
+          backgroundColor: Colors.black54,
+          title: Text(
+            'Update\nProfile',
+            style: TextStyle(
+              fontSize: MediaQuery.of(context).size.height * 0.07,
+            ),
+          ),
+          toolbarHeight: MediaQuery.of(context).size.height * 0.16,
+          automaticallyImplyLeading: false,
           bottom: TabBar(
             indicatorColor: Palette.primary,
             tabs: [

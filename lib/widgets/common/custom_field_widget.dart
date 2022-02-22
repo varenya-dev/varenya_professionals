@@ -30,6 +30,9 @@ class CustomFieldWidget extends StatelessWidget {
         horizontal: 10.0,
       ),
       child: TextFormField(
+        style: TextStyle(
+          color: Colors.white,
+        ),
         obscureText: this.obscureText,
         keyboardType: textInputType,
         decoration: InputDecoration(

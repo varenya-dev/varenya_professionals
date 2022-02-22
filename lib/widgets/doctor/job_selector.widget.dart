@@ -172,7 +172,9 @@ class _JobSelectorState extends State<JobSelector> {
             itemBuilder: (BuildContext context, int index) {
               String jobTitle = combinedJobs[index];
               return GestureDetector(
-                onTap: () {},
+                onTap: () {
+                  this.widget.addOrRemoveJob(jobTitle);
+                },
                 child: Container(
                   decoration: BoxDecoration(
                     color: _checkSelected(jobTitle)

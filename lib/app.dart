@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:varenya_professionals/config/custom_scroll_beahvior.config.dart';
 import 'package:varenya_professionals/pages/appointment/appointment_list.page.dart';
 import 'package:varenya_professionals/pages/auth/auth_page.dart';
 import 'package:varenya_professionals/pages/auth/login_page.dart';
@@ -21,6 +22,7 @@ class App extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      scrollBehavior: CustomScrollBehaviour(),
       debugShowCheckedModeBanner: false,
       title: 'Varenya Professionals',
       theme: ThemeData(

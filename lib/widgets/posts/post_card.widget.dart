@@ -26,13 +26,13 @@ class PostCard extends StatelessWidget {
         return GestureDetector(
           onTap: connected
               ? () {
-            // Push the Full Post Page on
-            // top with required arguments.
-            Navigator.of(context).pushNamed(
-              PostPage.Post.routeName,
-              arguments: this.post.id,
-            );
-          }
+                  // Push the Full Post Page on
+                  // top with required arguments.
+                  Navigator.of(context).pushNamed(
+                    PostPage.Post.routeName,
+                    arguments: this.post.id,
+                  );
+                }
               : null,
           child: child,
         );

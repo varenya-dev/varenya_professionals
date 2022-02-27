@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:varenya_professionals/pages/post/new_post.page.dart';
 import 'package:varenya_professionals/providers/user_provider.dart';
+import 'package:varenya_professionals/utils/responsive_config.util.dart';
 import 'package:varenya_professionals/widgets/common/profile_picture_widget.dart';
 
 class DisplayCreatePost extends StatelessWidget {
@@ -47,7 +48,12 @@ class DisplayCreatePost extends StatelessWidget {
                       ),
                       child: ProfilePictureWidget(
                         imageUrl: user.user.photoURL ?? '',
-                        size: MediaQuery.of(context).size.width * 0.1,
+                        size: responsiveConfig(
+                          context: context,
+                          large: MediaQuery.of(context).size.width * 0.05,
+                          medium: MediaQuery.of(context).size.width * 0.04,
+                          small: MediaQuery.of(context).size.width * 0.1,
+                        ),
                       ),
                     ),
               ),

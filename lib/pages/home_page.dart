@@ -1,4 +1,5 @@
 import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:varenya_professionals/exceptions/general.exception.dart';
@@ -40,34 +41,35 @@ class _HomePageState extends State<HomePage> {
     this._userService = Provider.of<UserService>(context, listen: false);
     this._alertsService = Provider.of<AlertsService>(context, listen: false);
 
-    checkConnectivity().then((value) {
-      if (value) {
-        try {
-          this._userService.generateAndSaveTokenToDatabase();
+    if (!kIsWeb)
+      checkConnectivity().then((value) {
+        if (value) {
+          try {
+            this._userService.generateAndSaveTokenToDatabase();
 
-          FirebaseMessaging.instance.onTokenRefresh
-              .listen(this._userService.saveTokenToDatabase);
-        } on GeneralException catch (error) {
-          displaySnackbar(error.message, context);
-        } catch (error, stackTrace) {
-          log.e("HomePage:initState Error", error, stackTrace);
-          displaySnackbar(
-              "Something went wrong with notifications, error has been informed.",
-              context);
+            FirebaseMessaging.instance.onTokenRefresh
+                .listen(this._userService.saveTokenToDatabase);
+          } on GeneralException catch (error) {
+            displaySnackbar(error.message, context);
+          } catch (error, stackTrace) {
+            log.e("HomePage:initState Error", error, stackTrace);
+            displaySnackbar(
+                "Something went wrong with notifications, error has been informed.",
+                context);
+          }
+
+          this
+              ._alertsService
+              .toggleSubscribeToSOSTopic(true)
+              .then((_) => log.i('Subscribed to SOS Topic'))
+              .catchError((error) => print(error));
+        } else {
+          log.i(
+              "Device offline, suspending FCM Token Generation and Topic Subscription");
         }
-
-        this
-            ._alertsService
-            .toggleSubscribeToSOSTopic(true)
-            .then((_) => log.i('Subscribed to SOS Topic'))
-            .catchError((error) => print(error));
-      } else {
-        log.i(
-            "Device offline, suspending FCM Token Generation and Topic Subscription");
-      }
-    }).catchError((error, stackTrace) {
-      log.e("HomePage Error", error, stackTrace);
-    });
+      }).catchError((error, stackTrace) {
+        log.e("HomePage Error", error, stackTrace);
+      });
   }
 
   @override

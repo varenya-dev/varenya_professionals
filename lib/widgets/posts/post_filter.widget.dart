@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:varenya_professionals/models/post/post_category/post_category.model.dart';
+import 'package:varenya_professionals/utils/responsive_config.util.dart';
 import 'package:varenya_professionals/widgets/posts/display_categories.widget.dart';
 
 class PostFilter extends StatelessWidget {
@@ -29,7 +30,12 @@ class PostFilter extends StatelessWidget {
               children: [
                 Icon(
                   Icons.filter_list_outlined,
-                  size: MediaQuery.of(context).size.width * 0.08,
+                  size: responsiveConfig(
+                    context: context,
+                    large: MediaQuery.of(context).size.width * 0.03,
+                    medium: MediaQuery.of(context).size.width * 0.03,
+                    small: MediaQuery.of(context).size.width * 0.08,
+                  ),
                 ),
                 Container(
                   margin: EdgeInsets.symmetric(

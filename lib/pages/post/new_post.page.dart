@@ -13,6 +13,7 @@ import 'package:varenya_professionals/utils/display_bottom_sheet.dart';
 import 'package:varenya_professionals/utils/image_picker.dart';
 import 'package:varenya_professionals/utils/logger.util.dart';
 import 'package:varenya_professionals/utils/palette.util.dart';
+import 'package:varenya_professionals/utils/responsive_config.util.dart';
 import 'package:varenya_professionals/utils/snackbar.dart';
 import 'package:varenya_professionals/utils/upload_image_generate_url.dart';
 import 'package:varenya_professionals/widgets/common/custom_text_area.widget.dart';
@@ -201,6 +202,14 @@ class _NewPostState extends State<NewPost> {
         title: Text('New Post'),
       ),
       body: Container(
+        margin: EdgeInsets.symmetric(
+          horizontal: responsiveConfig(
+            context: context,
+            large: MediaQuery.of(context).size.width * 0.3,
+            medium: MediaQuery.of(context).size.width * 0.3,
+            small: 0,
+          ),
+        ),
         child: SingleChildScrollView(
           child: Form(
             key: this._formKey,

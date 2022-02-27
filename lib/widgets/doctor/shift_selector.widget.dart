@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:varenya_professionals/utils/palette.util.dart';
+import 'package:varenya_professionals/utils/responsive_config.util.dart';
 
 class ShiftSelector extends StatelessWidget {
   final DateTime startTime;
@@ -37,7 +38,12 @@ class ShiftSelector extends StatelessWidget {
                     vertical: MediaQuery.of(context).size.height * 0.01,
                   ),
                   padding: EdgeInsets.all(
-                    MediaQuery.of(context).size.width * 0.02,
+                    responsiveConfig(
+                      context: context,
+                      large: MediaQuery.of(context).size.width * 0.01,
+                      medium: MediaQuery.of(context).size.width * 0.01,
+                      small: MediaQuery.of(context).size.width * 0.02,
+                    ),
                   ),
                   decoration: BoxDecoration(
                     color: Palette.secondary,
@@ -74,7 +80,12 @@ class ShiftSelector extends StatelessWidget {
                     vertical: MediaQuery.of(context).size.height * 0.01,
                   ),
                   padding: EdgeInsets.all(
-                    MediaQuery.of(context).size.width * 0.02,
+                    responsiveConfig(
+                      context: context,
+                      large: MediaQuery.of(context).size.width * 0.01,
+                      medium: MediaQuery.of(context).size.width * 0.01,
+                      small: MediaQuery.of(context).size.width * 0.02,
+                    ),
                   ),
                   decoration: BoxDecoration(
                     color: Palette.secondary,

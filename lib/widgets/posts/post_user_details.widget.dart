@@ -13,6 +13,7 @@ import 'package:varenya_professionals/providers/user_provider.dart';
 import 'package:varenya_professionals/services/post.service.dart';
 import 'package:varenya_professionals/utils/display_bottom_sheet.dart';
 import 'package:varenya_professionals/utils/logger.util.dart';
+import 'package:varenya_professionals/utils/responsive_config.util.dart';
 import 'package:varenya_professionals/utils/snackbar.dart';
 import 'package:varenya_professionals/widgets/common/profile_picture_widget.dart';
 
@@ -77,10 +78,10 @@ class _PostUserDetailsState extends State<PostUserDetails> {
     try {
       // Send request to server to delete post.
       await this._postService.deletePost(
-        new DeletePostDto(
-          id: this.widget.post.id,
-        ),
-      );
+            new DeletePostDto(
+              id: this.widget.post.id,
+            ),
+          );
 
       // Close alert dialog.
       Navigator.of(context).pop();
@@ -113,38 +114,48 @@ class _PostUserDetailsState extends State<PostUserDetails> {
   Widget build(BuildContext context) {
     return this.widget.serverUser.role == Roles.PROFESSIONAL
         ? Row(
-      children: [
-        Container(
-          margin: EdgeInsets.all(
-            MediaQuery.of(context).size.width * 0.02,
-          ),
-          child: ProfilePictureWidget(
-            imageUrl: this.widget.serverUser.doctor!.imageUrl,
-            size: 30,
-          ),
-        ),
-        Text(
-          "Dr. ${this.widget.serverUser.doctor!.fullName}",
-          style: Theme.of(context).textTheme.subtitle1,
-        ),
-      ],
-    )
+            children: [
+              Container(
+                margin: EdgeInsets.symmetric(
+                  horizontal: MediaQuery.of(context).size.width * 0.02,
+                ),
+                child: ProfilePictureWidget(
+                  imageUrl: this.widget.serverUser.doctor!.imageUrl,
+                  size: responsiveConfig(
+                    context: context,
+                    large: MediaQuery.of(context).size.width * 0.03,
+                    medium: MediaQuery.of(context).size.width * 0.03,
+                    small: MediaQuery.of(context).size.width * 0.05,
+                  ),
+                ),
+              ),
+              Text(
+                "Dr. ${this.widget.serverUser.doctor!.fullName}",
+                style: Theme.of(context).textTheme.subtitle1,
+              ),
+            ],
+          )
         : Row(
-      children: [
-        Container(
-          margin: EdgeInsets.all(
-            MediaQuery.of(context).size.width * 0.02,
-          ),
-          child: ProfilePictureWidget(
-            imageUrl: '',
-            size: 30,
-          ),
-        ),
-        Text(
-          this.widget.serverUser.randomName!.randomName,
-          style: Theme.of(context).textTheme.subtitle1,
-        ),
-      ],
-    );
+            children: [
+              Container(
+                margin: EdgeInsets.symmetric(
+                  horizontal: MediaQuery.of(context).size.width * 0.02,
+                ),
+                child: ProfilePictureWidget(
+                  imageUrl: '',
+                  size: responsiveConfig(
+                    context: context,
+                    large: MediaQuery.of(context).size.width * 0.03,
+                    medium: MediaQuery.of(context).size.width * 0.03,
+                    small: MediaQuery.of(context).size.width * 0.05,
+                  ),
+                ),
+              ),
+              Text(
+                this.widget.serverUser.randomName!.randomName,
+                style: Theme.of(context).textTheme.subtitle1,
+              ),
+            ],
+          );
   }
 }

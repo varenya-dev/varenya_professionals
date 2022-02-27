@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 import 'package:varenya_professionals/models/chat/thread/thread.model.dart';
 import 'package:varenya_professionals/services/chat.service.dart';
 import 'package:varenya_professionals/utils/logger.util.dart';
+import 'package:varenya_professionals/utils/responsive_config.util.dart';
 import 'package:varenya_professionals/widgets/chat/single_thread.widget.dart';
 
 class Threads extends StatefulWidget {
@@ -58,80 +59,95 @@ class _ThreadsState extends State<Threads> {
 
   Widget _buildThreadsPage(BuildContext context) {
     return SingleChildScrollView(
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Container(
-            height: MediaQuery.of(context).size.height * 0.3,
-            width: MediaQuery.of(context).size.width,
-            color: Colors.black54,
-            padding: EdgeInsets.symmetric(
-              horizontal: MediaQuery.of(context).size.width * 0.05,
-              vertical: MediaQuery.of(context).size.height * 0.05,
-            ),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  DateTime.now().hour < 12
-                      ? 'Good Morning,'
-                      : DateTime.now().hour >= 12 && DateTime.now().hour < 16
-                          ? 'Good Afternoon,'
-                          : 'Good Evening,',
-                  style: TextStyle(
-                    fontSize: MediaQuery.of(context).size.height * 0.025,
-                    color: Theme.of(context).textTheme.subtitle1!.color,
-                  ),
-                ),
-                Text(
-                  this._threads.isEmpty
-                      ? 'You have no messages yet'
-                      : 'Your\nmessages',
-                  style: TextStyle(
-                    fontSize: MediaQuery.of(context).size.height * 0.07,
-                    fontWeight: FontWeight.w900,
-                  ),
-                ),
-              ],
-            ),
+      child: Container(
+        margin: EdgeInsets.symmetric(
+          horizontal: responsiveConfig(
+            context: context,
+            large: MediaQuery.of(context).size.width * 0.25,
+            medium: MediaQuery.of(context).size.width * 0.25,
+            small: 0,
           ),
-          if (this._threads.isNotEmpty)
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
             Container(
-              margin: EdgeInsets.only(
-                  left: MediaQuery.of(context).size.width * 0.07,
-                  top: MediaQuery.of(context).size.height * 0.04),
-              child: Text(
-                'Recent:',
-                style: Theme.of(context).textTheme.subtitle1,
+              height: responsiveConfig(
+                context: context,
+                large: MediaQuery.of(context).size.height * 0.35,
+                medium: MediaQuery.of(context).size.height * 0.35,
+                small: MediaQuery.of(context).size.height * 0.3,
+              ),
+              width: MediaQuery.of(context).size.width,
+              color: Colors.black54,
+              padding: EdgeInsets.symmetric(
+                horizontal: MediaQuery.of(context).size.width * 0.05,
+                vertical: MediaQuery.of(context).size.height * 0.05,
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    DateTime.now().hour < 12
+                        ? 'Good Morning,'
+                        : DateTime.now().hour >= 12 && DateTime.now().hour < 16
+                            ? 'Good Afternoon,'
+                            : 'Good Evening,',
+                    style: TextStyle(
+                      fontSize: MediaQuery.of(context).size.height * 0.025,
+                      color: Theme.of(context).textTheme.subtitle1!.color,
+                    ),
+                  ),
+                  Text(
+                    this._threads.isEmpty
+                        ? 'You have no messages yet'
+                        : 'Your\nmessages',
+                    style: TextStyle(
+                      fontSize: MediaQuery.of(context).size.height * 0.07,
+                      fontWeight: FontWeight.w900,
+                    ),
+                  ),
+                ],
               ),
             ),
-          this._threads.isNotEmpty
-              ? ListView.builder(
-                  physics: const NeverScrollableScrollPhysics(),
-                  shrinkWrap: true,
-                  itemCount: this._threads.length,
-                  itemBuilder: (context, index) {
-                    Thread thread = this._threads[index];
-                    return SingleThread(
-                      chatThread: thread,
-                    );
-                  },
-                )
-              : Container(
-                  height: MediaQuery.of(context).size.height * 0.6,
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Center(
-                        child: Text(
-                          'No messages here',
-                          style: Theme.of(context).textTheme.subtitle1,
+            if (this._threads.isNotEmpty)
+              Container(
+                margin: EdgeInsets.only(
+                    left: MediaQuery.of(context).size.width * 0.07,
+                    top: MediaQuery.of(context).size.height * 0.04),
+                child: Text(
+                  'Recent:',
+                  style: Theme.of(context).textTheme.subtitle1,
+                ),
+              ),
+            this._threads.isNotEmpty
+                ? ListView.builder(
+                    physics: const NeverScrollableScrollPhysics(),
+                    shrinkWrap: true,
+                    itemCount: this._threads.length,
+                    itemBuilder: (context, index) {
+                      Thread thread = this._threads[index];
+                      return SingleThread(
+                        chatThread: thread,
+                      );
+                    },
+                  )
+                : Container(
+                    height: MediaQuery.of(context).size.height * 0.6,
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Center(
+                          child: Text(
+                            'No messages here',
+                            style: Theme.of(context).textTheme.subtitle1,
+                          ),
                         ),
-                      ),
-                    ],
-                  ),
-                )
-        ],
+                      ],
+                    ),
+                  )
+          ],
+        ),
       ),
     );
   }

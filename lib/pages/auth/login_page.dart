@@ -15,6 +15,7 @@ import 'package:varenya_professionals/providers/user_provider.dart';
 import 'package:varenya_professionals/services/auth_service.dart';
 import 'package:varenya_professionals/services/doctor.service.dart';
 import 'package:varenya_professionals/utils/logger.util.dart';
+import 'package:varenya_professionals/utils/responsive_config.util.dart';
 import 'package:varenya_professionals/utils/snackbar.dart';
 import 'package:varenya_professionals/widgets/common/custom_field_widget.dart';
 
@@ -116,6 +117,12 @@ class _LoginPageState extends State<LoginPage> {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Container(
+                height: responsiveConfig(
+                  context: context,
+                  large: MediaQuery.of(context).size.height * 0.5,
+                  medium: MediaQuery.of(context).size.height * 0.5,
+                  small: MediaQuery.of(context).size.height * 0.5,
+                ),
                 child: Image.asset(
                   'assets/logo/app_logo.png',
                   scale: 0.5,
@@ -123,47 +130,57 @@ class _LoginPageState extends State<LoginPage> {
               ),
               Form(
                 key: _formKey,
-                child: Column(
-                  children: [
-                    CustomFieldWidget(
-                      textFieldController: this._emailFieldController,
-                      label: 'Email Address',
-                      validators: [
-                        RequiredValidator(
-                          errorText: 'Please enter your email address here.',
-                        ),
-                        EmailValidator(
-                          errorText: 'Please enter a valid email address.',
-                        )
-                      ],
-                      textInputType: TextInputType.emailAddress,
+                child: Container(
+                  margin: EdgeInsets.symmetric(
+                    horizontal: responsiveConfig(
+                      context: context,
+                      large: MediaQuery.of(context).size.width * 0.3,
+                      medium: MediaQuery.of(context).size.width * 0.1,
+                      small: 10.0,
                     ),
-                    CustomFieldWidget(
-                      textFieldController: this._passwordFieldController,
-                      label: 'Password',
-                      validators: [
-                        RequiredValidator(
-                          errorText: 'Please enter your password here.',
-                        ),
-                        MinLengthValidator(
-                          5,
-                          errorText:
-                              'Your password should be at least 5 characters long.',
-                        )
-                      ],
-                      textInputType: TextInputType.text,
-                      obscureText: true,
-                    ),
-                    ElevatedButton(
-                      onPressed: _onFormSubmit,
-                      child: Text('Login'),
-                    ),
-                    TextButton(
-                      onPressed: () => Navigator.of(context)
-                          .pushReplacementNamed(RegisterPage.routeName),
-                      child: Text('Don\'t have an account? Register here!'),
-                    )
-                  ],
+                  ),
+                  child: Column(
+                    children: [
+                      CustomFieldWidget(
+                        textFieldController: this._emailFieldController,
+                        label: 'Email Address',
+                        validators: [
+                          RequiredValidator(
+                            errorText: 'Please enter your email address here.',
+                          ),
+                          EmailValidator(
+                            errorText: 'Please enter a valid email address.',
+                          )
+                        ],
+                        textInputType: TextInputType.emailAddress,
+                      ),
+                      CustomFieldWidget(
+                        textFieldController: this._passwordFieldController,
+                        label: 'Password',
+                        validators: [
+                          RequiredValidator(
+                            errorText: 'Please enter your password here.',
+                          ),
+                          MinLengthValidator(
+                            5,
+                            errorText:
+                                'Your password should be at least 5 characters long.',
+                          )
+                        ],
+                        textInputType: TextInputType.text,
+                        obscureText: true,
+                      ),
+                      ElevatedButton(
+                        onPressed: _onFormSubmit,
+                        child: Text('Login'),
+                      ),
+                      TextButton(
+                        onPressed: () => Navigator.of(context)
+                            .pushReplacementNamed(RegisterPage.routeName),
+                        child: Text('Don\'t have an account? Register here!'),
+                      )
+                    ],
+                  ),
                 ),
               )
             ],

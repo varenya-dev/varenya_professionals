@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:varenya_professionals/utils/palette.util.dart';
+import 'package:varenya_professionals/utils/responsive_config.util.dart';
 import 'package:varenya_professionals/widgets/user/user_delete_tab.dart';
 import 'package:varenya_professionals/widgets/user/user_email_update_tab.dart';
 import 'package:varenya_professionals/widgets/user/user_password_update_tab.dart';
@@ -67,13 +68,23 @@ class UserUpdatePage extends StatelessWidget {
             ],
           ),
         ),
-        body: TabBarView(
-          children: [
-            UserProfileUpdateTab(),
-            UserEmailUpdateTab(),
-            UserPasswordUpdateTab(),
-            UserDeleteTab(),
-          ],
+        body: Container(
+          margin: EdgeInsets.symmetric(
+            horizontal: responsiveConfig(
+              context: context,
+              large: MediaQuery.of(context).size.width * 0.25,
+              medium: MediaQuery.of(context).size.width * 0.25,
+              small: 0,
+            ),
+          ),
+          child: TabBarView(
+            children: [
+              UserProfileUpdateTab(),
+              UserEmailUpdateTab(),
+              UserPasswordUpdateTab(),
+              UserDeleteTab(),
+            ],
+          ),
         ),
       ),
     );

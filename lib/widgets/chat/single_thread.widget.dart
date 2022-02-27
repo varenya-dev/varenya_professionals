@@ -10,6 +10,7 @@ import 'package:varenya_professionals/providers/user_provider.dart';
 import 'package:varenya_professionals/services/user_service.dart';
 import 'package:varenya_professionals/utils/logger.util.dart';
 import 'package:varenya_professionals/utils/palette.util.dart';
+import 'package:varenya_professionals/utils/responsive_config.util.dart';
 import 'package:varenya_professionals/widgets/common/profile_picture_widget.dart';
 
 class SingleThread extends StatefulWidget {
@@ -91,9 +92,24 @@ class _SingleThreadState extends State<SingleThread> {
 
   Widget _onLoadingData() {
     return ListTile(
-      leading: ProfilePictureWidget(
-        imageUrl: '',
-        size: MediaQuery.of(context).size.width * 0.2,
+      leading: Container(
+        margin: EdgeInsets.only(
+          left: responsiveConfig(
+            context: context,
+            large: MediaQuery.of(context).size.width * 0.05,
+            medium: MediaQuery.of(context).size.width * 0.05,
+            small: 0,
+          ),
+        ),
+        child: ProfilePictureWidget(
+          imageUrl: '',
+          size:responsiveConfig(
+            context: context,
+            large: MediaQuery.of(context).size.width * 0.05,
+            medium: MediaQuery.of(context).size.width * 0.05,
+            small: MediaQuery.of(context).size.width * 0.2,
+          ),
+        ),
       ),
       title: Container(
         height: MediaQuery.of(context).size.height * 0.06,
@@ -138,9 +154,24 @@ class _SingleThreadState extends State<SingleThread> {
           ),
         );
       },
-      leading: ProfilePictureWidget(
-        imageUrl: _getImageUrl(),
-        size: MediaQuery.of(context).size.width * 0.2,
+      leading: Container(
+        margin: EdgeInsets.only(
+          left: responsiveConfig(
+            context: context,
+            large: MediaQuery.of(context).size.width * 0.05,
+            medium: MediaQuery.of(context).size.width * 0.05,
+            small: 0,
+          ),
+        ),
+        child: ProfilePictureWidget(
+          imageUrl: _getImageUrl(),
+          size: responsiveConfig(
+            context: context,
+            large: MediaQuery.of(context).size.width * 0.05,
+            medium: MediaQuery.of(context).size.width * 0.05,
+            small: MediaQuery.of(context).size.width * 0.2,
+          ),
+        ),
       ),
       title: _getUserName(),
       subtitle: Text(

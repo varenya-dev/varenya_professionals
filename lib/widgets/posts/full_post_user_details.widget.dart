@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:varenya_professionals/enum/roles.enum.dart';
 import 'package:varenya_professionals/models/post/post.model.dart';
+import 'package:varenya_professionals/utils/responsive_config.util.dart';
 import 'package:varenya_professionals/widgets/common/profile_picture_widget.dart';
 
 class FullPostUserDetails extends StatelessWidget {
@@ -33,7 +34,12 @@ class FullPostUserDetails extends StatelessWidget {
                 imageUrl: this._post!.user.role == Roles.PROFESSIONAL
                     ? this._post!.user.doctor!.imageUrl
                     : '',
-                size: MediaQuery.of(context).size.width * 0.1,
+                size: responsiveConfig(
+                  context: context,
+                  large: MediaQuery.of(context).size.width * 0.05,
+                  medium: MediaQuery.of(context).size.width * 0.02,
+                  small: MediaQuery.of(context).size.width * 0.1,
+                ),
               ),
             ),
             Text(

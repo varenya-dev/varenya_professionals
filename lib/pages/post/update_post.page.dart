@@ -14,6 +14,7 @@ import 'package:varenya_professionals/utils/display_bottom_sheet.dart';
 import 'package:varenya_professionals/utils/image_picker.dart';
 import 'package:varenya_professionals/utils/logger.util.dart';
 import 'package:varenya_professionals/utils/palette.util.dart';
+import 'package:varenya_professionals/utils/responsive_config.util.dart';
 import 'package:varenya_professionals/utils/snackbar.dart';
 import 'package:varenya_professionals/utils/upload_image_generate_url.dart';
 import 'package:varenya_professionals/widgets/common/custom_text_area.widget.dart';
@@ -115,7 +116,7 @@ class _UpdatePostState extends State<UpdatePost> {
     try {
       List<String> uploadedImages = await Future.wait(
         this._images.map(
-              (img) async {
+          (img) async {
             if (img.startsWith("http")) {
               return img;
             } else {
@@ -126,7 +127,7 @@ class _UpdatePostState extends State<UpdatePost> {
       );
 
       List<String> selectedCategories =
-      this._categories.map((category) => category.categoryName).toList();
+          this._categories.map((category) => category.categoryName).toList();
 
       if (selectedCategories.length == 0) {
         throw new ServerException(
@@ -212,6 +213,14 @@ class _UpdatePostState extends State<UpdatePost> {
         title: Text('Update Post'),
       ),
       body: Container(
+        margin: EdgeInsets.symmetric(
+          horizontal: responsiveConfig(
+            context: context,
+            large: MediaQuery.of(context).size.width * 0.3,
+            medium: MediaQuery.of(context).size.width * 0.3,
+            small: 0,
+          ),
+        ),
         child: SingleChildScrollView(
           child: Form(
             key: this._formKey,
@@ -219,35 +228,35 @@ class _UpdatePostState extends State<UpdatePost> {
               children: [
                 this._images.length == 0
                     ? GestureDetector(
-                  onTap: this._onUploadImage,
-                  child: Container(
-                    height: MediaQuery.of(context).size.height * 0.5,
-                    decoration: BoxDecoration(
-                      color: Colors.black26,
-                    ),
-                    child: Center(
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Icon(
-                            Icons.photo_camera_back,
-                            size:
-                            MediaQuery.of(context).size.height * 0.2,
-                            color: Colors.grey,
+                        onTap: this._onUploadImage,
+                        child: Container(
+                          height: MediaQuery.of(context).size.height * 0.5,
+                          decoration: BoxDecoration(
+                            color: Colors.black26,
                           ),
-                          Text(
-                            'Click to add image.',
-                            style: Theme.of(context).textTheme.subtitle1,
-                          )
-                        ],
-                      ),
-                    ),
-                  ),
-                )
+                          child: Center(
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Icon(
+                                  Icons.photo_camera_back,
+                                  size:
+                                      MediaQuery.of(context).size.height * 0.2,
+                                  color: Colors.grey,
+                                ),
+                                Text(
+                                  'Click to add image.',
+                                  style: Theme.of(context).textTheme.subtitle1,
+                                )
+                              ],
+                            ),
+                          ),
+                        ),
+                      )
                     : MixedImageCarousel(
-                  images: this._images,
-                  onDelete: this._removeImage,
-                ),
+                        images: this._images,
+                        onDelete: this._removeImage,
+                      ),
                 CustomTextArea(
                   textFieldController: this._titleController,
                   helperText: 'Title',
@@ -292,7 +301,7 @@ class _UpdatePostState extends State<UpdatePost> {
                     } else {
                       setState(() {
                         this._categories.removeWhere(
-                                (category) => category.id == postCategory.id);
+                            (category) => category.id == postCategory.id);
                       });
                     }
                   },
@@ -326,32 +335,32 @@ class _UpdatePostState extends State<UpdatePost> {
                                   ),
                                   padding: EdgeInsets.symmetric(
                                     vertical:
-                                    MediaQuery.of(context).size.height *
-                                        0.02,
+                                        MediaQuery.of(context).size.height *
+                                            0.02,
                                     horizontal:
-                                    MediaQuery.of(context).size.width *
-                                        0.07,
+                                        MediaQuery.of(context).size.width *
+                                            0.07,
                                   ),
                                   child: !loading
                                       ? Text(
-                                    'Update',
-                                    style: TextStyle(
-                                      color: Colors.black,
-                                    ),
-                                  )
+                                          'Update',
+                                          style: TextStyle(
+                                            color: Colors.black,
+                                          ),
+                                        )
                                       : SizedBox(
-                                    height: MediaQuery.of(context)
-                                        .size
-                                        .longestSide *
-                                        0.025,
-                                    width: MediaQuery.of(context)
-                                        .size
-                                        .longestSide *
-                                        0.025,
-                                    child: CircularProgressIndicator(
-                                      color: Colors.black,
-                                    ),
-                                  ),
+                                          height: MediaQuery.of(context)
+                                                  .size
+                                                  .longestSide *
+                                              0.025,
+                                          width: MediaQuery.of(context)
+                                                  .size
+                                                  .longestSide *
+                                              0.025,
+                                          child: CircularProgressIndicator(
+                                            color: Colors.black,
+                                          ),
+                                        ),
                                 ),
                               ),
                               GestureDetector(
@@ -361,11 +370,11 @@ class _UpdatePostState extends State<UpdatePost> {
                                 child: Container(
                                   padding: EdgeInsets.symmetric(
                                     vertical:
-                                    MediaQuery.of(context).size.height *
-                                        0.02,
+                                        MediaQuery.of(context).size.height *
+                                            0.02,
                                     horizontal:
-                                    MediaQuery.of(context).size.width *
-                                        0.07,
+                                        MediaQuery.of(context).size.width *
+                                            0.07,
                                   ),
                                   child: Text('Cancel'),
                                 ),

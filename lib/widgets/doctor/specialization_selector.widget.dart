@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:form_field_validator/form_field_validator.dart';
 import 'package:provider/provider.dart';
@@ -6,6 +7,7 @@ import 'package:varenya_professionals/models/specialization/specialization.model
 import 'package:varenya_professionals/services/doctor.service.dart';
 import 'package:varenya_professionals/utils/logger.util.dart';
 import 'package:varenya_professionals/utils/palette.util.dart';
+import 'package:varenya_professionals/utils/responsive_config.util.dart';
 import 'package:varenya_professionals/widgets/common/custom_field_widget.dart';
 
 class SpecializationSelector extends StatefulWidget {
@@ -169,7 +171,12 @@ class _SpecializationSelectorState extends State<SpecializationSelector> {
       children: [
         Container(
           margin: EdgeInsets.symmetric(
-            horizontal: MediaQuery.of(context).size.width * 0.05,
+            horizontal: responsiveConfig(
+              context: context,
+              large: MediaQuery.of(context).size.width * 0.01,
+              medium: MediaQuery.of(context).size.width * 0.01,
+              small: MediaQuery.of(context).size.width * 0.05,
+            ),
           ),
           child: Row(
             children: [

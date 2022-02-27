@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 import 'package:varenya_professionals/enum/auth_page_status.dart';
 import 'package:varenya_professionals/pages/auth/register_page.dart';
 import 'package:varenya_professionals/services/auth_service.dart';
+import 'package:varenya_professionals/utils/responsive_config.util.dart';
 import 'package:varenya_professionals/utils/snackbar.dart';
 import 'package:varenya_professionals/widgets/auth/auth_button_bar_widget.dart';
 import 'package:varenya_professionals/widgets/common/custom_field_widget.dart';
@@ -109,13 +110,26 @@ class _AuthPageState extends State<AuthPage> {
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
                 Container(
+                  height: responsiveConfig(
+                    context: context,
+                    large: MediaQuery.of(context).size.height * 0.5,
+                    medium: MediaQuery.of(context).size.height * 0.5,
+                    small: MediaQuery.of(context).size.height * 0.5,
+                  ),
                   child: Image.asset(
                     'assets/logo/app_logo.png',
                     scale: 0.5,
                   ),
                 ),
                 Container(
-                  margin: EdgeInsets.all(10.0),
+                  margin: EdgeInsets.symmetric(
+                    horizontal: responsiveConfig(
+                      context: context,
+                      large: MediaQuery.of(context).size.width * 0.3,
+                      medium: MediaQuery.of(context).size.width * 0.1,
+                      small: 10.0,
+                    ),
+                  ),
                   child: CustomFieldWidget(
                     textFieldController: this._emailAddressController,
                     label: 'Email Address',

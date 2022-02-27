@@ -19,6 +19,7 @@ import 'package:varenya_professionals/services/doctor.service.dart';
 import 'package:varenya_professionals/utils/display_bottom_sheet.dart';
 import 'package:varenya_professionals/utils/image_picker.dart';
 import 'package:varenya_professionals/utils/logger.util.dart';
+import 'package:varenya_professionals/utils/responsive_config.util.dart';
 import 'package:varenya_professionals/utils/snackbar.dart';
 import 'package:varenya_professionals/utils/upload_image_generate_url.dart';
 import 'package:varenya_professionals/validators/value_validator.dart';
@@ -204,86 +205,102 @@ class _RegisterPageState extends State<RegisterPage> {
       body: SafeArea(
         child: Center(
           child: SingleChildScrollView(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                ProfilePictureWidget(
-                  imageUrl: this._imageUrl,
-                  size: 200.0,
+            child: Container(
+              margin: EdgeInsets.symmetric(
+                horizontal: responsiveConfig(
+                  context: context,
+                  large: MediaQuery.of(context).size.width * 0.3,
+                  medium: MediaQuery.of(context).size.width * 0.1,
+                  small: 10.0,
                 ),
-                TextButton(
-                  onPressed: this._onUploadImage,
-                  child: Text('Upload Picture'),
-                ),
-                Form(
-                  key: _formKey,
-                  child: Column(
-                    children: [
-                      CustomFieldWidget(
-                        textFieldController: this._nameFieldController,
-                        label: 'Full Name',
-                        validators: [
-                          RequiredValidator(
-                            errorText: 'Please enter your name here.',
-                          ),
-                          MinLengthValidator(
-                            5,
-                            errorText:
-                                'Your name should be at least 5 characters long.',
-                          )
-                        ],
-                        textInputType: TextInputType.name,
-                      ),
-                      CustomFieldWidget(
-                        textFieldController: this._passwordFieldController,
-                        label: 'Password',
-                        validators: [
-                          RequiredValidator(
-                            errorText: 'Please enter your password here.',
-                          ),
-                          MinLengthValidator(
-                            5,
-                            errorText:
-                                'Your password should be at least 5 characters long.',
-                          )
-                        ],
-                        textInputType: TextInputType.text,
-                        obscureText: true,
-                      ),
-                      CustomFieldWidget(
-                        textFieldController: this._passwordAgainFieldController,
-                        label: 'Password Again',
-                        validators: [
-                          RequiredValidator(
-                            errorText: 'Please enter your password here.',
-                          ),
-                          MinLengthValidator(
-                            5,
-                            errorText:
-                                'Your password should be at least 5 characters long.',
-                          ),
-                          ValueValidator(
-                            checkAgainstTextController:
-                                this._passwordFieldController,
-                            errorText: 'Passwords don\'t match.',
-                          ),
-                        ],
-                        textInputType: TextInputType.text,
-                        obscureText: true,
-                      ),
-                      ElevatedButton(
-                        onPressed: _onFormSubmit,
-                        child: Text('Register'),
-                      ),
-                      TextButton(
-                        onPressed: () => Navigator.of(context)
-                            .pushReplacementNamed(LoginPage.routeName),
-                        child: Text('Already have an account? Login here!'),
-                      )
-                    ],
+              ),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  ProfilePictureWidget(
+                    imageUrl: this._imageUrl,
+                    size: responsiveConfig(
+                      context: context,
+                      large: MediaQuery.of(context).size.width * 0.2,
+                      medium: MediaQuery.of(context).size.width * 0.2,
+                      small: MediaQuery.of(context).size.width * 0.5,
+                    ),
                   ),
-                )
-              ],
+                  TextButton(
+                    onPressed: this._onUploadImage,
+                    child: Text('Upload Picture'),
+                  ),
+                  Form(
+                    key: _formKey,
+                    child: Column(
+                      children: [
+                        CustomFieldWidget(
+                          textFieldController: this._nameFieldController,
+                          label: 'Full Name',
+                          validators: [
+                            RequiredValidator(
+                              errorText: 'Please enter your name here.',
+                            ),
+                            MinLengthValidator(
+                              5,
+                              errorText:
+                                  'Your name should be at least 5 characters long.',
+                            )
+                          ],
+                          textInputType: TextInputType.name,
+                        ),
+                        CustomFieldWidget(
+                          textFieldController: this._passwordFieldController,
+                          label: 'Password',
+                          validators: [
+                            RequiredValidator(
+                              errorText: 'Please enter your password here.',
+                            ),
+                            MinLengthValidator(
+                              5,
+                              errorText:
+                                  'Your password should be at least 5 characters long.',
+                            )
+                          ],
+                          textInputType: TextInputType.text,
+                          obscureText: true,
+                        ),
+                        CustomFieldWidget(
+                          textFieldController:
+                              this._passwordAgainFieldController,
+                          label: 'Password Again',
+                          validators: [
+                            RequiredValidator(
+                              errorText: 'Please enter your password here.',
+                            ),
+                            MinLengthValidator(
+                              5,
+                              errorText:
+                                  'Your password should be at least 5 characters long.',
+                            ),
+                            ValueValidator(
+                              checkAgainstTextController:
+                                  this._passwordFieldController,
+                              errorText: 'Passwords don\'t match.',
+                            ),
+                          ],
+                          textInputType: TextInputType.text,
+                          obscureText: true,
+                        ),
+                        ElevatedButton(
+                          onPressed: _onFormSubmit,
+                          child: Text('Register'),
+                        ),
+                        TextButton(
+                          onPressed: () => Navigator.of(context)
+                              .pushReplacementNamed(LoginPage.routeName),
+                          child: Text('Already have an account? Login here!'),
+                        )
+                      ],
+                    ),
+                  )
+                ],
+              ),
             ),
           ),
         ),

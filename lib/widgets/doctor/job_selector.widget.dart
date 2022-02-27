@@ -5,6 +5,7 @@ import 'package:varenya_professionals/exceptions/server.exception.dart';
 import 'package:varenya_professionals/services/doctor.service.dart';
 import 'package:varenya_professionals/utils/logger.util.dart';
 import 'package:varenya_professionals/utils/palette.util.dart';
+import 'package:varenya_professionals/utils/responsive_config.util.dart';
 import 'package:varenya_professionals/widgets/common/custom_field_widget.dart';
 
 class JobSelector extends StatefulWidget {
@@ -149,7 +150,12 @@ class _JobSelectorState extends State<JobSelector> {
       children: [
         Container(
           margin: EdgeInsets.symmetric(
-            horizontal: MediaQuery.of(context).size.width * 0.05,
+            horizontal: responsiveConfig(
+              context: context,
+              large: MediaQuery.of(context).size.width * 0.01,
+              medium: MediaQuery.of(context).size.width * 0.01,
+              small: MediaQuery.of(context).size.width * 0.05,
+            ),
           ),
           child: Row(
             children: [

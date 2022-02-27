@@ -116,6 +116,9 @@ class _UserDeleteTabState extends State<UserDeleteTab> {
                 padding: const EdgeInsets.all(10.0),
                 child: RichText(
                   text: TextSpan(
+                    style: TextStyle(
+                      color: Colors.white,
+                    ),
                     children: [
                       TextSpan(
                         text: 'Please note that deleting your account ',

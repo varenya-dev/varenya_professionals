@@ -5,6 +5,7 @@ import 'package:varenya_professionals/models/post/post.model.dart' as PM;
 import 'package:varenya_professionals/services/post.service.dart';
 import 'package:varenya_professionals/utils/logger.util.dart';
 import 'package:varenya_professionals/utils/palette.util.dart';
+import 'package:varenya_professionals/utils/responsive_config.util.dart';
 import 'package:varenya_professionals/widgets/comments/comment_list.widget.dart';
 import 'package:varenya_professionals/widgets/comments/comments_form.widget.dart';
 import 'package:varenya_professionals/widgets/posts/full_post_body.widget.dart';
@@ -40,20 +41,30 @@ class _PostState extends State<Post> {
   @override
   Widget build(BuildContext context) {
     if (this._postId == null) {
-      this._postId = ModalRoute
-          .of(context)!
-          .settings
-          .arguments as String;
+      this._postId = ModalRoute.of(context)!.settings.arguments as String;
     }
 
     return Scaffold(
       bottomSheet: this._showCommentForm
-          ? CommentForm(
-        refreshPost: () {
-          setState(() {});
-        },
-        postId: this._post!.id,
-      )
+          ? Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Container(
+                  width: responsiveConfig(
+                    context: context,
+                    large: MediaQuery.of(context).size.width * 0.3,
+                    medium: MediaQuery.of(context).size.width * 0.3,
+                    small: MediaQuery.of(context).size.width,
+                  ),
+                  child: CommentForm(
+                    refreshPost: () {
+                      setState(() {});
+                    },
+                    postId: this._post!.id,
+                  ),
+                ),
+              ],
+            )
           : null,
       appBar: AppBar(
         centerTitle: true,
@@ -65,14 +76,16 @@ class _PostState extends State<Post> {
         },
         child: FutureBuilder(
           future: this._postService.fetchPostsById(this._postId!),
-          builder: (BuildContext context,
-              AsyncSnapshot<PM.Post> snapshot,) {
+          builder: (
+            BuildContext context,
+            AsyncSnapshot<PM.Post> snapshot,
+          ) {
             if (snapshot.hasError) {
               switch (snapshot.error.runtimeType) {
                 case ServerException:
                   {
                     ServerException exception =
-                    snapshot.error as ServerException;
+                        snapshot.error as ServerException;
                     return Text(exception.message);
                   }
                 default:
@@ -95,10 +108,10 @@ class _PostState extends State<Post> {
 
             return this._post == null
                 ? Column(
-              children: [
-                CircularProgressIndicator(),
-              ],
-            )
+                    children: [
+                      CircularProgressIndicator(),
+                    ],
+                  )
                 : _buildBody();
           },
         ),
@@ -110,58 +123,67 @@ class _PostState extends State<Post> {
     Duration duration = _now.difference(this._post!.createdAt);
 
     return SingleChildScrollView(
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Container(
-            color: Palette.secondary,
-            child: FullPostUserDetails(
+      child: Container(
+        margin: EdgeInsets.symmetric(
+          horizontal: responsiveConfig(
+            context: context,
+            large: MediaQuery.of(context).size.width * 0.3,
+            medium: MediaQuery.of(context).size.width * 0.3,
+            small: 0,
+          ),
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Container(
+              height: responsiveConfig(
+                context: context,
+                large: MediaQuery.of(context).size.height * 0.1,
+                medium: MediaQuery.of(context).size.height * 0.1,
+                small: MediaQuery.of(context).size.height * 0.1,
+              ),
+              color: Palette.secondary,
+              child: FullPostUserDetails(
+                context: context,
+                post: _post,
+              ),
+            ),
+            ImageCarousel(
+              imageUrls: this._post!.images,
+            ),
+            FullPostDuration(
+              context: context,
+              post: _post,
+              duration: duration,
+            ),
+            FullPostBody(
               context: context,
               post: _post,
             ),
-          ),
-          ImageCarousel(
-            imageUrls: this._post!.images,
-          ),
-          FullPostDuration(
-            context: context,
-            post: _post,
-            duration: duration,
-          ),
-          FullPostBody(
-            context: context,
-            post: _post,
-          ),
-          Container(
-            margin: EdgeInsets.symmetric(
-              horizontal: MediaQuery
-                  .of(context)
-                  .size
-                  .width * 0.01,
-            ),
-            padding: EdgeInsets.symmetric(
-              horizontal: MediaQuery
-                  .of(context)
-                  .size
-                  .width * 0.03,
-            ),
-            child: TextButton(
-              onPressed: () =>
-                  setState(() {
-                    this._showCommentForm = !this._showCommentForm;
-                  }),
-              child: Text(
-                'Add Comment',
+            Container(
+              margin: EdgeInsets.symmetric(
+                horizontal: MediaQuery.of(context).size.width * 0.01,
+              ),
+              padding: EdgeInsets.symmetric(
+                horizontal: MediaQuery.of(context).size.width * 0.03,
+              ),
+              child: TextButton(
+                onPressed: () => setState(() {
+                  this._showCommentForm = !this._showCommentForm;
+                }),
+                child: Text(
+                  'Add Comment',
+                ),
               ),
             ),
-          ),
-          CommentList(
-            comments: this._post!.comments,
-            refreshPost: () {
-              setState(() {});
-            },
-          ),
-        ],
+            CommentList(
+              comments: this._post!.comments,
+              refreshPost: () {
+                setState(() {});
+              },
+            ),
+          ],
+        ),
       ),
     );
   }

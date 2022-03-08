@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:varenya_professionals/utils/palette.util.dart';
+import 'package:varenya_professionals/utils/responsive_config.util.dart';
+import 'package:varenya_professionals/widgets/appointment/appointment_day_list.widget.dart';
 import 'package:varenya_professionals/widgets/appointment/appointment_display_list.widget.dart';
 
 class AppointmentList extends StatefulWidget {
@@ -13,6 +16,7 @@ class AppointmentList extends StatefulWidget {
 
 class _AppointmentListState extends State<AppointmentList> {
   List<DateTime> nextWeekDateList = [];
+  DateTime? _selectedDate;
 
   @override
   void initState() {
@@ -25,37 +29,68 @@ class _AppointmentListState extends State<AppointmentList> {
 
       nextWeekDateList.add(newDateTime);
     }
+
+    this._selectedDate = nextWeekDateList.first;
   }
 
   @override
   Widget build(BuildContext context) {
-
     return DefaultTabController(
       length: nextWeekDateList.length,
       child: Scaffold(
-        appBar: AppBar(
-          title: Text('Booked Appointments'),
-          bottom: TabBar(
-            isScrollable: true,
-            tabs: this
-                .nextWeekDateList
-                .map(
-                  (dateTime) => Tab(
-                text: DateFormat.yMMMd().format(dateTime).toString(),
+        body: SafeArea(
+          child: Container(
+            margin: EdgeInsets.symmetric(
+              horizontal: responsiveConfig(
+                context: context,
+                large: MediaQuery.of(context).size.width * 0.25,
+                medium: MediaQuery.of(context).size.width * 0.25,
+                small: 0,
               ),
-            )
-                .toList(),
-          ),
-        ),
-        body: TabBarView(
-          children: this
-              .nextWeekDateList
-              .map(
-                (dateTime) => AppointmentDisplayList(
-              dateTime: dateTime,
             ),
-          )
-              .toList(),
+            child: Column(
+              children: [
+                Container(
+                  color: Palette.black,
+                  width: MediaQuery.of(context).size.width,
+                  height: responsiveConfig(
+                    context: context,
+                    large: MediaQuery.of(context).size.height * 0.3,
+                    medium: MediaQuery.of(context).size.height * 0.3,
+                    small: MediaQuery.of(context).size.height * 0.23,
+                  ),
+                  padding: EdgeInsets.all(
+                    responsiveConfig(
+                      context: context,
+                      large: MediaQuery.of(context).size.width * 0.03,
+                      medium: MediaQuery.of(context).size.width * 0.03,
+                      small: MediaQuery.of(context).size.width * 0.05,
+                    ),
+                  ),
+                  child: Text(
+                    'Booked\nAppointments',
+                    style: TextStyle(
+                      fontSize: MediaQuery.of(context).size.height * 0.07,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.white,
+                    ),
+                  ),
+                ),
+                AppointmentDayList(
+                  selectedDate: this._selectedDate!,
+                  dates: this.nextWeekDateList,
+                  onSelect: (DateTime date) {
+                    setState(() {
+                      this._selectedDate = date;
+                    });
+                  },
+                ),
+                AppointmentDisplayList(
+                  dateTime: this._selectedDate!,
+                ),
+              ],
+            ),
+          ),
         ),
       ),
     );

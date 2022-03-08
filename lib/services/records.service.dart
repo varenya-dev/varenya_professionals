@@ -2,17 +2,20 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:hive/hive.dart';
 import 'package:http/http.dart' as http;
 import 'package:varenya_professionals/constants/endpoint_constant.dart';
 import 'package:varenya_professionals/constants/hive_boxes.constant.dart';
 import 'package:varenya_professionals/exceptions/server.exception.dart';
+import 'package:varenya_professionals/models/daily_mood_data/daily_mood_data.model.dart';
 import 'package:varenya_professionals/models/patient/patient.model.dart';
 import 'package:varenya_professionals/utils/logger.util.dart';
 
 class RecordsService {
   final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
+  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
   final Box<List<dynamic>> _recordsBox = Hive.box(VARENYA_PATIENT_RECORD_BOX);
 
@@ -23,7 +26,7 @@ class RecordsService {
     try {
       // Fetch the ID token for the user.
       String firebaseAuthToken =
-      await this._firebaseAuth.currentUser!.getIdToken();
+          await this._firebaseAuth.currentUser!.getIdToken();
 
       // Prepare URI for the request.
       Uri uri = Uri.parse("$ENDPOINT/records");
@@ -54,7 +57,7 @@ class RecordsService {
       // Decode JSON and create objects based on it.
       List<dynamic> jsonResponse = json.decode(response.body);
       List<Patient> records =
-      jsonResponse.map((json) => Patient.fromJson(json)).toList();
+          jsonResponse.map((json) => Patient.fromJson(json)).toList();
 
       // Save records on device storage.
       this._saveRecordsToDevice(records);
@@ -102,4 +105,14 @@ class RecordsService {
         ._recordsBox
         .get(VARENYA_PATIENT_RECORD_LIST, defaultValue: [])!.cast<Patient>();
   }
+
+  Stream<DailyMoodData> streamUserMood(
+    String userId,
+  ) =>
+      this
+          ._firestore
+          .collection('moods')
+          .doc(userId)
+          .snapshots()
+          .map((event) => DailyMoodData.fromJson(event.data()!));
 }

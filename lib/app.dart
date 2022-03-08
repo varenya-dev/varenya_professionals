@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:varenya_professionals/config/custom_scroll_beahvior.config.dart';
 import 'package:varenya_professionals/pages/appointment/appointment_list.page.dart';
 import 'package:varenya_professionals/pages/auth/auth_page.dart';
 import 'package:varenya_professionals/pages/auth/login_page.dart';
@@ -15,6 +14,8 @@ import 'package:varenya_professionals/pages/post/update_post.page.dart';
 import 'package:varenya_professionals/pages/user/user_update_page.dart';
 import 'package:varenya_professionals/utils/generate_swatch.util.dart';
 import 'package:varenya_professionals/utils/palette.util.dart';
+
+import 'utils/custom_scroll_behaviour.util.dart';
 
 class App extends StatelessWidget {
   const App({Key? key}) : super(key: key);

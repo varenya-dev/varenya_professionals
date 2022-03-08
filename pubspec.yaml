@@ -31,6 +31,7 @@ dependencies:
   hive: ^2.0.5
   hive_flutter: ^1.1.0
   flutter_offline: ^2.0.0
+  fl_chart: ^0.41.0
 
 flutter_icons:
   android: "launcher_icon"

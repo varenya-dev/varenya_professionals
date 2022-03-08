@@ -24,6 +24,7 @@ import 'package:varenya_professionals/services/chat.service.dart';
 import 'package:varenya_professionals/services/comments.service.dart';
 import 'package:varenya_professionals/services/doctor.service.dart';
 import 'package:varenya_professionals/services/post.service.dart';
+import 'package:varenya_professionals/services/records.service.dart';
 import 'package:varenya_professionals/services/user_service.dart';
 import 'package:varenya_professionals/utils/logger.util.dart';
 
@@ -39,6 +40,7 @@ Future<void> openHiveBoxes() async {
   await Hive.openBox<List<dynamic>>(VARENYA_APPOINTMENT_BOX);
   await Hive.openBox<List<dynamic>>(VARENYA_SPECIALIZATION_BOX);
   await Hive.openBox<List<dynamic>>(VARENYA_JOB_BOX);
+  await Hive.openBox<List<dynamic>>(VARENYA_PATIENT_RECORD_BOX);
 }
 
 void registerHiveAdapters() {
@@ -133,6 +135,9 @@ class Root extends StatelessWidget {
         ),
         Provider<CommentsService>(
           create: (context) => CommentsService(),
+        ),
+        Provider<RecordsService>(
+          create: (context) => RecordsService(),
         ),
       ],
       child: App(),

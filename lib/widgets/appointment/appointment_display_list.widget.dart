@@ -22,6 +22,7 @@ class AppointmentDisplayList extends StatefulWidget {
 
 class _AppointmentDisplayListState extends State<AppointmentDisplayList> {
   late final AppointmentService _appointmentService;
+  List<DoctorAppointmentResponse>? _appointments;
 
   @override
   void initState() {
@@ -63,26 +64,32 @@ class _AppointmentDisplayListState extends State<AppointmentDisplayList> {
         }
 
         if (snapshot.connectionState == ConnectionState.done) {
-          List<DoctorAppointmentResponse> appointments = snapshot.data!;
+          this._appointments = snapshot.data!;
 
-          return ListView.builder(
-            itemCount: appointments.length,
-            shrinkWrap: true,
-            itemBuilder: (BuildContext context, int index) {
-              DoctorAppointmentResponse appointmentResponse =
-                  appointments[index];
-
-              return AppointmentCard(
-                appointment: appointmentResponse,
-              );
-            },
-          );
+          return _buildListBody();
         }
 
-        return Column(
-          children: [
-            CircularProgressIndicator(),
-          ],
+        return this._appointments == null
+            ? Column(
+                children: [
+                  CircularProgressIndicator(),
+                ],
+              )
+            : _buildListBody();
+      },
+    );
+  }
+
+  ListView _buildListBody() {
+    return ListView.builder(
+      itemCount: this._appointments!.length,
+      shrinkWrap: true,
+      itemBuilder: (BuildContext context, int index) {
+        DoctorAppointmentResponse appointmentResponse =
+            this._appointments![index];
+
+        return AppointmentCard(
+          appointment: appointmentResponse,
         );
       },
     );

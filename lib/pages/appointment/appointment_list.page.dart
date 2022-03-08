@@ -35,10 +35,9 @@ class _AppointmentListState extends State<AppointmentList> {
 
   @override
   Widget build(BuildContext context) {
-    return DefaultTabController(
-      length: nextWeekDateList.length,
-      child: Scaffold(
-        body: SafeArea(
+    return Scaffold(
+      body: SafeArea(
+        child: SingleChildScrollView(
           child: Container(
             margin: EdgeInsets.symmetric(
               horizontal: responsiveConfig(

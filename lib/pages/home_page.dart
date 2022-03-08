@@ -7,6 +7,7 @@ import 'package:varenya_professionals/notifications_handler.dart';
 import 'package:varenya_professionals/pages/appointment/appointment_list.page.dart';
 import 'package:varenya_professionals/pages/chat/threads.page.dart';
 import 'package:varenya_professionals/pages/post/categorized_posts.page.dart';
+import 'package:varenya_professionals/pages/records/records.page.dart';
 import 'package:varenya_professionals/pages/user/user_update_page.dart';
 import 'package:varenya_professionals/providers/doctor.provider.dart';
 import 'package:varenya_professionals/services/alerts_service.dart';
@@ -118,6 +119,12 @@ class _HomePageState extends State<HomePage> {
                   Navigator.of(context).pushNamed(CategorizedPosts.routeName);
                 },
                 child: Text('Categorized Posts'),
+              ),
+              ElevatedButton(
+                onPressed: () async {
+                  Navigator.of(context).pushNamed(Records.routeName);
+                },
+                child: Text('Patient Records'),
               ),
             ],
           ),

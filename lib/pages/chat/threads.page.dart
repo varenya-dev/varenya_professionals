@@ -43,7 +43,7 @@ class _ThreadsState extends State<Threads> {
           }
 
           if (snapshot.connectionState == ConnectionState.waiting) {
-            return Text("Loading");
+            return _buildThreadsPage(context);
           }
 
           this._threads.clear();

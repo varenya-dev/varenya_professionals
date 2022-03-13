@@ -17,8 +17,7 @@ import 'package:varenya_professionals/services/user_service.dart';
 import 'package:varenya_professionals/utils/check_connectivity.util.dart';
 import 'package:varenya_professionals/utils/logger.util.dart';
 import 'package:varenya_professionals/utils/snackbar.dart';
-
-import 'auth/auth_page.dart';
+import 'package:varenya_professionals/widgets/common/home_bar.widget.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);
@@ -30,15 +29,21 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  late final AuthService _authService;
   late final UserService _userService;
   late final AlertsService _alertsService;
+
+  final List<Widget> screens = [
+    AppointmentList(),
+    CategorizedPosts(),
+    Threads(),
+    Records(),
+  ];
+
+  int screen = 0;
 
   @override
   void initState() {
     super.initState();
-
-    this._authService = Provider.of<AuthService>(context, listen: false);
     this._userService = Provider.of<UserService>(context, listen: false);
     this._alertsService = Provider.of<AlertsService>(context, listen: false);
 
@@ -73,62 +78,21 @@ class _HomePageState extends State<HomePage> {
       });
   }
 
+  void emitScreen(int screenNumber) {
+    setState(() {
+      this.screen = screenNumber;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text('Varenya For Professionals'),
+      bottomSheet: HomeBar(
+        screen: screen,
+        emitScreen: this.emitScreen,
       ),
       body: NotificationsHandler(
-        child: Center(
-          child: Column(
-            children: [
-              Consumer<DoctorProvider>(
-                builder: (context, state, child) {
-                  var user = state.doctor;
-                  return Text(user.fullName);
-                },
-              ),
-              ElevatedButton(
-                onPressed: () {
-                  Navigator.of(context).pushNamed(UserUpdatePage.routeName);
-                },
-                child: Text('User Update'),
-              ),
-              ElevatedButton(
-                onPressed: () {
-                  Navigator.of(context).pushNamed(Threads.routeName);
-                },
-                child: Text('Threads'),
-              ),
-              ElevatedButton(
-                onPressed: () async {
-                  await this._authService.logOut();
-                  Navigator.of(context).pushNamed(AuthPage.routeName);
-                },
-                child: Text('Logout'),
-              ),
-              ElevatedButton(
-                onPressed: () {
-                  Navigator.of(context).pushNamed(AppointmentList.routeName);
-                },
-                child: Text('Appointments'),
-              ),
-              ElevatedButton(
-                onPressed: () async {
-                  Navigator.of(context).pushNamed(CategorizedPosts.routeName);
-                },
-                child: Text('Categorized Posts'),
-              ),
-              ElevatedButton(
-                onPressed: () async {
-                  Navigator.of(context).pushNamed(Records.routeName);
-                },
-                child: Text('Patient Records'),
-              ),
-            ],
-          ),
-        ),
+        child: screens[screen],
       ),
     );
   }

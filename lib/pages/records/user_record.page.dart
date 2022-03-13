@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:varenya_professionals/models/daily_mood_data/daily_mood_data.model.dart';
@@ -89,13 +90,42 @@ class _UserRecordState extends State<UserRecord> {
                   }
 
                   return Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
+                      Container(
+                        margin: EdgeInsets.symmetric(
+                          vertical: MediaQuery.of(context).size.height * 0.01,
+                          horizontal: MediaQuery.of(context).size.width * 0.05,
+                        ),
+                        child: Text(
+                          'Patient\'s Mood Cycle',
+                          style: TextStyle(
+                            fontSize: MediaQuery.of(context).size.height * 0.04,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ),
                       MoodChart(
                         dailyMoodData: snapshot.data!,
+                      ),
+                      Divider(),
+                      Container(
+                        margin: EdgeInsets.symmetric(
+                          vertical: MediaQuery.of(context).size.height * 0.01,
+                          horizontal: MediaQuery.of(context).size.width * 0.05,
+                        ),
+                        child: Text(
+                          'Detailed Day By Day Moods',
+                          style: TextStyle(
+                            fontSize: MediaQuery.of(context).size.height * 0.04,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
                       ),
                       PatientRecordList(
                         dailyMoodData: snapshot.data!,
                       ),
+                      Divider(),
                     ],
                   );
                 },

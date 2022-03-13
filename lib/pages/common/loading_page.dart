@@ -10,7 +10,13 @@ class LoadingPage extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
-            Text('Varenya'),
+            Container(
+              height: MediaQuery.of(context).size.height * 0.5,
+              child: Image.asset(
+                'assets/logo/app_logo.png',
+                // scale: 0.5,
+              ),
+            ),
             CircularProgressIndicator(),
           ],
         ),

@@ -1,9 +1,14 @@
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:provider/provider.dart';
+import 'package:varenya_professionals/providers/user_provider.dart';
 import 'package:varenya_professionals/utils/palette.util.dart';
 import 'package:varenya_professionals/utils/responsive_config.util.dart';
 import 'package:varenya_professionals/widgets/appointment/appointment_day_list.widget.dart';
 import 'package:varenya_professionals/widgets/appointment/appointment_display_list.widget.dart';
+import 'package:varenya_professionals/widgets/user/user_options_modal.widget.dart';
 
 class AppointmentList extends StatefulWidget {
   const AppointmentList({Key? key}) : super(key: key);
@@ -33,6 +38,27 @@ class _AppointmentListState extends State<AppointmentList> {
     this._selectedDate = nextWeekDateList.first;
   }
 
+  void _openUserOptions() {
+    showModalBottomSheet(
+      isScrollControlled: true,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.only(
+          topLeft: Radius.circular(
+            15.0,
+          ),
+          topRight: Radius.circular(
+            15.0,
+          ),
+        ),
+      ),
+      backgroundColor: kIsWeb
+          ? Colors.transparent
+          : Theme.of(context).scaffoldBackgroundColor,
+      context: context,
+      builder: (BuildContext context) => UserOptionsModal(),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -50,29 +76,57 @@ class _AppointmentListState extends State<AppointmentList> {
             child: Column(
               children: [
                 Container(
-                  color: Palette.black,
-                  width: MediaQuery.of(context).size.width,
                   height: responsiveConfig(
                     context: context,
                     large: MediaQuery.of(context).size.height * 0.3,
                     medium: MediaQuery.of(context).size.height * 0.3,
-                    small: MediaQuery.of(context).size.height * 0.23,
+                    small: MediaQuery.of(context).size.height * 0.22,
                   ),
-                  padding: EdgeInsets.all(
-                    responsiveConfig(
-                      context: context,
-                      large: MediaQuery.of(context).size.width * 0.03,
-                      medium: MediaQuery.of(context).size.width * 0.03,
-                      small: MediaQuery.of(context).size.width * 0.05,
-                    ),
+                  width: MediaQuery.of(context).size.width,
+                  color: Colors.black54,
+                  padding: EdgeInsets.symmetric(
+                    horizontal: MediaQuery.of(context).size.width * 0.05,
+                    vertical: MediaQuery.of(context).size.height * 0.05,
                   ),
-                  child: Text(
-                    'Booked\nAppointments',
-                    style: TextStyle(
-                      fontSize: MediaQuery.of(context).size.height * 0.07,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.white,
-                    ),
+                  child: Consumer<UserProvider>(
+                    builder:
+                        (BuildContext context, UserProvider userProvider, _) {
+                      User user = userProvider.user;
+
+                      return Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text(
+                                'Hello, ${user.displayName != null ? user.displayName!.split(' ')[0] : 'user'}',
+                                style: TextStyle(
+                                  fontSize:
+                                  MediaQuery.of(context).size.height * 0.06,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                              IconButton(
+                                iconSize:
+                                MediaQuery.of(context).size.height * 0.056,
+                                onPressed: this._openUserOptions,
+                                icon: Icon(
+                                  Icons.account_circle_rounded,
+                                ),
+                              ),
+                            ],
+                          ),
+                          Text(
+                            'Here are your appointments!',
+                            style: TextStyle(
+                              fontSize:
+                              MediaQuery.of(context).size.height * 0.03,
+                            ),
+                          ),
+                        ],
+                      );
+                    },
                   ),
                 ),
                 AppointmentDayList(

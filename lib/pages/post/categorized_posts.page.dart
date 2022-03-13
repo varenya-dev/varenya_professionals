@@ -4,7 +4,6 @@ import 'package:varenya_professionals/exceptions/server.exception.dart';
 import 'package:varenya_professionals/models/post/post.model.dart';
 import 'package:varenya_professionals/models/post/post_category/post_category.model.dart';
 import 'package:varenya_professionals/services/post.service.dart';
-import 'package:varenya_professionals/utils/display_bottom_sheet.dart';
 import 'package:varenya_professionals/utils/logger.util.dart';
 import 'package:varenya_professionals/utils/responsive_config.util.dart';
 import 'package:varenya_professionals/widgets/posts/display_create_post.widget.dart';
@@ -79,18 +78,6 @@ class _CategorizedPostsState extends State<CategorizedPosts> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text('Posts'),
-        centerTitle: true,
-        actions: [
-          IconButton(
-            onPressed: this._openPostCategoriesFilters,
-            icon: Icon(
-              Icons.filter_list_outlined,
-            ),
-          ),
-        ],
-      ),
       body: RefreshIndicator(
         onRefresh: () async {
           setState(() {});
@@ -108,6 +95,40 @@ class _CategorizedPostsState extends State<CategorizedPosts> {
             ),
             child: Column(
               children: [
+                Container(
+                  height: responsiveConfig(
+                    context: context,
+                    large: MediaQuery.of(context).size.height * 0.2,
+                    medium: MediaQuery.of(context).size.height * 0.2,
+                    small: MediaQuery.of(context).size.height * 0.16,
+                  ),
+                  width: MediaQuery.of(context).size.width,
+                  color: Colors.black54,
+                  padding: EdgeInsets.symmetric(
+                    horizontal: MediaQuery.of(context).size.width * 0.05,
+                    vertical: MediaQuery.of(context).size.height * 0.05,
+                  ),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      Text(
+                        'Posts',
+                        style: TextStyle(
+                          fontSize: MediaQuery.of(context).size.height * 0.06,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      IconButton(
+                        iconSize: MediaQuery.of(context).size.height * 0.055,
+                        onPressed: this._openPostCategoriesFilters,
+                        icon: Icon(
+                          Icons.filter_list_outlined,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
                 DisplayCreatePost(),
                 FutureBuilder(
                   future:

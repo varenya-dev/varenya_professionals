@@ -46,6 +46,30 @@ class _MoodChartState extends State<MoodChart> {
         LineChartData(
           lineTouchData: LineTouchData(
             enabled: true,
+            touchTooltipData: LineTouchTooltipData(
+              tooltipBgColor: Palette.secondary,
+              getTooltipItems: (List<LineBarSpot> touchedBarSpots) {
+                return touchedBarSpots.map(
+                      (barSpot) {
+                    final flSpot = barSpot;
+
+                    return LineTooltipItem(
+                      EMOJIS[flSpot.y.toInt() - 1],
+                      const TextStyle(
+                        color: Colors.white,
+                        fontWeight: FontWeight.bold,
+                      ),
+                      children: [
+                        TextSpan(
+                          text:
+                          '\n${DateFormat.yMMMd().format(this._dailyProgressData[flSpot.x.toInt()].date)}',
+                        ),
+                      ],
+                    );
+                  },
+                ).toList();
+              },
+            ),
           ),
           lineBarsData: [
             LineChartBarData(

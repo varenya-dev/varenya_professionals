@@ -19,47 +19,49 @@ class PostFilter extends StatelessWidget {
   Widget build(BuildContext context) {
     return SingleChildScrollView(
       child: Container(
-        height: MediaQuery.of(context).size.height * 0.25,
+        height: MediaQuery.of(context).size.height * 0.3,
         margin: EdgeInsets.only(
           top: MediaQuery.of(context).size.height * 0.03,
           left: MediaQuery.of(context).size.width * 0.03,
         ),
-        child: Column(
-          children: [
-            Row(
-              children: [
-                Icon(
-                  Icons.filter_list_outlined,
-                  size: responsiveConfig(
-                    context: context,
-                    large: MediaQuery.of(context).size.width * 0.03,
-                    medium: MediaQuery.of(context).size.width * 0.03,
-                    small: MediaQuery.of(context).size.width * 0.08,
-                  ),
-                ),
-                Container(
-                  margin: EdgeInsets.symmetric(
-                    horizontal: MediaQuery.of(context).size.width * 0.02,
-                  ),
-                  child: Text(
-                    'Filters',
-                    style: TextStyle(
-                      fontSize: MediaQuery.of(context).size.height * 0.03,
+        child: SingleChildScrollView(
+          child: Column(
+            children: [
+              Row(
+                children: [
+                  Icon(
+                    Icons.filter_list_outlined,
+                    size: responsiveConfig(
+                      context: context,
+                      large: MediaQuery.of(context).size.width * 0.03,
+                      medium: MediaQuery.of(context).size.width * 0.03,
+                      small: MediaQuery.of(context).size.width * 0.08,
                     ),
                   ),
-                )
-              ],
-            ),
-            DisplayCategories(
-              selectedCategories: [
-                new PostCategory(
-                  id: this.categoryId,
-                  categoryName: this.categoryName,
-                ),
-              ],
-              addOrRemoveCategory: this.addOrRemoveCategory,
-            ),
-          ],
+                  Container(
+                    margin: EdgeInsets.symmetric(
+                      horizontal: MediaQuery.of(context).size.width * 0.02,
+                    ),
+                    child: Text(
+                      'Filters',
+                      style: TextStyle(
+                        fontSize: MediaQuery.of(context).size.height * 0.03,
+                      ),
+                    ),
+                  )
+                ],
+              ),
+              DisplayCategories(
+                selectedCategories: [
+                  new PostCategory(
+                    id: this.categoryId,
+                    categoryName: this.categoryName,
+                  ),
+                ],
+                addOrRemoveCategory: this.addOrRemoveCategory,
+              ),
+            ],
+          ),
         ),
       ),
     );

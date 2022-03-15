@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:varenya_professionals/enum/auth_page_status.dart';
+import 'package:varenya_professionals/utils/palette.util.dart';
 
 class AuthButtonBarWidget extends StatefulWidget {
   final Function onSelect;
@@ -25,7 +26,7 @@ class _AuthButtonBarWidgetState extends State<AuthButtonBarWidget> {
         Container(
           margin: EdgeInsets.all(20.0),
           decoration: BoxDecoration(
-            color: Colors.grey[800],
+            color: Palette.secondary,
             borderRadius: BorderRadius.circular(15.0),
           ),
           child: Row(
@@ -38,8 +39,8 @@ class _AuthButtonBarWidgetState extends State<AuthButtonBarWidget> {
                 child: Container(
                   decoration: BoxDecoration(
                     color: widget.authPageStatus == AuthPageStatus.REGISTER
-                        ? Colors.yellow
-                        : Colors.grey[800],
+                        ? Palette.primary
+                        : Palette.secondary,
                     borderRadius: BorderRadius.circular(15.0),
                   ),
                   padding: const EdgeInsets.symmetric(
@@ -63,8 +64,8 @@ class _AuthButtonBarWidgetState extends State<AuthButtonBarWidget> {
                 child: Container(
                   decoration: BoxDecoration(
                     color: widget.authPageStatus == AuthPageStatus.LOGIN
-                        ? Colors.yellow
-                        : Colors.grey[800],
+                        ? Palette.primary
+                        : Palette.secondary,
                     borderRadius: BorderRadius.circular(15.0),
                   ),
                   padding: const EdgeInsets.symmetric(

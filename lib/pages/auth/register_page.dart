@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_offline/flutter_offline.dart';
 import 'package:form_field_validator/form_field_validator.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
@@ -24,6 +25,7 @@ import 'package:varenya_professionals/utils/snackbar.dart';
 import 'package:varenya_professionals/utils/upload_image_generate_url.dart';
 import 'package:varenya_professionals/validators/value_validator.dart';
 import 'package:varenya_professionals/widgets/common/custom_field_widget.dart';
+import 'package:varenya_professionals/widgets/common/loading_icon_button.widget.dart';
 import 'package:varenya_professionals/widgets/common/profile_picture_widget.dart';
 
 class RegisterPage extends StatefulWidget {
@@ -53,6 +55,8 @@ class _RegisterPageState extends State<RegisterPage> {
   final TextEditingController _passwordAgainFieldController =
       new TextEditingController();
 
+  bool _loading = false;
+
   @override
   void initState() {
     super.initState();
@@ -71,6 +75,10 @@ class _RegisterPageState extends State<RegisterPage> {
     if (!this._formKey.currentState!.validate()) {
       return;
     }
+
+    setState(() {
+      this._loading = true;
+    });
 
     // Create a DTO object for signing in the user.
     RegisterAccountDto registerAccountDto = new RegisterAccountDto(
@@ -108,6 +116,10 @@ class _RegisterPageState extends State<RegisterPage> {
       log.e("RegisterPage:_onFormSubmit", error, stackTrace);
       displaySnackbar("Something went wrong, please try again later.", context);
     }
+
+    setState(() {
+      this._loading = false;
+    });
   }
 
   @override
@@ -179,18 +191,40 @@ class _RegisterPageState extends State<RegisterPage> {
    * Method to open up camera or gallery on user's selection.
    */
   void _onUploadImage() {
-    displayBottomSheet(
-      context,
-      Wrap(
+    showModalBottomSheet(
+      isScrollControlled: true,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.only(
+          topLeft: Radius.circular(
+            15.0,
+          ),
+          topRight: Radius.circular(
+            15.0,
+          ),
+        ),
+      ),
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+      context: context,
+      builder: (BuildContext context) => Wrap(
         children: [
           ListTile(
             leading: Icon(Icons.camera_alt_rounded),
-            title: Text('Upload from camera'),
+            title: Text(
+              'Upload from camera',
+              style: TextStyle(
+                color: Colors.white,
+              ),
+            ),
             onTap: this._uploadFromCamera,
           ),
           ListTile(
             leading: Icon(Icons.photo_album_sharp),
-            title: Text('Upload from storage'),
+            title: Text(
+              'Upload from storage',
+              style: TextStyle(
+                color: Colors.white,
+              ),
+            ),
             onTap: this._uploadFromGallery,
           )
         ],
@@ -287,15 +321,35 @@ class _RegisterPageState extends State<RegisterPage> {
                           textInputType: TextInputType.text,
                           obscureText: true,
                         ),
-                        ElevatedButton(
-                          onPressed: _onFormSubmit,
-                          child: Text('Register'),
+                        OfflineBuilder(
+                          connectivityBuilder: (BuildContext context,
+                              ConnectivityResult value, Widget child) {
+                            bool connected = value != ConnectivityResult.none;
+
+                            return connected
+                                ? LoadingIconButton(
+                                    connected: true,
+                                    loading: this._loading,
+                                    onFormSubmit: this._onFormSubmit,
+                                    text: 'Register',
+                                    loadingText: 'Registering',
+                                    icon: Icon(
+                                      Icons.login,
+                                    ),
+                                  )
+                                : LoadingIconButton(
+                                    connected: false,
+                                    loading: this._loading,
+                                    onFormSubmit: this._onFormSubmit,
+                                    text: 'Register',
+                                    loadingText: 'Registering',
+                                    icon: Icon(
+                                      Icons.login,
+                                    ),
+                                  );
+                          },
+                          child: SizedBox(),
                         ),
-                        TextButton(
-                          onPressed: () => Navigator.of(context)
-                              .pushReplacementNamed(LoginPage.routeName),
-                          child: Text('Already have an account? Login here!'),
-                        )
                       ],
                     ),
                   )

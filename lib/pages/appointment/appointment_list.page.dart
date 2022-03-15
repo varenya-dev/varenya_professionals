@@ -1,10 +1,8 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:varenya_professionals/providers/user_provider.dart';
-import 'package:varenya_professionals/utils/palette.util.dart';
 import 'package:varenya_professionals/utils/responsive_config.util.dart';
 import 'package:varenya_professionals/widgets/appointment/appointment_day_list.widget.dart';
 import 'package:varenya_professionals/widgets/appointment/appointment_display_list.widget.dart';

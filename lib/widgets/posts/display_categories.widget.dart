@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:varenya_professionals/animations/error.animation.dart';
+import 'package:varenya_professionals/animations/loading.animation.dart';
+import 'package:varenya_professionals/animations/no_data.animation.dart';
 import 'package:varenya_professionals/exceptions/server.exception.dart';
 import 'package:varenya_professionals/models/post/post_category/post_category.model.dart';
 import 'package:varenya_professionals/services/post.service.dart';
@@ -47,7 +50,7 @@ class _DisplayCategoriesState extends State<DisplayCategories> {
               case ServerException:
                 {
                   ServerException exception = snapshot.error as ServerException;
-                  return Text(exception.message);
+                  return Error(message: exception.message);
                 }
               default:
                 {
@@ -56,7 +59,8 @@ class _DisplayCategoriesState extends State<DisplayCategories> {
                     snapshot.error,
                     snapshot.stackTrace,
                   );
-                  return Text("Something went wrong, please try again later");
+                  return Error(
+                      message: "Something went wrong, please try again later");
                 }
             }
           }
@@ -68,7 +72,7 @@ class _DisplayCategoriesState extends State<DisplayCategories> {
           }
 
           return this._fetchedCategories == null
-              ? CircularProgressIndicator()
+              ? Loading(message: 'Loading Category Filters')
               : _buildCategoriesList();
         },
       ),
@@ -85,48 +89,50 @@ class _DisplayCategoriesState extends State<DisplayCategories> {
           small: 0,
         ),
       ),
-      child: Wrap(
-        alignment: WrapAlignment.center,
-        children: this._fetchedCategories!.map(
-          (category) {
-            bool checkSelected = this
-                .widget
-                .selectedCategories
-                .where((c) => category.id == c.id)
-                .isNotEmpty;
+      child: this._fetchedCategories!.length != 0
+          ? Wrap(
+              alignment: WrapAlignment.center,
+              children: this._fetchedCategories!.map(
+                (category) {
+                  bool checkSelected = this
+                      .widget
+                      .selectedCategories
+                      .where((c) => category.id == c.id)
+                      .isNotEmpty;
 
-            return GestureDetector(
-              onTap: () {
-                this.widget.addOrRemoveCategory(category);
-              },
-              child: Container(
-                decoration: BoxDecoration(
-                  color: !checkSelected
-                      ? Palette.secondary
-                      : Theme.of(context).primaryColor,
-                  borderRadius: BorderRadius.circular(
-                    15.0,
-                  ),
-                ),
-                padding: EdgeInsets.symmetric(
-                  vertical: MediaQuery.of(context).size.height * 0.02,
-                  horizontal: MediaQuery.of(context).size.width * 0.05,
-                ),
-                margin: EdgeInsets.symmetric(
-                  vertical: MediaQuery.of(context).size.height * 0.01,
-                  horizontal: MediaQuery.of(context).size.width * 0.015,
-                ),
-                child: Text(
-                  category.categoryName,
-                  style: TextStyle(
-                    color: checkSelected ? Colors.black : Colors.white,
-                  ),
-                ),
-              ),
-            );
-          },
-        ).toList(),
-      ),
+                  return GestureDetector(
+                    onTap: () {
+                      this.widget.addOrRemoveCategory(category);
+                    },
+                    child: Container(
+                      decoration: BoxDecoration(
+                        color: !checkSelected
+                            ? Palette.secondary
+                            : Theme.of(context).primaryColor,
+                        borderRadius: BorderRadius.circular(
+                          15.0,
+                        ),
+                      ),
+                      padding: EdgeInsets.symmetric(
+                        vertical: MediaQuery.of(context).size.height * 0.02,
+                        horizontal: MediaQuery.of(context).size.width * 0.05,
+                      ),
+                      margin: EdgeInsets.symmetric(
+                        vertical: MediaQuery.of(context).size.height * 0.01,
+                        horizontal: MediaQuery.of(context).size.width * 0.015,
+                      ),
+                      child: Text(
+                        category.categoryName,
+                        style: TextStyle(
+                          color: checkSelected ? Colors.black : Colors.white,
+                        ),
+                      ),
+                    ),
+                  );
+                },
+              ).toList(),
+            )
+          : NoData(message: 'No filters to display'),
     );
   }
 }

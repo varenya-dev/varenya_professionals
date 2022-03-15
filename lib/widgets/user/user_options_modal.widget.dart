@@ -1,6 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:varenya_professionals/pages/auth/auth_page.dart';
 import 'package:varenya_professionals/pages/user/user_update_page.dart';
 import 'package:varenya_professionals/providers/user_provider.dart';
 import 'package:varenya_professionals/services/auth_service.dart';
@@ -24,6 +25,8 @@ class _UserOptionsModalState extends State<UserOptionsModal> {
 
   Future<void> _onLogout() async {
     await this._authService.logOut();
+
+    Navigator.of(context).pushReplacementNamed(AuthPage.routeName);
   }
 
   @override

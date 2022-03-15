@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:varenya_professionals/animations/error.animation.dart';
+import 'package:varenya_professionals/animations/loading.animation.dart';
+import 'package:varenya_professionals/animations/no_data.animation.dart';
 import 'package:varenya_professionals/dtos/fetch_booked_appointments/fetch_booked_appointments.dto.dart';
 import 'package:varenya_professionals/exceptions/server.exception.dart';
 import 'package:varenya_professionals/models/appointment/doctor_appointment_response/doctor_appointment_response.model.dart';
@@ -49,7 +52,7 @@ class _AppointmentDisplayListState extends State<AppointmentDisplayList> {
             case ServerException:
               {
                 ServerException exception = snapshot.error as ServerException;
-                return Text(exception.message);
+                return Error(message: exception.message);
               }
             default:
               {
@@ -58,7 +61,8 @@ class _AppointmentDisplayListState extends State<AppointmentDisplayList> {
                   snapshot.error,
                   snapshot.stackTrace,
                 );
-                return Text("Something went wrong, please try again later");
+                return Error(
+                    message: "Something went wrong, please try again later");
               }
           }
         }
@@ -70,28 +74,26 @@ class _AppointmentDisplayListState extends State<AppointmentDisplayList> {
         }
 
         return this._appointments == null
-            ? Column(
-                children: [
-                  CircularProgressIndicator(),
-                ],
-              )
+            ? Loading(message: "Loading booked appointments")
             : _buildListBody();
       },
     );
   }
 
-  ListView _buildListBody() {
-    return ListView.builder(
-      itemCount: this._appointments!.length,
-      shrinkWrap: true,
-      itemBuilder: (BuildContext context, int index) {
-        DoctorAppointmentResponse appointmentResponse =
-            this._appointments![index];
+  Widget _buildListBody() {
+    return this._appointments!.length != 0
+        ? ListView.builder(
+            itemCount: this._appointments!.length,
+            shrinkWrap: true,
+            itemBuilder: (BuildContext context, int index) {
+              DoctorAppointmentResponse appointmentResponse =
+                  this._appointments![index];
 
-        return AppointmentCard(
-          appointment: appointmentResponse,
-        );
-      },
-    );
+              return AppointmentCard(
+                appointment: appointmentResponse,
+              );
+            },
+          )
+        : NoData(message: 'No appointmnents booked for this day.');
   }
 }

@@ -1,5 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_offline/flutter_offline.dart';
 import 'package:form_field_validator/form_field_validator.dart';
 import 'package:provider/provider.dart';
 import 'package:varenya_professionals/dtos/auth/login_account_dto/login_account_dto.dart';
@@ -18,6 +19,7 @@ import 'package:varenya_professionals/utils/logger.util.dart';
 import 'package:varenya_professionals/utils/responsive_config.util.dart';
 import 'package:varenya_professionals/utils/snackbar.dart';
 import 'package:varenya_professionals/widgets/common/custom_field_widget.dart';
+import 'package:varenya_professionals/widgets/common/loading_icon_button.widget.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({Key? key}) : super(key: key);
@@ -38,6 +40,8 @@ class _LoginPageState extends State<LoginPage> {
   final TextEditingController _passwordFieldController =
       new TextEditingController();
 
+  bool _loading = false;
+
   @override
   void initState() {
     super.initState();
@@ -51,8 +55,14 @@ class _LoginPageState extends State<LoginPage> {
    * Handle form submission for logging the user in.
    */
   Future<void> _onFormSubmit() async {
+    setState(() {
+      this._loading = true;
+    });
     // Check the validity of the form.
     if (!this._formKey.currentState!.validate()) {
+      setState(() {
+        this._loading = false;
+      });
       return;
     }
 
@@ -93,6 +103,10 @@ class _LoginPageState extends State<LoginPage> {
       log.e("LoginPage:_onFormSubmit", error, stackTrace);
       displaySnackbar("Something went wrong, please try again later.", context);
     }
+
+    setState(() {
+      this._loading = false;
+    });
   }
 
   @override
@@ -170,15 +184,35 @@ class _LoginPageState extends State<LoginPage> {
                         textInputType: TextInputType.text,
                         obscureText: true,
                       ),
-                      ElevatedButton(
-                        onPressed: _onFormSubmit,
-                        child: Text('Login'),
+                      OfflineBuilder(
+                        connectivityBuilder: (BuildContext context,
+                            ConnectivityResult value, Widget child) {
+                          bool connected = value != ConnectivityResult.none;
+
+                          return connected
+                              ? LoadingIconButton(
+                                  connected: true,
+                                  loading: this._loading,
+                                  onFormSubmit: this._onFormSubmit,
+                                  text: 'Login',
+                                  loadingText: 'Logging In',
+                                  icon: Icon(
+                                    Icons.login,
+                                  ),
+                                )
+                              : LoadingIconButton(
+                                  connected: false,
+                                  loading: this._loading,
+                                  onFormSubmit: this._onFormSubmit,
+                                  text: 'Login',
+                                  loadingText: 'Logging In',
+                                  icon: Icon(
+                                    Icons.login,
+                                  ),
+                                );
+                        },
+                        child: SizedBox(),
                       ),
-                      TextButton(
-                        onPressed: () => Navigator.of(context)
-                            .pushReplacementNamed(RegisterPage.routeName),
-                        child: Text('Don\'t have an account? Register here!'),
-                      )
                     ],
                   ),
                 ),

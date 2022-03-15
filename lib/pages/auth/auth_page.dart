@@ -147,7 +147,7 @@ class _AuthPageState extends State<AuthPage> {
                   ),
                 ),
                 Text(
-                  'Dicta dolores sequi reprehenderit corporis. Ipsam adipisci iure culpa.',
+                  'A Mental Health Support Application.',
                   textAlign: TextAlign.center,
                 ),
                 AuthButtonBarWidget(

@@ -1,6 +1,8 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:varenya_professionals/animations/error.animation.dart';
+import 'package:varenya_professionals/animations/loading.animation.dart';
+import 'package:varenya_professionals/animations/no_access.animation.dart';
 import 'package:varenya_professionals/models/daily_mood_data/daily_mood_data.model.dart';
 import 'package:varenya_professionals/services/records.service.dart';
 import 'package:varenya_professionals/utils/logger.util.dart';
@@ -78,15 +80,16 @@ class _UserRecordState extends State<UserRecord> {
                       snapshot.stackTrace,
                     );
 
-                    return Text(
-                      errorCode.code == "permission-denied"
-                          ? 'User has not shared mood data with you'
-                          : 'Something has went wrong, please try again later',
-                    );
+                    return errorCode.code == "permission-denied"
+                        ? NoAccess(
+                            message: 'You do not have permission to view this')
+                        : Error(
+                            message:
+                                'Something has went wrong, please try again later');
                   }
 
                   if (snapshot.connectionState == ConnectionState.waiting) {
-                    return Text("Loading");
+                    return Loading(message: 'Loading record');
                   }
 
                   return Column(

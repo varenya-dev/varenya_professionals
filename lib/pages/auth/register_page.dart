@@ -71,7 +71,6 @@ class _RegisterPageState extends State<RegisterPage> {
    * Handle form submission for registering the user in.
    */
   Future<void> _onFormSubmit() async {
-
     // Check the validity of the form.
     if (!this._formKey.currentState!.validate()) {
       return;
@@ -192,18 +191,40 @@ class _RegisterPageState extends State<RegisterPage> {
    * Method to open up camera or gallery on user's selection.
    */
   void _onUploadImage() {
-    displayBottomSheet(
-      context,
-      Wrap(
+    showModalBottomSheet(
+      isScrollControlled: true,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.only(
+          topLeft: Radius.circular(
+            15.0,
+          ),
+          topRight: Radius.circular(
+            15.0,
+          ),
+        ),
+      ),
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+      context: context,
+      builder: (BuildContext context) => Wrap(
         children: [
           ListTile(
             leading: Icon(Icons.camera_alt_rounded),
-            title: Text('Upload from camera'),
+            title: Text(
+              'Upload from camera',
+              style: TextStyle(
+                color: Colors.white,
+              ),
+            ),
             onTap: this._uploadFromCamera,
           ),
           ListTile(
             leading: Icon(Icons.photo_album_sharp),
-            title: Text('Upload from storage'),
+            title: Text(
+              'Upload from storage',
+              style: TextStyle(
+                color: Colors.white,
+              ),
+            ),
             onTap: this._uploadFromGallery,
           )
         ],
@@ -307,25 +328,25 @@ class _RegisterPageState extends State<RegisterPage> {
 
                             return connected
                                 ? LoadingIconButton(
-                              connected: true,
-                              loading: this._loading,
-                              onFormSubmit: this._onFormSubmit,
-                              text: 'Login',
-                              loadingText: 'Logging In',
-                              icon: Icon(
-                                Icons.login,
-                              ),
-                            )
+                                    connected: true,
+                                    loading: this._loading,
+                                    onFormSubmit: this._onFormSubmit,
+                                    text: 'Register',
+                                    loadingText: 'Registering',
+                                    icon: Icon(
+                                      Icons.login,
+                                    ),
+                                  )
                                 : LoadingIconButton(
-                              connected: false,
-                              loading: this._loading,
-                              onFormSubmit: this._onFormSubmit,
-                              text: 'Login',
-                              loadingText: 'Logging In',
-                              icon: Icon(
-                                Icons.login,
-                              ),
-                            );
+                                    connected: false,
+                                    loading: this._loading,
+                                    onFormSubmit: this._onFormSubmit,
+                                    text: 'Register',
+                                    loadingText: 'Registering',
+                                    icon: Icon(
+                                      Icons.login,
+                                    ),
+                                  );
                           },
                           child: SizedBox(),
                         ),

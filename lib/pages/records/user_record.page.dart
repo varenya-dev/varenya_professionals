@@ -24,6 +24,8 @@ class _UserRecordState extends State<UserRecord> {
   late final RecordsService _recordsService;
   String? userId;
 
+  DailyMoodData? _dailyMoodData;
+
   @override
   void initState() {
     super.initState();
@@ -91,6 +93,7 @@ class _UserRecordState extends State<UserRecord> {
                   if (snapshot.connectionState == ConnectionState.waiting) {
                     return Loading(message: 'Loading record');
                   }
+                  this._dailyMoodData = snapshot.data!;
 
                   return Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -109,7 +112,7 @@ class _UserRecordState extends State<UserRecord> {
                         ),
                       ),
                       MoodChart(
-                        dailyMoodData: snapshot.data!,
+                        dailyMoodData: this._dailyMoodData!,
                       ),
                       Divider(),
                       Container(
@@ -126,7 +129,7 @@ class _UserRecordState extends State<UserRecord> {
                         ),
                       ),
                       PatientRecordList(
-                        dailyMoodData: snapshot.data!,
+                        dailyMoodData: this._dailyMoodData!,
                       ),
                       Divider(),
                     ],

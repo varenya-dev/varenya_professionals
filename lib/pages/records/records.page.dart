@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:varenya_professionals/animations/error.animation.dart';
+import 'package:varenya_professionals/animations/loading.animation.dart';
+import 'package:varenya_professionals/animations/no_data.animation.dart';
 import 'package:varenya_professionals/exceptions/server.exception.dart';
 import 'package:varenya_professionals/models/patient/patient.model.dart';
 import 'package:varenya_professionals/services/records.service.dart';
@@ -91,9 +94,9 @@ class _RecordsState extends State<Records> {
   }
 
   Widget _handleRecordsFuture(
-      BuildContext buildContext,
-      AsyncSnapshot<List<Patient>> snapshot,
-      ) {
+    BuildContext buildContext,
+    AsyncSnapshot<List<Patient>> snapshot,
+  ) {
     // Check for errors.
     if (snapshot.hasError) {
       // Checking type of error and handling them.
@@ -101,7 +104,7 @@ class _RecordsState extends State<Records> {
         case ServerException:
           {
             ServerException exception = snapshot.error as ServerException;
-            return Text(exception.message);
+            return Error(message: exception.message);
           }
         default:
           {
@@ -110,7 +113,8 @@ class _RecordsState extends State<Records> {
               snapshot.error,
               snapshot.stackTrace,
             );
-            return Text("Something went wrong, please try again later");
+            return Error(
+                message: "Something went wrong, please try again later");
           }
       }
     }
@@ -126,26 +130,24 @@ class _RecordsState extends State<Records> {
     // If previously fetched doctors exists,
     // display them or loading indicator.
     return this._patients == null
-        ? Column(
-      children: [
-        CircularProgressIndicator(),
-      ],
-    )
+        ? Loading(message: "Loading patient records")
         : this._buildRecordsBody();
   }
 
   Widget _buildRecordsBody() {
-    return ListView.builder(
-      itemCount: this._patients!.length,
-      physics: const NeverScrollableScrollPhysics(),
-      shrinkWrap: true,
-      itemBuilder: (BuildContext context, int index) {
-        Patient patient = this._patients![index];
+    return this._patients!.length != 0
+        ? ListView.builder(
+            itemCount: this._patients!.length,
+            physics: const NeverScrollableScrollPhysics(),
+            shrinkWrap: true,
+            itemBuilder: (BuildContext context, int index) {
+              Patient patient = this._patients![index];
 
-        return PatientRecord(
-          patient: patient,
-        );
-      },
-    );
+              return PatientRecord(
+                patient: patient,
+              );
+            },
+          )
+        : NoData(message: 'No patient record to display');
   }
 }

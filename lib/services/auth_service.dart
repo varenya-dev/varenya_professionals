@@ -3,7 +3,9 @@ import 'dart:io';
 
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:hive/hive.dart';
 import 'package:varenya_professionals/constants/endpoint_constant.dart';
+import 'package:varenya_professionals/constants/hive_boxes.constant.dart';
 import 'package:varenya_professionals/dtos/auth/login_account_dto/login_account_dto.dart';
 import 'package:varenya_professionals/dtos/auth/register_account_dto/register_account_dto.dart';
 import 'package:varenya_professionals/dtos/auth/server_register_dto/server_register.dto.dart';
@@ -16,6 +18,7 @@ import 'package:uuid/uuid.dart';
 import 'package:http/http.dart' as http;
 import 'package:varenya_professionals/exceptions/general.exception.dart';
 import 'package:varenya_professionals/exceptions/server.exception.dart';
+import 'package:varenya_professionals/models/doctor/doctor.model.dart';
 import 'package:varenya_professionals/utils/logger.util.dart';
 
 class AuthService {
@@ -23,6 +26,18 @@ class AuthService {
   final GoogleSignIn googleSignIn = GoogleSignIn();
   final FirebaseStorage firebaseStorage = FirebaseStorage.instance;
   final Uuid uuid = Uuid();
+
+  final Box<List<dynamic>> _doctorsBox = Hive.box(VARENYA_DOCTORS_BOX);
+  final Box<List<dynamic>> _jobsBox = Hive.box(VARENYA_JOB_BOX);
+  final Box<List<dynamic>> _specializationsBox =
+  Hive.box(VARENYA_SPECIALIZATION_BOX);
+  final Box<List<dynamic>> _postsBox = Hive.box(VARENYA_POSTS_BOX);
+  final Box<List<dynamic>> _categoriesBox = Hive.box(VARENYA_POST_CATEGORY_BOX);
+  final Box<Doctor> _loggedInDoctorBox = Hive.box(VARENYA_LOGGED_IN_DOCTOR_BOX);
+  final Box<List<dynamic>> _appointmentBox = Hive.box(VARENYA_APPOINTMENT_BOX);
+  final Box<List<dynamic>> _recordsBox = Hive.box(VARENYA_PATIENT_RECORD_BOX);
+
+
 
   /*
    * Method to check account availability.
@@ -149,6 +164,15 @@ class AuthService {
    * Method to log out from firebase.
    */
   Future<void> logOut() async {
+    this._doctorsBox.clear();
+    this._jobsBox.clear();
+    this._specializationsBox.clear();
+    this._appointmentBox.clear();
+    this._postsBox.clear();
+    this._categoriesBox.clear();
+    this._recordsBox.clear();
+    this._loggedInDoctorBox.clear();
+
     await this.firebaseAuth.signOut();
   }
 

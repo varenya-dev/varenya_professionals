@@ -176,18 +176,40 @@ class _NewPostState extends State<NewPost> {
    * Method to open up camera or gallery on user's selection.
    */
   void _onUploadImage() {
-    displayBottomSheet(
-      context,
-      Wrap(
+    showModalBottomSheet(
+      isScrollControlled: true,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.only(
+          topLeft: Radius.circular(
+            15.0,
+          ),
+          topRight: Radius.circular(
+            15.0,
+          ),
+        ),
+      ),
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+      context: context,
+      builder: (BuildContext context) => Wrap(
         children: [
           ListTile(
             leading: Icon(Icons.camera_alt_rounded),
-            title: Text('Upload from camera'),
+            title: Text(
+              'Upload from camera',
+              style: TextStyle(
+                color: Colors.white,
+              ),
+            ),
             onTap: this._uploadFromCamera,
           ),
           ListTile(
             leading: Icon(Icons.photo_album_sharp),
-            title: Text('Upload from storage'),
+            title: Text(
+              'Upload from storage',
+              style: TextStyle(
+                color: Colors.white,
+              ),
+            ),
             onTap: this._uploadFromGallery,
           )
         ],
@@ -246,13 +268,14 @@ class _NewPostState extends State<NewPost> {
                                 children: [
                                   Icon(
                                     Icons.photo_camera_back,
-                                    size:
-                                        MediaQuery.of(context).size.height * 0.2,
+                                    size: MediaQuery.of(context).size.height *
+                                        0.2,
                                     color: Colors.grey,
                                   ),
                                   Text(
                                     'Click to add image.',
-                                    style: Theme.of(context).textTheme.subtitle1,
+                                    style:
+                                        Theme.of(context).textTheme.subtitle1,
                                   )
                                 ],
                               ),
@@ -272,7 +295,8 @@ class _NewPostState extends State<NewPost> {
                       ),
                       MinLengthValidator(
                         10,
-                        errorText: 'Title should be at least 10 characters long.',
+                        errorText:
+                            'Title should be at least 10 characters long.',
                       )
                     ],
                     textInputType: TextInputType.text,
@@ -288,7 +312,8 @@ class _NewPostState extends State<NewPost> {
                       ),
                       MinLengthValidator(
                         10,
-                        errorText: 'Body should be at least 10 characters long.',
+                        errorText:
+                            'Body should be at least 10 characters long.',
                       )
                     ],
                     textInputType: TextInputType.text,
@@ -331,7 +356,8 @@ class _NewPostState extends State<NewPost> {
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
                                 GestureDetector(
-                                  onTap: connected ? this._onCreateNewPost : null,
+                                  onTap:
+                                      connected ? this._onCreateNewPost : null,
                                   child: Container(
                                     decoration: BoxDecoration(
                                       color: Palette.primary,

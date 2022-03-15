@@ -209,185 +209,205 @@ class _UpdatePostState extends State<UpdatePost> {
     }
 
     return Scaffold(
-      appBar: AppBar(
-        title: Text('Update Post'),
-      ),
-      body: Container(
-        margin: EdgeInsets.symmetric(
-          horizontal: responsiveConfig(
-            context: context,
-            large: MediaQuery.of(context).size.width * 0.3,
-            medium: MediaQuery.of(context).size.width * 0.3,
-            small: 0,
+      body: SafeArea(
+        child: Container(
+          margin: EdgeInsets.symmetric(
+            horizontal: responsiveConfig(
+              context: context,
+              large: MediaQuery.of(context).size.width * 0.3,
+              medium: MediaQuery.of(context).size.width * 0.3,
+              small: 0,
+            ),
           ),
-        ),
-        child: SingleChildScrollView(
-          child: Form(
-            key: this._formKey,
-            child: Column(
-              children: [
-                this._images.length == 0
-                    ? GestureDetector(
-                        onTap: this._onUploadImage,
-                        child: Container(
-                          height: MediaQuery.of(context).size.height * 0.5,
-                          decoration: BoxDecoration(
-                            color: Colors.black26,
+          child: SingleChildScrollView(
+            child: Form(
+              key: this._formKey,
+              child: Column(
+                children: [
+                  Container(
+                    height: responsiveConfig(
+                      context: context,
+                      large: MediaQuery.of(context).size.height * 0.2,
+                      medium: MediaQuery.of(context).size.height * 0.2,
+                      small: MediaQuery.of(context).size.height * 0.16,
+                    ),
+                    width: MediaQuery.of(context).size.width,
+                    color: Colors.black54,
+                    padding: EdgeInsets.symmetric(
+                      horizontal: MediaQuery.of(context).size.width * 0.05,
+                      vertical: MediaQuery.of(context).size.height * 0.05,
+                    ),
+                    child: Text(
+                      'Update Post',
+                      style: TextStyle(
+                        fontSize: MediaQuery.of(context).size.height * 0.06,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ),
+                  this._images.length == 0
+                      ? GestureDetector(
+                          onTap: this._onUploadImage,
+                          child: Container(
+                            height: MediaQuery.of(context).size.height * 0.5,
+                            decoration: BoxDecoration(
+                              color: Colors.black26,
+                            ),
+                            child: Center(
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Icon(
+                                    Icons.photo_camera_back,
+                                    size:
+                                        MediaQuery.of(context).size.height * 0.2,
+                                    color: Colors.grey,
+                                  ),
+                                  Text(
+                                    'Click to add image.',
+                                    style: Theme.of(context).textTheme.subtitle1,
+                                  )
+                                ],
+                              ),
+                            ),
                           ),
-                          child: Center(
-                            child: Column(
+                        )
+                      : MixedImageCarousel(
+                          images: this._images,
+                          onDelete: this._removeImage,
+                        ),
+                  CustomTextArea(
+                    textFieldController: this._titleController,
+                    helperText: 'Title',
+                    validators: [
+                      RequiredValidator(
+                        errorText: 'Title is required.',
+                      ),
+                      MinLengthValidator(
+                        10,
+                        errorText: 'Title should be at least 10 characters long.',
+                      )
+                    ],
+                    textInputType: TextInputType.text,
+                    minLines: 1,
+                    maxLines: 1,
+                  ),
+                  CustomTextArea(
+                    textFieldController: this._bodyController,
+                    helperText: 'Write Something...',
+                    validators: [
+                      RequiredValidator(
+                        errorText: 'Body is required.',
+                      ),
+                      MinLengthValidator(
+                        10,
+                        errorText: 'Body should be at least 10 characters long.',
+                      )
+                    ],
+                    textInputType: TextInputType.text,
+                    minLines: 5,
+                  ),
+                  DisplayCategories(
+                    selectedCategories: this._categories,
+                    addOrRemoveCategory: (PostCategory postCategory) {
+                      if (this
+                          ._categories
+                          .where((category) => category.id == postCategory.id)
+                          .isEmpty) {
+                        setState(() {
+                          this._categories.add(postCategory);
+                        });
+                      } else {
+                        setState(() {
+                          this._categories.removeWhere(
+                              (category) => category.id == postCategory.id);
+                        });
+                      }
+                    },
+                  ),
+                  OfflineBuilder(
+                    connectivityBuilder:
+                        (BuildContext context, ConnectivityResult result, _) {
+                      final bool connected = result != ConnectivityResult.none;
+
+                      return Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Container(
+                            decoration: BoxDecoration(
+                              color: Palette.secondary,
+                              borderRadius: BorderRadius.circular(
+                                15.0,
+                              ),
+                            ),
+                            child: Row(
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
-                                Icon(
-                                  Icons.photo_camera_back,
-                                  size:
-                                      MediaQuery.of(context).size.height * 0.2,
-                                  color: Colors.grey,
+                                GestureDetector(
+                                  onTap: connected ? this._onUpdatePost : null,
+                                  child: Container(
+                                    decoration: BoxDecoration(
+                                      color: Palette.primary,
+                                      borderRadius: BorderRadius.circular(
+                                        15.0,
+                                      ),
+                                    ),
+                                    padding: EdgeInsets.symmetric(
+                                      vertical:
+                                          MediaQuery.of(context).size.height *
+                                              0.02,
+                                      horizontal:
+                                          MediaQuery.of(context).size.width *
+                                              0.07,
+                                    ),
+                                    child: !loading
+                                        ? Text(
+                                            'Update',
+                                            style: TextStyle(
+                                              color: Colors.black,
+                                            ),
+                                          )
+                                        : SizedBox(
+                                            height: MediaQuery.of(context)
+                                                    .size
+                                                    .longestSide *
+                                                0.025,
+                                            width: MediaQuery.of(context)
+                                                    .size
+                                                    .longestSide *
+                                                0.025,
+                                            child: CircularProgressIndicator(
+                                              color: Colors.black,
+                                            ),
+                                          ),
+                                  ),
                                 ),
-                                Text(
-                                  'Click to add image.',
-                                  style: Theme.of(context).textTheme.subtitle1,
+                                GestureDetector(
+                                  onTap: () {
+                                    Navigator.of(context).pop();
+                                  },
+                                  child: Container(
+                                    padding: EdgeInsets.symmetric(
+                                      vertical:
+                                          MediaQuery.of(context).size.height *
+                                              0.02,
+                                      horizontal:
+                                          MediaQuery.of(context).size.width *
+                                              0.07,
+                                    ),
+                                    child: Text('Cancel'),
+                                  ),
                                 )
                               ],
                             ),
                           ),
-                        ),
-                      )
-                    : MixedImageCarousel(
-                        images: this._images,
-                        onDelete: this._removeImage,
-                      ),
-                CustomTextArea(
-                  textFieldController: this._titleController,
-                  helperText: 'Title',
-                  validators: [
-                    RequiredValidator(
-                      errorText: 'Title is required.',
-                    ),
-                    MinLengthValidator(
-                      10,
-                      errorText: 'Title should be at least 10 characters long.',
-                    )
-                  ],
-                  textInputType: TextInputType.text,
-                  minLines: 1,
-                  maxLines: 1,
-                ),
-                CustomTextArea(
-                  textFieldController: this._bodyController,
-                  helperText: 'Write Something...',
-                  validators: [
-                    RequiredValidator(
-                      errorText: 'Body is required.',
-                    ),
-                    MinLengthValidator(
-                      10,
-                      errorText: 'Body should be at least 10 characters long.',
-                    )
-                  ],
-                  textInputType: TextInputType.text,
-                  minLines: 5,
-                ),
-                DisplayCategories(
-                  selectedCategories: this._categories,
-                  addOrRemoveCategory: (PostCategory postCategory) {
-                    if (this
-                        ._categories
-                        .where((category) => category.id == postCategory.id)
-                        .isEmpty) {
-                      setState(() {
-                        this._categories.add(postCategory);
-                      });
-                    } else {
-                      setState(() {
-                        this._categories.removeWhere(
-                            (category) => category.id == postCategory.id);
-                      });
-                    }
-                  },
-                ),
-                OfflineBuilder(
-                  connectivityBuilder:
-                      (BuildContext context, ConnectivityResult result, _) {
-                    final bool connected = result != ConnectivityResult.none;
-
-                    return Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Container(
-                          decoration: BoxDecoration(
-                            color: Palette.secondary,
-                            borderRadius: BorderRadius.circular(
-                              15.0,
-                            ),
-                          ),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              GestureDetector(
-                                onTap: connected ? this._onUpdatePost : null,
-                                child: Container(
-                                  decoration: BoxDecoration(
-                                    color: Palette.primary,
-                                    borderRadius: BorderRadius.circular(
-                                      15.0,
-                                    ),
-                                  ),
-                                  padding: EdgeInsets.symmetric(
-                                    vertical:
-                                        MediaQuery.of(context).size.height *
-                                            0.02,
-                                    horizontal:
-                                        MediaQuery.of(context).size.width *
-                                            0.07,
-                                  ),
-                                  child: !loading
-                                      ? Text(
-                                          'Update',
-                                          style: TextStyle(
-                                            color: Colors.black,
-                                          ),
-                                        )
-                                      : SizedBox(
-                                          height: MediaQuery.of(context)
-                                                  .size
-                                                  .longestSide *
-                                              0.025,
-                                          width: MediaQuery.of(context)
-                                                  .size
-                                                  .longestSide *
-                                              0.025,
-                                          child: CircularProgressIndicator(
-                                            color: Colors.black,
-                                          ),
-                                        ),
-                                ),
-                              ),
-                              GestureDetector(
-                                onTap: () {
-                                  Navigator.of(context).pop();
-                                },
-                                child: Container(
-                                  padding: EdgeInsets.symmetric(
-                                    vertical:
-                                        MediaQuery.of(context).size.height *
-                                            0.02,
-                                    horizontal:
-                                        MediaQuery.of(context).size.width *
-                                            0.07,
-                                  ),
-                                  child: Text('Cancel'),
-                                ),
-                              )
-                            ],
-                          ),
-                        ),
-                      ],
-                    );
-                  },
-                  child: SizedBox(),
-                ),
-              ],
+                        ],
+                      );
+                    },
+                    child: SizedBox(),
+                  ),
+                ],
+              ),
             ),
           ),
         ),

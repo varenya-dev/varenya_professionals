@@ -23,7 +23,10 @@ class FullPostBody extends StatelessWidget {
       ),
       child: Text(
         this._post!.body,
-        style: Theme.of(context).textTheme.subtitle1,
+        style: TextStyle(
+          color: Colors.white,
+          fontSize: MediaQuery.of(context).size.height * 0.05,
+        ),
       ),
     );
   }

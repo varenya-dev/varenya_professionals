@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:varenya_professionals/animations/error.animation.dart';
+import 'package:varenya_professionals/animations/loading.animation.dart';
 import 'package:varenya_professionals/exceptions/server.exception.dart';
 import 'package:varenya_professionals/models/post/post.model.dart' as PM;
 import 'package:varenya_professionals/services/post.service.dart';
@@ -12,6 +14,8 @@ import 'package:varenya_professionals/widgets/posts/full_post_body.widget.dart';
 import 'package:varenya_professionals/widgets/posts/full_post_duration.widget.dart';
 import 'package:varenya_professionals/widgets/posts/full_post_user_details.widget.dart';
 import 'package:varenya_professionals/widgets/posts/image_carousel.widget.dart';
+
+import '../../utils/responsive_config.util.dart';
 
 class Post extends StatefulWidget {
   const Post({Key? key}) : super(key: key);
@@ -47,73 +51,69 @@ class _PostState extends State<Post> {
     return Scaffold(
       bottomSheet: this._showCommentForm
           ? Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Container(
-                  width: responsiveConfig(
-                    context: context,
-                    large: MediaQuery.of(context).size.width * 0.3,
-                    medium: MediaQuery.of(context).size.width * 0.3,
-                    small: MediaQuery.of(context).size.width,
-                  ),
-                  child: CommentForm(
-                    refreshPost: () {
-                      setState(() {});
-                    },
-                    postId: this._post!.id,
-                  ),
-                ),
-              ],
-            )
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Container(
+            width: responsiveConfig(
+              context: context,
+              large: MediaQuery.of(context).size.width * 0.3,
+              medium: MediaQuery.of(context).size.width * 0.3,
+              small: MediaQuery.of(context).size.width,
+            ),
+            child: CommentForm(
+              refreshPost: () {
+                setState(() {});
+              },
+              postId: this._post!.id,
+            ),
+          ),
+        ],
+      )
           : null,
-      appBar: AppBar(
-        centerTitle: true,
-        title: Text('Posts'),
-      ),
-      body: RefreshIndicator(
-        onRefresh: () async {
-          setState(() {});
-        },
-        child: FutureBuilder(
-          future: this._postService.fetchPostsById(this._postId!),
-          builder: (
-            BuildContext context,
-            AsyncSnapshot<PM.Post> snapshot,
-          ) {
-            if (snapshot.hasError) {
-              switch (snapshot.error.runtimeType) {
-                case ServerException:
-                  {
-                    ServerException exception =
-                        snapshot.error as ServerException;
-                    return Text(exception.message);
-                  }
-                default:
-                  {
-                    log.e(
-                      "Post Error",
-                      snapshot.error,
-                      snapshot.stackTrace,
-                    );
-                    return Text("Something went wrong, please try again later");
-                  }
-              }
-            }
-
-            if (snapshot.connectionState == ConnectionState.done) {
-              this._post = snapshot.data!;
-
-              return _buildBody();
-            }
-
-            return this._post == null
-                ? Column(
-                    children: [
-                      CircularProgressIndicator(),
-                    ],
-                  )
-                : _buildBody();
+      body: SafeArea(
+        child: RefreshIndicator(
+          onRefresh: () async {
+            setState(() {});
           },
+          child: FutureBuilder(
+            future: this._postService.fetchPostsById(this._postId!),
+            builder: (
+                BuildContext context,
+                AsyncSnapshot<PM.Post> snapshot,
+                ) {
+              if (snapshot.hasError) {
+                switch (snapshot.error.runtimeType) {
+                  case ServerException:
+                    {
+                      ServerException exception =
+                      snapshot.error as ServerException;
+                      return Error(message: exception.message);
+                    }
+                  default:
+                    {
+                      log.e(
+                        "Post Error",
+                        snapshot.error,
+                        snapshot.stackTrace,
+                      );
+                      return Error(
+                        message: "Something went wrong, please try again later",
+                      );
+                    }
+                }
+              }
+
+              if (snapshot.connectionState == ConnectionState.done) {
+                this._post = snapshot.data!;
+
+                return _buildBody();
+              }
+
+              return this._post == null
+                  ? Loading(message: 'Loading post details')
+                  : _buildBody();
+            },
+          ),
         ),
       ),
     );
@@ -122,31 +122,22 @@ class _PostState extends State<Post> {
   Widget _buildBody() {
     Duration duration = _now.difference(this._post!.createdAt);
 
-    return SingleChildScrollView(
-      child: Container(
-        margin: EdgeInsets.symmetric(
-          horizontal: responsiveConfig(
-            context: context,
-            large: MediaQuery.of(context).size.width * 0.3,
-            medium: MediaQuery.of(context).size.width * 0.3,
-            small: 0,
-          ),
+    return Container(
+      margin: EdgeInsets.symmetric(
+        horizontal: responsiveConfig(
+          context: context,
+          large: MediaQuery.of(context).size.width * 0.3,
+          medium: MediaQuery.of(context).size.width * 0.3,
+          small: 0,
         ),
+      ),
+      child: SingleChildScrollView(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Container(
-              height: responsiveConfig(
-                context: context,
-                large: MediaQuery.of(context).size.height * 0.1,
-                medium: MediaQuery.of(context).size.height * 0.1,
-                small: MediaQuery.of(context).size.height * 0.1,
-              ),
-              color: Palette.secondary,
-              child: FullPostUserDetails(
-                context: context,
-                post: _post,
-              ),
+            FullPostUserDetails(
+              context: context,
+              post: _post!,
             ),
             ImageCarousel(
               imageUrls: this._post!.images,

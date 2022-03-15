@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_offline/flutter_offline.dart';
 import 'package:form_field_validator/form_field_validator.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
@@ -24,6 +25,7 @@ import 'package:varenya_professionals/utils/snackbar.dart';
 import 'package:varenya_professionals/utils/upload_image_generate_url.dart';
 import 'package:varenya_professionals/validators/value_validator.dart';
 import 'package:varenya_professionals/widgets/common/custom_field_widget.dart';
+import 'package:varenya_professionals/widgets/common/loading_icon_button.widget.dart';
 import 'package:varenya_professionals/widgets/common/profile_picture_widget.dart';
 
 class RegisterPage extends StatefulWidget {
@@ -53,6 +55,8 @@ class _RegisterPageState extends State<RegisterPage> {
   final TextEditingController _passwordAgainFieldController =
       new TextEditingController();
 
+  bool _loading = false;
+
   @override
   void initState() {
     super.initState();
@@ -67,10 +71,15 @@ class _RegisterPageState extends State<RegisterPage> {
    * Handle form submission for registering the user in.
    */
   Future<void> _onFormSubmit() async {
+
     // Check the validity of the form.
     if (!this._formKey.currentState!.validate()) {
       return;
     }
+
+    setState(() {
+      this._loading = true;
+    });
 
     // Create a DTO object for signing in the user.
     RegisterAccountDto registerAccountDto = new RegisterAccountDto(
@@ -108,6 +117,10 @@ class _RegisterPageState extends State<RegisterPage> {
       log.e("RegisterPage:_onFormSubmit", error, stackTrace);
       displaySnackbar("Something went wrong, please try again later.", context);
     }
+
+    setState(() {
+      this._loading = false;
+    });
   }
 
   @override
@@ -287,15 +300,35 @@ class _RegisterPageState extends State<RegisterPage> {
                           textInputType: TextInputType.text,
                           obscureText: true,
                         ),
-                        ElevatedButton(
-                          onPressed: _onFormSubmit,
-                          child: Text('Register'),
+                        OfflineBuilder(
+                          connectivityBuilder: (BuildContext context,
+                              ConnectivityResult value, Widget child) {
+                            bool connected = value != ConnectivityResult.none;
+
+                            return connected
+                                ? LoadingIconButton(
+                              connected: true,
+                              loading: this._loading,
+                              onFormSubmit: this._onFormSubmit,
+                              text: 'Login',
+                              loadingText: 'Logging In',
+                              icon: Icon(
+                                Icons.login,
+                              ),
+                            )
+                                : LoadingIconButton(
+                              connected: false,
+                              loading: this._loading,
+                              onFormSubmit: this._onFormSubmit,
+                              text: 'Login',
+                              loadingText: 'Logging In',
+                              icon: Icon(
+                                Icons.login,
+                              ),
+                            );
+                          },
+                          child: SizedBox(),
                         ),
-                        TextButton(
-                          onPressed: () => Navigator.of(context)
-                              .pushReplacementNamed(LoginPage.routeName),
-                          child: Text('Already have an account? Login here!'),
-                        )
                       ],
                     ),
                   )

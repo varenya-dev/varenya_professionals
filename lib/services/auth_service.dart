@@ -1,10 +1,8 @@
 import 'dart:convert';
-import 'dart:io';
 
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:hive/hive.dart';
-import 'package:varenya_professionals/constants/endpoint_constant.dart';
 import 'package:varenya_professionals/constants/hive_boxes.constant.dart';
 import 'package:varenya_professionals/dtos/auth/login_account_dto/login_account_dto.dart';
 import 'package:varenya_professionals/dtos/auth/register_account_dto/register_account_dto.dart';
@@ -16,7 +14,6 @@ import 'package:varenya_professionals/exceptions/auth/wrong_password_exception.d
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:uuid/uuid.dart';
 import 'package:http/http.dart' as http;
-import 'package:varenya_professionals/exceptions/general.exception.dart';
 import 'package:varenya_professionals/exceptions/server.exception.dart';
 import 'package:varenya_professionals/models/doctor/doctor.model.dart';
 import 'package:varenya_professionals/utils/logger.util.dart';
@@ -37,7 +34,13 @@ class AuthService {
   final Box<List<dynamic>> _appointmentBox = Hive.box(VARENYA_APPOINTMENT_BOX);
   final Box<List<dynamic>> _recordsBox = Hive.box(VARENYA_PATIENT_RECORD_BOX);
 
+  final String apiUrl;
+  final String rawApiUrl;
 
+  AuthService({
+    required this.apiUrl,
+    required this.rawApiUrl,
+  });
 
   /*
    * Method to check account availability.
@@ -185,7 +188,7 @@ class AuthService {
         await this.firebaseAuth.currentUser!.getIdToken();
 
     // Prepare URI for the request.
-    Uri uri = Uri.parse("$ENDPOINT/auth/register");
+    Uri uri = Uri.parse("$apiUrl/auth/register");
 
     // Prepare authorization headers.
     Map<String, String> headers = {

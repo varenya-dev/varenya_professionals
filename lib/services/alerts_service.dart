@@ -2,7 +2,6 @@ import 'dart:convert';
 
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
-import 'package:varenya_professionals/constants/endpoint_constant.dart';
 import 'package:http/http.dart' as http;
 import 'package:varenya_professionals/exceptions/server.exception.dart';
 import 'package:varenya_professionals/utils/logger.util.dart';
@@ -10,6 +9,14 @@ import 'package:varenya_professionals/utils/logger.util.dart';
 class AlertsService {
   final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
   final FirebaseMessaging _firebaseMessaging = FirebaseMessaging.instance;
+
+  final String apiUrl;
+  final String rawApiUrl;
+
+  AlertsService({
+    required this.apiUrl,
+    required this.rawApiUrl,
+  });
 
   Future<void> toggleSubscribeToSOSTopic(bool subscribe) async {
     if (subscribe)
@@ -24,7 +31,7 @@ class AlertsService {
         await this._firebaseAuth.currentUser!.getIdToken();
 
     // Prepare URI for the request.
-    Uri uri = Uri.parse("$ENDPOINT/notification/sos/response");
+    Uri uri = Uri.parse("$apiUrl/notification/sos/response");
 
     // Prepare authorization headers.
     Map<String, String> headers = {

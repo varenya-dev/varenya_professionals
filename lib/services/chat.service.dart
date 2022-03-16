@@ -6,7 +6,6 @@ import 'dart:convert';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:uuid/uuid.dart';
-import 'package:varenya_professionals/constants/endpoint_constant.dart';
 import 'package:varenya_professionals/models/chat/chat/chat.model.dart';
 import 'package:http/http.dart' as http;
 import 'package:varenya_professionals/models/chat/thread/thread.model.dart';
@@ -16,6 +15,14 @@ class ChatService {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   final FirebaseAuth _auth = FirebaseAuth.instance;
   final Uuid uuid = new Uuid();
+
+  final String apiUrl;
+  final String rawApiUrl;
+
+  ChatService({
+    required this.apiUrl,
+    required this.rawApiUrl,
+  });
 
   Future<String> createNewThread(String userId) async {
     String loggedInUserId = this._auth.currentUser!.uid;
@@ -145,7 +152,7 @@ class ChatService {
       String firebaseAuthToken = await this._auth.currentUser!.getIdToken();
 
       // Prepare URI for the request.
-      Uri uri = Uri.parse("$ENDPOINT/notification/chat");
+      Uri uri = Uri.parse("$apiUrl/notification/chat");
 
       // Prepare authorization headers.
       Map<String, String> headers = {

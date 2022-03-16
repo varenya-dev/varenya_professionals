@@ -4,7 +4,6 @@ import 'dart:io';
 
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:hive/hive.dart';
-import 'package:varenya_professionals/constants/endpoint_constant.dart';
 import 'package:varenya_professionals/constants/hive_boxes.constant.dart';
 import 'package:varenya_professionals/dtos/doctor/create_update_doctor.dto.dart';
 import 'package:varenya_professionals/exceptions/server.exception.dart';
@@ -20,6 +19,14 @@ class DoctorService {
   final Box<List<dynamic>> _specializationsBox =
       Hive.box(VARENYA_SPECIALIZATION_BOX);
 
+  final String apiUrl;
+  final String rawApiUrl;
+
+  DoctorService({
+    required this.apiUrl,
+    required this.rawApiUrl,
+  });
+
   Future<List<Specialization>> fetchSpecializations() async {
     try {
       // Fetch the ID token for the user.
@@ -27,7 +34,7 @@ class DoctorService {
           await this._firebaseAuth.currentUser!.getIdToken();
 
       // Prepare URI for the request.
-      Uri uri = Uri.parse("$ENDPOINT/doctor/specialization");
+      Uri uri = Uri.parse("$apiUrl/doctor/specialization");
 
       // Prepare authorization headers.
       Map<String, String> headers = {
@@ -81,7 +88,7 @@ class DoctorService {
           await this._firebaseAuth.currentUser!.getIdToken();
 
       // Prepare URI for the request.
-      Uri uri = Uri.parse("$ENDPOINT/doctor/title");
+      Uri uri = Uri.parse("$apiUrl/doctor/title");
 
       // Prepare authorization headers.
       Map<String, String> headers = {
@@ -135,7 +142,7 @@ class DoctorService {
           await this._firebaseAuth.currentUser!.getIdToken();
 
       // Prepare URI for the request.
-      Uri uri = Uri.parse("$ENDPOINT/doctor/identity");
+      Uri uri = Uri.parse("$apiUrl/doctor/identity");
 
       // Prepare authorization headers.
       Map<String, String> headers = {
@@ -186,7 +193,7 @@ class DoctorService {
         await this._firebaseAuth.currentUser!.getIdToken();
 
     // Prepare URI for the request.
-    Uri uri = Uri.parse("$ENDPOINT/doctor/placeholder");
+    Uri uri = Uri.parse("$apiUrl/doctor/placeholder");
 
     // Prepare authorization headers.
     Map<String, String> headers = {
@@ -224,7 +231,7 @@ class DoctorService {
         await this._firebaseAuth.currentUser!.getIdToken();
 
     // Prepare URI for the request.
-    Uri uri = Uri.parse("$ENDPOINT/doctor");
+    Uri uri = Uri.parse("$apiUrl/doctor");
 
     // Prepare authorization headers.
     Map<String, String> headers = {

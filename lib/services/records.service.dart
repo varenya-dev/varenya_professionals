@@ -6,7 +6,6 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:hive/hive.dart';
 import 'package:http/http.dart' as http;
-import 'package:varenya_professionals/constants/endpoint_constant.dart';
 import 'package:varenya_professionals/constants/hive_boxes.constant.dart';
 import 'package:varenya_professionals/exceptions/server.exception.dart';
 import 'package:varenya_professionals/models/daily_mood_data/daily_mood_data.model.dart';
@@ -19,6 +18,14 @@ class RecordsService {
 
   final Box<List<dynamic>> _recordsBox = Hive.box(VARENYA_PATIENT_RECORD_BOX);
 
+  final String apiUrl;
+  final String rawApiUrl;
+
+  RecordsService({
+    required this.apiUrl,
+    required this.rawApiUrl,
+  });
+
   /*
    * Method to fetch doctor records from the server.
    */
@@ -29,7 +36,7 @@ class RecordsService {
           await this._firebaseAuth.currentUser!.getIdToken();
 
       // Prepare URI for the request.
-      Uri uri = Uri.parse("$ENDPOINT/records");
+      Uri uri = Uri.parse("$apiUrl/records");
 
       // Prepare authorization headers.
       Map<String, String> headers = {

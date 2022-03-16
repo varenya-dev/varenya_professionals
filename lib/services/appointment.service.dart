@@ -6,7 +6,6 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:hive/hive.dart';
 import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
-import 'package:varenya_professionals/constants/endpoint_constant.dart';
 import 'package:varenya_professionals/constants/hive_boxes.constant.dart';
 import 'package:varenya_professionals/dtos/fetch_booked_appointments/fetch_booked_appointments.dto.dart';
 import 'package:varenya_professionals/exceptions/server.exception.dart';
@@ -18,6 +17,14 @@ class AppointmentService {
   final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
   final Box<List<dynamic>> _appointmentBox = Hive.box(VARENYA_APPOINTMENT_BOX);
 
+  final String apiUrl;
+  final String rawApiUrl;
+
+  AppointmentService({
+    required this.apiUrl,
+    required this.rawApiUrl,
+  });
+
   Future<List<DoctorAppointmentResponse>> fetchAppointmentsByDay(
       FetchBookedAppointmentsDto fetchBookedAppointmentsDto) async {
     try {
@@ -26,7 +33,7 @@ class AppointmentService {
           await this._firebaseAuth.currentUser!.getIdToken();
 
       // Prepare URI for the request.
-      Uri uri = Uri.http(RAW_ENDPOINT, "/v1/api/appointment/doctor",
+      Uri uri = Uri.http(rawApiUrl, "/v1/api/appointment/doctor",
           fetchBookedAppointmentsDto.toJson());
 
       // Prepare authorization headers.
@@ -90,7 +97,7 @@ class AppointmentService {
         await this._firebaseAuth.currentUser!.getIdToken();
 
     // Prepare URI for the request.
-    Uri uri = Uri.parse("$ENDPOINT/appointment");
+    Uri uri = Uri.parse("$apiUrl/appointment");
 
     // Prepare authorization headers.
     Map<String, String> headers = {
@@ -126,7 +133,7 @@ class AppointmentService {
         await this._firebaseAuth.currentUser!.getIdToken();
 
     // Prepare URI for the request.
-    Uri uri = Uri.parse("$ENDPOINT/appointment");
+    Uri uri = Uri.parse("$apiUrl/appointment");
 
     // Prepare authorization headers.
     Map<String, String> headers = {

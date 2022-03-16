@@ -16,8 +16,8 @@ class ProdRoot extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Providers(
-      apiUrl: kIsWeb ? "http://127.0.0.1:5000/v1/api" : "http://10.0.2.2:5000/v1/api",
-      rawApiUrl: kIsWeb ? "127.0.0.1:5000" : "10.0.2.2:5000",
+      apiUrl: kIsWeb ? "https://varenya-production.herokuapp.com/v1/api" : "https://varenya-production.herokuapp.com/v1/api",
+      rawApiUrl: kIsWeb ? "varenya-production.herokuapp.com" : "varenya-production.herokuapp.com",
       child: App(),
     );
   }

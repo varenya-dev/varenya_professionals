@@ -81,101 +81,97 @@ class _CategorizedPostsState extends State<CategorizedPosts> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: RefreshIndicator(
-        onRefresh: () async {
-          setState(() {});
-        },
-        child: SingleChildScrollView(
-          physics: const AlwaysScrollableScrollPhysics(),
-          child: Container(
-            margin: EdgeInsets.symmetric(
-              horizontal: responsiveConfig(
-                context: context,
-                large: MediaQuery.of(context).size.width * 0.25,
-                medium: MediaQuery.of(context).size.width * 0.25,
-                small: 0,
+      body: SafeArea(
+        child: RefreshIndicator(
+          onRefresh: () async {
+            setState(() {});
+          },
+          child: SingleChildScrollView(
+            physics: const AlwaysScrollableScrollPhysics(),
+            child: Container(
+              margin: EdgeInsets.symmetric(
+                horizontal: responsiveConfig(
+                  context: context,
+                  large: MediaQuery.of(context).size.width * 0.25,
+                  medium: MediaQuery.of(context).size.width * 0.25,
+                  small: 0,
+                ),
               ),
-            ),
-            child: Column(
-              children: [
-                Container(
-                  height: responsiveConfig(
-                    context: context,
-                    large: MediaQuery.of(context).size.height * 0.2,
-                    medium: MediaQuery.of(context).size.height * 0.2,
-                    small: MediaQuery.of(context).size.height * 0.16,
-                  ),
-                  width: MediaQuery.of(context).size.width,
-                  color: Colors.black54,
-                  padding: EdgeInsets.symmetric(
-                    horizontal: MediaQuery.of(context).size.width * 0.05,
-                    vertical: MediaQuery.of(context).size.height * 0.05,
-                  ),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      Text(
-                        'Posts',
-                        style: TextStyle(
-                          fontSize: MediaQuery.of(context).size.height * 0.06,
-                          fontWeight: FontWeight.bold,
+              child: Column(
+                children: [
+                  Container(
+                    width: MediaQuery.of(context).size.width,
+                    color: Colors.black54,
+                    padding: EdgeInsets.symmetric(
+                      horizontal: MediaQuery.of(context).size.width * 0.05,
+                      vertical: MediaQuery.of(context).size.height * 0.05,
+                    ),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        Text(
+                          'Posts',
+                          style: TextStyle(
+                            fontSize: MediaQuery.of(context).size.height * 0.05,
+                            fontWeight: FontWeight.bold,
+                          ),
                         ),
-                      ),
-                      IconButton(
-                        iconSize: MediaQuery.of(context).size.height * 0.055,
-                        onPressed: this._openPostCategoriesFilters,
-                        icon: Icon(
-                          Icons.filter_list_outlined,
+                        IconButton(
+                          iconSize: MediaQuery.of(context).size.height * 0.055,
+                          onPressed: this._openPostCategoriesFilters,
+                          icon: Icon(
+                            Icons.filter_list_outlined,
+                          ),
                         ),
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
-                ),
-                DisplayCreatePost(),
-                FutureBuilder(
-                  future: this
-                      ._postService
-                      .fetchPostsByCategory(this._categoryName),
-                  builder: (
-                    BuildContext context,
-                    AsyncSnapshot<List<Post>> snapshot,
-                  ) {
-                    if (snapshot.hasError) {
-                      switch (snapshot.error.runtimeType) {
-                        case ServerException:
-                          {
-                            ServerException exception =
-                                snapshot.error as ServerException;
-                            return Error(message: exception.message);
-                          }
-                        default:
-                          {
-                            log.e(
-                              "CategorizedPosts Error",
-                              snapshot.error,
-                              snapshot.stackTrace,
-                            );
-                            return Error(
-                              message:
-                                  "Something went wrong, please try again later",
-                            );
-                          }
+                  DisplayCreatePost(),
+                  FutureBuilder(
+                    future: this
+                        ._postService
+                        .fetchPostsByCategory(this._categoryName),
+                    builder: (
+                      BuildContext context,
+                      AsyncSnapshot<List<Post>> snapshot,
+                    ) {
+                      if (snapshot.hasError) {
+                        switch (snapshot.error.runtimeType) {
+                          case ServerException:
+                            {
+                              ServerException exception =
+                                  snapshot.error as ServerException;
+                              return Error(message: exception.message);
+                            }
+                          default:
+                            {
+                              log.e(
+                                "CategorizedPosts Error",
+                                snapshot.error,
+                                snapshot.stackTrace,
+                              );
+                              return Error(
+                                message:
+                                    "Something went wrong, please try again later",
+                              );
+                            }
+                        }
                       }
-                    }
 
-                    if (snapshot.connectionState == ConnectionState.done) {
-                      this._posts = snapshot.data!;
+                      if (snapshot.connectionState == ConnectionState.done) {
+                        this._posts = snapshot.data!;
 
-                      return _buildPostsList();
-                    }
+                        return _buildPostsList();
+                      }
 
-                    return this._posts == null
-                        ? Loading(message: 'Loading posts')
-                        : this._buildPostsList();
-                  },
-                ),
-              ],
+                      return this._posts == null
+                          ? Loading(message: 'Loading posts')
+                          : this._buildPostsList();
+                    },
+                  ),
+                ],
+              ),
             ),
           ),
         ),

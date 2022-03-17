@@ -47,12 +47,6 @@ class _UserRecordState extends State<UserRecord> {
               Container(
                 color: Palette.black,
                 width: MediaQuery.of(context).size.width,
-                height: responsiveConfig(
-                  context: context,
-                  large: MediaQuery.of(context).size.height * 0.3,
-                  medium: MediaQuery.of(context).size.height * 0.3,
-                  small: MediaQuery.of(context).size.height * 0.24,
-                ),
                 padding: EdgeInsets.all(
                   responsiveConfig(
                     context: context,
@@ -64,7 +58,7 @@ class _UserRecordState extends State<UserRecord> {
                 child: Text(
                   'Patient\nMood Track',
                   style: TextStyle(
-                    fontSize: MediaQuery.of(context).size.height * 0.07,
+                    fontSize: MediaQuery.of(context).size.height * 0.05,
                     fontWeight: FontWeight.bold,
                     color: Colors.white,
                   ),

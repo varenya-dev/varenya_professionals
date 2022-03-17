@@ -42,6 +42,8 @@ class _LoginPageState extends State<LoginPage> {
 
   bool _loading = false;
 
+  bool _emailSet = false;
+
   @override
   void initState() {
     super.initState();
@@ -118,9 +120,15 @@ class _LoginPageState extends State<LoginPage> {
 
   @override
   Widget build(BuildContext context) {
-    // Get the email address from the previous screen.
-    this._emailFieldController.text =
-        ModalRoute.of(context)!.settings.arguments as String;
+    if (!this._emailSet) {
+      // Get the email address from the previous screen.
+      this._emailFieldController.text =
+          ModalRoute.of(context)!.settings.arguments as String;
+
+      setState(() {
+        this._emailSet = true;
+      });
+    }
 
     return Scaffold(
       body: Center(

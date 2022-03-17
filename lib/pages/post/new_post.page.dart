@@ -236,12 +236,6 @@ class _NewPostState extends State<NewPost> {
               child: Column(
                 children: [
                   Container(
-                    height: responsiveConfig(
-                      context: context,
-                      large: MediaQuery.of(context).size.height * 0.2,
-                      medium: MediaQuery.of(context).size.height * 0.2,
-                      small: MediaQuery.of(context).size.height * 0.16,
-                    ),
                     width: MediaQuery.of(context).size.width,
                     color: Colors.black54,
                     padding: EdgeInsets.symmetric(
@@ -251,7 +245,7 @@ class _NewPostState extends State<NewPost> {
                     child: Text(
                       'New Post',
                       style: TextStyle(
-                        fontSize: MediaQuery.of(context).size.height * 0.06,
+                        fontSize: MediaQuery.of(context).size.height * 0.05,
                         fontWeight: FontWeight.bold,
                       ),
                     ),

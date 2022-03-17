@@ -31,28 +31,30 @@ class _ThreadsState extends State<Threads> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: StreamBuilder<QuerySnapshot<Map<String, dynamic>>>(
-        stream: this._chatService.fetchAllThreads(),
-        builder: (
-          BuildContext context,
-          AsyncSnapshot<QuerySnapshot<Map<String, dynamic>>> snapshot,
-        ) {
-          if (snapshot.hasError) {
-            log.e("Threads Error", snapshot.error, snapshot.stackTrace);
-            return Text('Something went wrong, please try again later.');
-          }
+      body: SafeArea(
+        child: StreamBuilder<QuerySnapshot<Map<String, dynamic>>>(
+          stream: this._chatService.fetchAllThreads(),
+          builder: (
+            BuildContext context,
+            AsyncSnapshot<QuerySnapshot<Map<String, dynamic>>> snapshot,
+          ) {
+            if (snapshot.hasError) {
+              log.e("Threads Error", snapshot.error, snapshot.stackTrace);
+              return Text('Something went wrong, please try again later.');
+            }
 
-          if (snapshot.connectionState == ConnectionState.waiting) {
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              return _buildThreadsPage(context);
+            }
+
+            this._threads.clear();
+            snapshot.data!.docs.forEach((thread) {
+              this._threads.add(Thread.fromJson(thread.data()));
+            });
+
             return _buildThreadsPage(context);
-          }
-
-          this._threads.clear();
-          snapshot.data!.docs.forEach((thread) {
-            this._threads.add(Thread.fromJson(thread.data()));
-          });
-
-          return _buildThreadsPage(context);
-        },
+          },
+        ),
       ),
     );
   }
@@ -72,12 +74,6 @@ class _ThreadsState extends State<Threads> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Container(
-              height: responsiveConfig(
-                context: context,
-                large: MediaQuery.of(context).size.height * 0.35,
-                medium: MediaQuery.of(context).size.height * 0.35,
-                small: MediaQuery.of(context).size.height * 0.3,
-              ),
               width: MediaQuery.of(context).size.width,
               color: Colors.black54,
               padding: EdgeInsets.symmetric(
@@ -103,9 +99,11 @@ class _ThreadsState extends State<Threads> {
                         ? 'You have no messages yet'
                         : 'Your\nmessages',
                     style: TextStyle(
-                      fontSize: MediaQuery.of(context).size.height * 0.07,
+                      fontSize: MediaQuery.of(context).size.height * 0.05,
                       fontWeight: FontWeight.w900,
                     ),
+                    overflow: TextOverflow.visible,
+                    maxLines: 5,
                   ),
                 ],
               ),

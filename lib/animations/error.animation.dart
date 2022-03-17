@@ -29,6 +29,7 @@ class Error extends StatelessWidget {
             style: TextStyle(
               fontSize: MediaQuery.of(context).size.height * 0.03,
             ),
+            textAlign: TextAlign.center,
           ),
         ],
       ),

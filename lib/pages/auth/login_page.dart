@@ -55,16 +55,14 @@ class _LoginPageState extends State<LoginPage> {
    * Handle form submission for logging the user in.
    */
   Future<void> _onFormSubmit() async {
+    // Check the validity of the form.
+    if (!this._formKey.currentState!.validate()) {
+      return;
+    }
+
     setState(() {
       this._loading = true;
     });
-    // Check the validity of the form.
-    if (!this._formKey.currentState!.validate()) {
-      setState(() {
-        this._loading = false;
-      });
-      return;
-    }
 
     // Create a DTO object for logging in the user.
     LoginAccountDto loginAccountDto = new LoginAccountDto(

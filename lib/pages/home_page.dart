@@ -91,8 +91,13 @@ class _HomePageState extends State<HomePage> {
         screen: screen,
         emitScreen: this.emitScreen,
       ),
-      body: NotificationsHandler(
-        child: screens[screen],
+      body: Container(
+        padding: EdgeInsets.only(
+          bottom: MediaQuery.of(context).size.height * 0.12,
+        ),
+        child: NotificationsHandler(
+          child: screens[screen],
+        ),
       ),
     );
   }

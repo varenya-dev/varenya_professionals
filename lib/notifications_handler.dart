@@ -43,6 +43,9 @@ class _NotificationsHandlerState extends State<NotificationsHandler> {
   }
 
   Future<void> _handleMessage(RemoteMessage message) async {
+    setState(() {
+      this.loading = true;
+    });
     if (message.data['type'] == 'chat') {
       String userId = message.data['byUser'];
       String threadId = message.data['thread'];
@@ -60,18 +63,25 @@ class _NotificationsHandlerState extends State<NotificationsHandler> {
     if (message.data['type'] == 'sos') {
       String userId = message.data['userId'];
       String threadId = await this._chatService.createNewThread(userId);
+      ServerUser serverUser = await this._userService.findUserById(userId);
       await this._alertsService.sendSOSResponseNotification(threadId);
 
       Navigator.pushNamed(
         context,
         Chat.routeName,
-        arguments: threadId,
+        arguments: ChatArgument(
+          serverUser: serverUser,
+          threadId: threadId,
+        ),
       );
     }
 
     if (message.data['type'] == 'appointment') {
       Navigator.pushNamed(context, AppointmentList.routeName);
     }
+    setState(() {
+      this.loading = false;
+    });
   }
 
   @override

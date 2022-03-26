@@ -25,7 +25,7 @@ class FullPostBody extends StatelessWidget {
         this._post!.body,
         style: TextStyle(
           color: Colors.white,
-          fontSize: MediaQuery.of(context).size.height * 0.05,
+          fontSize: MediaQuery.of(context).size.height * 0.03,
         ),
       ),
     );

@@ -1,0 +1,1 @@
+flutter build apk --flavor prod -t .\lib\main.prod.dart

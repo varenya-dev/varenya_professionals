@@ -2,7 +2,7 @@ name: varenya_professionals
 description: Varenya For Professionals Flutter Application.
 
 publish_to: 'none'
-version: 1.0.1+2
+version: 1.0.1+3
 
 environment:
   sdk: ">=2.12.0 <3.0.0"

@@ -1,8 +1,6 @@
 <h1 align="center"> Varenya For Professionals</h1> <br>
 <p align="center">
-  <a href="https://gitpoint.co/">
     <img alt="Varenya Logo" title="Varenya Logo" src="https://firebasestorage.googleapis.com/v0/b/varenya-flutter.appspot.com/o/assets%2Fapp_logo_down_yellow.png?alt=media&token=719335c4-1dfd-4c25-b997-9636ddb1ea0f" width="250">
-  </a>
 </p>
 
 <p align="center">

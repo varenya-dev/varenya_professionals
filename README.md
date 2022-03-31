@@ -25,15 +25,6 @@
 
 ## Introduction
 
-<p align="center">
-
-![Github Issues](https://img.shields.io/github/issues/varenya-dev/varenya_mobile?style=for-the-badge&logo=appveyor)
-![Github Forks](https://img.shields.io/github/forks/varenya-dev/varenya_mobile?style=for-the-badge&logo=appveyor)
-![Github Stars](https://img.shields.io/github/stars/varenya-dev/varenya_mobile?style=for-the-badge&logo=appveyor)
-![Github License](https://img.shields.io/github/license/varenya-dev/varenya_mobile?style=for-the-badge&logo=appveyor)
-
-</p>
-
 A mental health support app built using Flutter to help people in need to book appointments with mental health professionals such as therapists and also invoke conversation and discussion as a community to help people and help themselves.
 
 <p align="center">
